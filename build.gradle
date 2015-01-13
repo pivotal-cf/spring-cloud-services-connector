@@ -89,18 +89,18 @@ artifacts {
 }
 
 dependencies {
-	 compile("org.springframework.cloud:spring-cloud-core:$springCloudVersion")
-	 compile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudVersion")
-	 compile("org.springframework.cloud:spring-cloud-spring-service-connector:$springCloudVersion")
+	 compile("org.springframework.cloud:spring-cloud-core:$springCloudConnectorsVersion")
+	 compile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
+	 compile("org.springframework.cloud:spring-cloud-spring-service-connector:$springCloudConnectorsVersion")
 
 	 compile("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
 	 compile("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
 
-     optional("org.apache.hadoop:hadoop-common:$hadoopCommonVersion")
+	 optional("org.apache.hadoop:hadoop-common:$hadoopCommonVersion")
 	 optional("com.netflix.eureka:eureka-client:$eurekaClientVersion")
 
-	 testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudVersion")
-	 testCompile group: 'org.springframework.cloud', name: 'spring-cloud-cloudfoundry-connector', version:'$springCloudVersion', classifier: 'tests' 
+	 testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
+	 testCompile group: 'org.springframework.cloud', name: 'spring-cloud-cloudfoundry-connector', version:'$springCloudConnectorsVersion', classifier: 'tests'
 	 testCompile("junit:junit:$junitVersion")
 	 testCompile("org.mockito:mockito-core:$mockitoVersion")
 }
