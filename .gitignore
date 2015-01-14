@@ -11,4 +11,6 @@ _site
 /bin
 .idea
 *.iml
+*.ipr
+*.iws
 
