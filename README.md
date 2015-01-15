@@ -1,3 +1,4 @@
 #Spring Cloud PCF extension
 
-Currently supports the Hadoop service on Pivotal Cloud Foundry
+Currently supports the Hadoop, Config Server and Eureka services on Pivotal Cloud Foundry
+
