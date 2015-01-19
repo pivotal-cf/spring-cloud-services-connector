@@ -1,2 +1,2 @@
-rootProject.name = "spring-cloud-pivotal-connector"
+include "spring-cloud-pivotal-cloudfoundry-connector", "spring-cloud-pivotal-spring-connector", "spring-cloud-pivotal-core"
 

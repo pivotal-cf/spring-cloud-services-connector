@@ -1,0 +1,3 @@
+org.springframework.cloud.pivotal.cloudfoundry.PhdServiceInfoCreator
+org.springframework.cloud.pivotal.cloudfoundry.EurekaServiceInfoCreator
+org.springframework.cloud.pivotal.cloudfoundry.ConfigServerServiceInfoCreator

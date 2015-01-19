@@ -1,155 +1,190 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'eclipse'
+/*
+ * Copyright 2015 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-apply plugin: 'propdeps'
-apply plugin: 'propdeps-maven'
-apply plugin: 'propdeps-idea'
-apply plugin: 'propdeps-eclipse'
-
-apply from: "${rootProject.projectDir}/publish-maven.gradle"
-
-if (project.hasProperty('platformVersion')) {
-	apply plugin: 'spring-io'
-
-	// necessary to resolve the Spring IO versions (which may include snapshots)
-	repositories {
-		maven { url "https://repo.spring.io/libs-snapshot" }
-	}
-
-	dependencies {
-		springIoVersions "io.spring.platform:platform-versions:${platformVersion}@properties"
-	}
-}
-
-description = 'Spring-Cloud Support for Pivotal CF'
-
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
-
-javadoc {
-	options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
-	options.author = true
-	options.header = project.name
-}
-
-task packageSources(type: Jar) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar) {
-	classifier = "javadoc"
-	from javadoc
-}
-
-ext {
-	javadocLinks = [
-		'http://docs.oracle.com/javase/7/docs/api/',
-		'http://docs.oracle.com/javaee/6/api/',
-		'http://docs.spring.io/spring/docs/current/javadoc-api/',
-	] as String[]
-}
-
-task api(type: Javadoc) {
-	group = "Documentation"
-	description = "Generates aggregated Javadoc API documentation."
-	title = "${rootProject.description} ${version} API"
-	options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
-	options.author = true
-	options.header = rootProject.description
-	options.links(project.ext.javadocLinks)
-
-	source subprojects.collect { project ->
-		project.sourceSets.main.allJava
-	}
-
-	classpath = files(subprojects.collect { project ->
-		project.sourceSets.main.compileClasspath
-	})
-
-	maxMemory = "1024m"
-	destinationDir = new File(buildDir, "api")
-}
-
-task docsZip(type: Zip) {
-	group = 'Distribution'
-	classifier = 'docs'
-	description = "Builds -${classifier} archive containing api and reference " +
-			"for deployment at docs.spring.io/spring-cloud/docs."
-
-	from(api) {
-		into 'api'
-	}
-}
-
-artifacts {
-	archives packageSources
-	archives javadocJar
-}
-
-dependencies {
-	 compile("org.springframework.cloud:spring-cloud-core:$springCloudConnectorsVersion")
-	 compile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
-	 compile("org.springframework.cloud:spring-cloud-spring-service-connector:$springCloudConnectorsVersion")
-	 compile("org.springframework.cloud:spring-cloud-netflix-core:$springCloudNetflixCoreVersion")
-
-	 compile("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
-	 compile("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-
-	 optional("org.apache.hadoop:hadoop-common:$hadoopCommonVersion")
-	 optional("com.netflix.eureka:eureka-client:$eurekaClientVersion")
-
-	 testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
-	 testCompile group: 'org.springframework.cloud', name: 'spring-cloud-cloudfoundry-connector', version:'$springCloudConnectorsVersion', classifier: 'tests'
-	 testCompile("junit:junit:$junitVersion")
-	 testCompile("org.mockito:mockito-core:$mockitoVersion")
-}
-
-repositories {
-	mavenLocal()
-
-	maven { url "http://repo.spring.io/snapshot" }
-	maven { url "http://repo.spring.io/milestone" }
-	maven { url "http://repo.spring.io/libs-milestone" }
-	maven { url "http://repo.maven.apache.org/maven2" }
-}
+description = 'Pivotal Spring-Cloud Support'
 
 buildscript {
-	repositories {
+    repositories {
+        mavenCentral()
+        mavenLocal()
 		maven { url 'http://repo.springsource.org/plugins-release' }
-	}
+    }
+
 	dependencies {
 		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.5'
 		classpath 'org.springframework.build.gradle:spring-io-plugin:0.0.3.RELEASE'
 	}
+
+    ext {
+        eurekaClientVersion = "1.1.135"
+        junitVersion = "4.11"
+        mockitoVersion = "1.9.5"
+        springCloudConnectorsVersion = "1.1.1.BUILD-SNAPSHOT"
+        springVersion = "3.1.4.RELEASE"
+        hadoopCommonVersion = "2.2.0"
+        jacksonVersion = "2.3.3"
+        springCloudNetflixCoreVersion = "1.0.0.RC1"
+    }
 }
 
-ext {
-	matrix = [
-		   "spring32"       : [springVersion: "3.2.9.RELEASE"],
-		   "spring40"       : [springVersion: "4.0.5.RELEASE"]
-	]
-}
+subprojects {
+    apply plugin: 'java'
+    apply from: "${rootProject.projectDir}/publish-maven.gradle"
+    apply plugin: 'eclipse'
 
-task matrixTests
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
 
-task defineMatrixTests {
-        def createTestTask = { name, props ->
-                task "$name"(type: GradleBuild) {
-                        tasks = ['test']
-                        startParameter.projectProperties = props
-                }
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+
+    group = "org.springframework.cloud"
+    version = "1.0.0.BUILD-SNAPSHOT"
+
+    if (project.hasProperty('platformVersion')) {
+	    apply plugin: 'spring-io'
+
+        // necessary to resolve the Spring IO versions (which may include snapshots)
+        repositories {
+            maven { url "https://repo.spring.io/libs-snapshot" }
         }
-        matrix.each { sp ->
-                def testTask = createTestTask(sp.key, sp.value)
-                matrixTests.dependsOn(testTask.name)
+
+	    dependencies {
+		    springIoVersions "io.spring.platform:platform-versions:${platformVersion}@properties"
+	    }
+    }
+
+    repositories {
+        mavenLocal()
+
+        maven { url "http://repo.spring.io/snapshot" }
+        maven { url "http://repo.spring.io/milestone" }
+        maven { url "http://repo.spring.io/libs-milestone" }
+        maven { url "http://repo.maven.apache.org/maven2" }
+    }
+
+    javadoc {
+        options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        options.author = true
+        options.header = project.name
+    }
+
+    task packageSources(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar) {
+        classifier = "javadoc"
+        from javadoc
+    }
+
+    ext {
+        javadocLinks = [
+                'http://docs.oracle.com/javase/7/docs/api/',
+                'http://docs.oracle.com/javaee/6/api/',
+                'http://docs.spring.io/spring/docs/current/javadoc-api/',
+        ] as String[]
+    }
+
+    task api(type: Javadoc) {
+        group = "Documentation"
+        description = "Generates aggregated Javadoc API documentation."
+        title = "${rootProject.description} ${version} API"
+        options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        options.author = true
+        options.header = rootProject.description
+        options.links(project.ext.javadocLinks)
+
+        source subprojects.collect { project ->
+            project.sourceSets.main.allJava
         }
+
+        classpath = files(subprojects.collect { project ->
+            project.sourceSets.main.compileClasspath
+        })
+
+        maxMemory = "1024m"
+        destinationDir = new File(buildDir, "api")
+    }
+
+    task docsZip(type: Zip) {
+        group = 'Distribution'
+        classifier = 'docs'
+        description = "Builds -${classifier} archive containing api and reference " +
+                "for deployment at docs.spring.io/spring-cloud/docs."
+
+        from(api) {
+            into 'api'
+        }
+    }
+
+    artifacts {
+        archives packageSources
+        archives javadocJar
+    }
+
+    task dist(dependsOn: assemble) {
+        group = 'Distribution'
+        description = 'Builds -dist and -docs distribution archives.'
+    }
 }
 
-task dist(dependsOn: assemble) {
-	group = 'Distribution'
-	description = 'Builds -dist and -docs distribution archives.'
+project(':spring-cloud-pivotal-core') {
+    archivesBaseName = "spring-cloud-pivotal-core"
+
+    dependencies {
+        compile("org.springframework.cloud:spring-cloud-core:$springCloudConnectorsVersion")
+    }
+}
+
+project(':spring-cloud-pivotal-cloudfoundry-connector') {
+    archivesBaseName = "spring-cloud-pivotal-cloudfoundry-connector"
+
+    dependencies {
+        compile project(':spring-cloud-pivotal-core')
+        compile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
+        testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
+        testCompile("junit:junit:$junitVersion")
+        testCompile("org.mockito:mockito-core:$mockitoVersion")
+        testCompile group: 'org.springframework.cloud', name: 'spring-cloud-cloudfoundry-connector', version:'$springCloudConnectorsVersion', classifier: 'tests'
+        testCompile("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
+        testCompile("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    }
+}
+
+project(':spring-cloud-pivotal-spring-connector') {
+    archivesBaseName = "spring-cloud-pivotal-spring-connector"
+
+    dependencies {
+        compile project(':spring-cloud-pivotal-core')
+
+        compile("org.springframework.cloud:spring-cloud-spring-service-connector:$springCloudConnectorsVersion")
+        optional("org.springframework.cloud:spring-cloud-netflix-core:$springCloudNetflixCoreVersion")
+
+        optional("org.apache.hadoop:hadoop-common:$hadoopCommonVersion")
+        optional("com.netflix.eureka:eureka-client:$eurekaClientVersion")
+
+        testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
+        testCompile group: 'org.springframework.cloud', name: 'spring-cloud-cloudfoundry-connector', version:'$springCloudConnectorsVersion', classifier: 'tests'
+        testCompile("junit:junit:$junitVersion")
+        testCompile("org.mockito:mockito-core:$mockitoVersion")
+    }
 }
 
 task wrapper(type: Wrapper) {
