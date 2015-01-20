@@ -12,7 +12,7 @@ import org.springframework.cloud.service.common.RelationalServiceInfo;
 @ServiceLabel("gemfirexd")
 public class GemfireXDServiceInfo extends RelationalServiceInfo {
 
-    public static final String JDBC_URL_TYPE = "gemfirexd";
+	public static final String JDBC_URL_TYPE = "gemfirexd";
 
 	public GemfireXDServiceInfo(String id, String url) {
 		super(id, url, JDBC_URL_TYPE);

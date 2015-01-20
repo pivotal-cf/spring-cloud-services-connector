@@ -14,6 +14,6 @@ public class GemfireXDDataSourceCreator extends DataSourceCreator<GemfireXDServi
 	private static final String VALIDATION_QUERY = null;
 	
 	public GemfireXDDataSourceCreator() {
-	    super("spring-cloud.gemfirexd.driver", DRIVERS, VALIDATION_QUERY);    
+		super("spring-cloud.gemfirexd.driver", DRIVERS, VALIDATION_QUERY);
 	}
 }
