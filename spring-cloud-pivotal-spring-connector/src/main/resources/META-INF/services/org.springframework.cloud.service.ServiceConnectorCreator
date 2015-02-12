@@ -1,3 +1,4 @@
 org.springframework.cloud.pivotal.service.hadoop.HadoopConfigurationCreator
 org.springframework.cloud.pivotal.service.gemfire.GemfireXDDataSourceCreator
 org.springframework.cloud.pivotal.service.eureka.EurekaClientConfigurationCreator
+org.springframework.cloud.pivotal.service.gemfire.GemfireClientCacheCreator

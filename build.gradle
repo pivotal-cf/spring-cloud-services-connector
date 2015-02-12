@@ -150,6 +150,8 @@ project(':spring-cloud-pivotal-core') {
 
 	dependencies {
 		compile("org.springframework.cloud:spring-cloud-core:$springCloudConnectorsVersion")
+		testCompile("junit:junit:$junitVersion")
+		testCompile("org.mockito:mockito-core:$mockitoVersion")
 	}
 }
 
@@ -178,6 +180,7 @@ project(':spring-cloud-pivotal-spring-connector') {
 		optional("org.springframework.cloud:spring-cloud-netflix-core:$springCloudNetflixCoreVersion")
 
 		optional("org.apache.hadoop:hadoop-common:$hadoopCommonVersion")
+		optional("org.springframework.data:spring-data-gemfire:1.6.0.M1")
 		optional("com.netflix.eureka:eureka-client:$eurekaClientVersion")
 
 		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
