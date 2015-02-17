@@ -69,7 +69,7 @@ public class GemfireClientCacheCreatorTest {
 		GemfireServiceConnectorConfig config = new GemfireServiceConnectorConfig();
 		config.setPdxDiskStore("foo");
 		config.setPdxIgnoreUnreadFields(true);
-		config.setPdxPersistent(false);
+		config.setPdxPersistent(true);
 		config.setPdxReadSerialized(true);
 		config.setPdxSerializer(serializer);
 		config.setPoolFreeConnectionTimeout(10);

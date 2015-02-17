@@ -16,7 +16,7 @@ import com.gemstone.gemfire.cache.client.ClientCacheFactory;
 
 public class GemfireClientCacheCreator  extends AbstractServiceConnectorCreator<ClientCache, GemfireServiceInfo>{
 
-	final ClientCacheFactory factory;
+	ClientCacheFactory factory;
 	
 	public GemfireClientCacheCreator(ClientCacheFactory factory) {
 		this.factory = factory;
@@ -32,7 +32,7 @@ public class GemfireClientCacheCreator  extends AbstractServiceConnectorCreator<
 			factory.addPoolLocator(locator.getHost(), locator.getPort());
 		}
 		if(serviceInfo.getUsername() != null){
-			factory.set("security-client-auth-init", "org.springframework.cloud.pivotal.services.gemfire.UserAuthInitialize.create");
+			factory.set("security-client-auth-init", "org.springframework.cloud.pivotal.service.gemfire.UserAuthInitialize.create");
 			factory.set("security-username",serviceInfo.getUsername());
 		}
 		if(serviceInfo.getPassword() != null){
