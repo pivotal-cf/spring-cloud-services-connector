@@ -1,0 +1,23 @@
+{
+  "label": "p-circuit-breaker-dashboard",
+  "name": "$serviceName",
+  "plan": "standard",
+  "tags": [ "circuit-breaker", "hystrix-amqp", "spring-cloud" ],
+  "credentials": {
+    "amqp": {
+      "ssl": false,
+      "uri": "amqp://$username:$password@$hostname/$virtualHost",
+      "http_api_uri": "http://$user:$pass@$hostname/api",
+      "hostname": "$hostname",
+      "username": "$user",
+      "password": "$password",
+      "vhost": "$virtualHost"
+    },
+    "dashboard": {
+      "uri": "http://username:password@hystrix-69a9789a-5df8-49d4-b6d4-81973f076f4e.apps.example.com"
+    },
+    "stream": {
+      "uri": "http://turbine-69a9789a-5df8-49d4-b6d4-81973f076f4e.apps.example.com"
+    }
+  }
+}

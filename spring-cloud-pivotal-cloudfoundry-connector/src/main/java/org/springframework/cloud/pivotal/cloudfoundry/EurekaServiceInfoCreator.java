@@ -7,7 +7,6 @@ import org.springframework.cloud.pivotal.service.common.EurekaServiceInfo;
 import java.util.Map;
 
 /**
- *
  * Service info creator for Eureka services
  *
  * @author Chris Schaefer

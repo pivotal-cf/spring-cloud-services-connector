@@ -29,14 +29,15 @@ buildscript {
 	}
 
 	ext {
+		jacksonVersion = "2.3.3"
+		springVersion = "3.1.4.RELEASE"
+		springCloudConnectorsVersion = "1.1.1.RELEASE"
+		hadoopCommonVersion = "2.2.0"
+		springAmqpVersion = "1.1.1.RELEASE"
+		springCloudNetflixCoreVersion = "1.0.0.RELEASE"
 		eurekaClientVersion = "1.1.135"
 		junitVersion = "4.11"
 		mockitoVersion = "1.9.5"
-		springCloudConnectorsVersion = "1.1.1.BUILD-SNAPSHOT"
-		springVersion = "3.1.4.RELEASE"
-		hadoopCommonVersion = "2.2.0"
-		jacksonVersion = "2.3.3"
-		springCloudNetflixCoreVersion = "1.0.0.RC1"
 	}
 }
 
@@ -175,13 +176,17 @@ project(':spring-cloud-pivotal-spring-connector') {
 		compile project(':spring-cloud-pivotal-core')
 
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector:$springCloudConnectorsVersion")
-		optional("org.springframework.cloud:spring-cloud-netflix-core:$springCloudNetflixCoreVersion")
 
 		optional("org.apache.hadoop:hadoop-common:$hadoopCommonVersion")
+
+		optional("org.springframework.cloud:spring-cloud-netflix-core:$springCloudNetflixCoreVersion")
 		optional("com.netflix.eureka:eureka-client:$eurekaClientVersion")
 
+		optional("org.springframework.amqp:spring-rabbit:$springAmqpVersion")
+
+		testCompile("org.springframework:spring-test:$springVersion")
 		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
-		testCompile group: 'org.springframework.cloud', name: 'spring-cloud-cloudfoundry-connector', version:'$springCloudConnectorsVersion', classifier: 'tests'
+		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion:tests")
 		testCompile("junit:junit:$junitVersion")
 		testCompile("org.mockito:mockito-core:$mockitoVersion")
 	}
