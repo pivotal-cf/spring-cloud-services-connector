@@ -9,7 +9,7 @@ import org.springframework.cloud.config.java.AbstractCloudConfig;
 import org.springframework.cloud.pivotal.service.hystrix.HystrixAmqpConnection;
 import org.springframework.cloud.service.messaging.RabbitConnectionFactoryConfig;
 
-public class PivotalCloudConfig extends AbstractCloudConfig {
+public class CloudConnectorsConfig extends AbstractCloudConfig {
 	private ServiceConnectionFactory connectionFactory;
 
 	@Override
@@ -28,7 +28,7 @@ public class PivotalCloudConfig extends AbstractCloudConfig {
 		 * Get the {@link EurekaClientConfig} object associated with the only Eureka service bound to the app.
 		 *
 		 * @return Eureka client config
-		 * @throws CloudException if there are either 0 or more than 1 Hystrix AMQP services.
+		 * @throws CloudException if there are either 0 or more than 1 Eureka services.
 		 */
 		public EurekaClientConfig eurekaClientConfig() {
 			return cloud().getSingletonServiceConnector(EurekaClientConfig.class, null);

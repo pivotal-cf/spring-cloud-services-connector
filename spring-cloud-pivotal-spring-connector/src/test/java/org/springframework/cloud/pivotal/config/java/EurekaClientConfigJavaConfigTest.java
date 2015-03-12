@@ -18,14 +18,14 @@ public class EurekaClientConfigJavaConfigTest extends AbstractServiceJavaConfigT
 	}
 }
 
-class EurekaClientConfigWithId extends PivotalCloudConfig {
+class EurekaClientConfigWithId extends CloudConnectorsConfig {
 	@Bean(name="my-service")
 	public EurekaClientConfig testEurekaClientConfig() {
 		return connectionFactory().eurekaClientConfig("my-service");
 	}
 }
 
-class EurekaClientConfigWithoutId extends PivotalCloudConfig {
+class EurekaClientConfigWithoutId extends CloudConnectorsConfig {
 	@Bean(name="my-service")
 	public EurekaClientConfig testEurekaClientConfig() {
 		return connectionFactory().eurekaClientConfig();

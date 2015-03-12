@@ -46,21 +46,21 @@ public class HystrixAmqpConnectionFactoryJavaConfigTest extends AbstractServiceJ
 
 }
 
-class HystrixAmqpConnectionFactoryConfigWithId extends PivotalCloudConfig {
+class HystrixAmqpConnectionFactoryConfigWithId extends CloudConnectorsConfig {
 	@Bean(name="my-service")
 	public ConnectionFactory testHystrixAmqpConnectionFactory() {
 		return connectionFactory().hystrixConnectionFactory("my-service");
 	}
 }
 
-class HystrixAmqpConnectionFactoryConfigWithoutId extends PivotalCloudConfig {
+class HystrixAmqpConnectionFactoryConfigWithoutId extends CloudConnectorsConfig {
 	@Bean(name="my-service")
 	public ConnectionFactory testHystrixAmqpConnectionFactory() {
 		return connectionFactory().hystrixConnectionFactory();
 	}
 }
 
-class HystrixAmqpConnectionFactoryConfigWithServiceConfig extends PivotalCloudConfig {
+class HystrixAmqpConnectionFactoryConfigWithServiceConfig extends CloudConnectorsConfig {
 	@Bean
 	public ConnectionFactory channelCacheSize200() {
 		RabbitConnectionFactoryConfig serviceConfig = new RabbitConnectionFactoryConfig(200);
