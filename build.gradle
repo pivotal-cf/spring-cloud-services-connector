@@ -199,6 +199,13 @@ project(':spring-cloud-pivotal-spring-connector') {
 		testCompile("org.springframework.cloud:spring-cloud-core:$springCloudConnectorsVersion:tests")
 		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
 		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion:tests")
+
+		// TEMPORARY ADDITIONS TO GET TESTS TO PASS
+		testCompile("org.springframework.data:spring-data-redis:1.1.1.RELEASE")
+		testCompile("redis.clients:jedis:2.1.0")
+		testCompile("org.springframework.data:spring-data-mongodb:1.2.4.RELEASE")
+		// TEMPORARY ADDITIONS TO GET TESTS TO PASS
+
 		testCompile("junit:junit:$junitVersion")
 		testCompile("org.mockito:mockito-core:$mockitoVersion")
 	}
