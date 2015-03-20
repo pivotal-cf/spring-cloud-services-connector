@@ -2,11 +2,14 @@ package org.springframework.cloud;
 
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.cloud.pivotal.service.common.EurekaServiceInfo;
+import org.springframework.cloud.pivotal.service.common.GemfireServiceInfo;
 import org.springframework.cloud.pivotal.service.common.HystrixAmqpServiceInfo;
 import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.util.Collections;
 
 abstract public class StubCloudConnectorTest {
 	private static final String MOCK_CLOUD_BEAN_NAME = "mockCloud";
@@ -41,11 +44,15 @@ abstract public class StubCloudConnectorTest {
 		};
 	}
 
-	protected EurekaServiceInfo creatEurekaService(String id) {
+	protected EurekaServiceInfo createEurekaService(String id) {
 		return new EurekaServiceInfo(id, "http://username:password@10.20.30.40:1234");
 	}
 
-	protected HystrixAmqpServiceInfo creatHystrixAmqpService(String id) {
+	protected HystrixAmqpServiceInfo createHystrixAmqpService(String id) {
 		return new HystrixAmqpServiceInfo(id, "amqp://username:password@10.20.30.40:1234/vh");
+	}
+
+	protected GemfireServiceInfo createGemfireService(String id) {
+		return new GemfireServiceInfo(id, Collections.singletonList("10.0.0.1[1044]"));
 	}
 }

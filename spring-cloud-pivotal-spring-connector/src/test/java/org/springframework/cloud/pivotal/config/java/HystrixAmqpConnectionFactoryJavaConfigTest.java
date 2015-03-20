@@ -23,7 +23,7 @@ public class HystrixAmqpConnectionFactoryJavaConfigTest extends AbstractServiceJ
 	}
 	
 	protected ServiceInfo createService(String id) {
-		return creatHystrixAmqpService(id);
+		return createHystrixAmqpService(id);
 	}
 	
 	protected Class<ConnectionFactory> getConnectorType() {

@@ -151,6 +151,7 @@ project(':spring-cloud-pivotal-core') {
 
 	dependencies {
 		compile("org.springframework.cloud:spring-cloud-core:$springCloudConnectorsVersion")
+
 		testCompile("junit:junit:$junitVersion")
 		testCompile("org.mockito:mockito-core:$mockitoVersion")
 	}
@@ -161,13 +162,15 @@ project(':spring-cloud-pivotal-cloudfoundry-connector') {
 
 	dependencies {
 		compile project(':spring-cloud-pivotal-core')
+
 		compile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
+
 		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
-		testCompile("junit:junit:$junitVersion")
-		testCompile("org.mockito:mockito-core:$mockitoVersion")
-		testCompile group: 'org.springframework.cloud', name: 'spring-cloud-cloudfoundry-connector', version:'$springCloudConnectorsVersion', classifier: 'tests'
+		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion:tests")
 		testCompile("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
 		testCompile("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+		testCompile("junit:junit:$junitVersion")
+		testCompile("org.mockito:mockito-core:$mockitoVersion")
 	}
 }
 

@@ -1,71 +1,70 @@
 package org.springframework.cloud.pivotal.service.gemfire;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.cloud.pivotal.service.common.GemfireServiceInfo;
 
 import com.gemstone.gemfire.cache.client.ClientCache;
 import com.gemstone.gemfire.cache.client.ClientCacheFactory;
 import com.gemstone.gemfire.pdx.PdxSerializer;
+
+@RunWith(MockitoJUnitRunner.class)
 public class GemfireClientCacheCreatorTest {
-	
-	
-	@Test
-	public void testcacheCreation() throws Exception {
-		ClientCacheFactory factory = mock(ClientCacheFactory.class);
-		ClientCache cache = mock(ClientCache.class);
-		Map<String,Object> credentials = new HashMap<String, Object>();
-		credentials.put("locators", Collections.singletonList("localhost[1234]"));
-		GemfireServiceInfo info = new GemfireServiceInfo("gemfire", credentials);
+	@Mock
+	private ClientCacheFactory factory;
+
+	@Mock
+	private ClientCache cache;
+
+	@Mock
+	private PdxSerializer serializer;
+
+	private GemfireClientCacheCreator creator;
+	private GemfireServiceInfo info;
+
+	@Before
+	public void setUp() {
 		when(factory.create()).thenReturn(cache);
-		GemfireClientCacheCreator creator = new GemfireClientCacheCreator(factory);
-		ClientCache cretedCache = creator.create(info, null);
-		verify(factory, atLeastOnce()).addPoolLocator("localhost", 1234);
-		
+
+		info = new GemfireServiceInfo("gemfire", Collections.singletonList("localhost[1234]"));
+		creator = new GemfireClientCacheCreator(factory);
 	}
-	
-	
+
 	@Test
-	public void testcacheCreationWithConfig() throws Exception {
-		ClientCacheFactory factory = mock(ClientCacheFactory.class);
-		ClientCache cache = mock(ClientCache.class);
-		Map<String,Object> credentials = new HashMap<String, Object>();
-		credentials.put("locators", Collections.singletonList("localhost[1234]"));
-		GemfireServiceInfo info = new GemfireServiceInfo("gemfire", credentials);
-		when(factory.create()).thenReturn(cache);
-		GemfireClientCacheCreator creator = new GemfireClientCacheCreator(factory);
-		
+	public void cacheCreation() throws Exception {
+		ClientCache createdCache = creator.create(info, null);
+
+		assertNotNull(createdCache);
+
+		verify(factory, atLeastOnce()).addPoolLocator("localhost", 1234);
+	}
+
+	@Test
+	public void cacheCreationWithConfig() throws Exception {
 		GemfireServiceConnectorConfig config = new GemfireServiceConnectorConfig();
 		config.setPdxIgnoreUnreadFields(true);
 		config.setPdxPersistent(false);
-		
-		
-		ClientCache cretedCache = creator.create(info, config);
-		
+
+		ClientCache createdCache = creator.create(info, config);
+
+		assertNotNull(createdCache);
+
 		verify(factory, atLeastOnce()).addPoolLocator("localhost", 1234);
 		verify(factory, atLeastOnce()).setPdxIgnoreUnreadFields(true);
 		verify(factory, atLeastOnce()).setPdxPersistent(false);
 		verify(factory, never()).setPdxDiskStore(anyString());
-		
 	}
 	
 	@Test
-	public void testcacheCreationWithConfigAll() throws Exception {
-		ClientCacheFactory factory = mock(ClientCacheFactory.class);
-		ClientCache cache = mock(ClientCache.class);
-		PdxSerializer serializer = mock(PdxSerializer.class);
-		
-		Map<String,Object> credentials = new HashMap<String, Object>();
-		credentials.put("locators", Collections.singletonList("localhost[1234]"));
-		GemfireServiceInfo info = new GemfireServiceInfo("gemfire", credentials);
-		when(factory.create()).thenReturn(cache);
-		GemfireClientCacheCreator creator = new GemfireClientCacheCreator(factory);
-		
+	public void cacheCreationWithConfigAll() throws Exception {
 		GemfireServiceConnectorConfig config = new GemfireServiceConnectorConfig();
 		config.setPdxDiskStore("foo");
 		config.setPdxIgnoreUnreadFields(true);
@@ -89,8 +88,11 @@ public class GemfireClientCacheCreatorTest {
 		config.setPoolSubscriptionRedundancy(21);
 		config.setPoolSubscriptionAckInterval(22);
 		config.setPoolThreadLocalConnections(true);
+
 		ClientCache createdCache = creator.create(info, config);
-		
+
+		assertNotNull(createdCache);
+
 		verify(factory, atLeastOnce()).addPoolLocator("localhost", 1234);
 		verify(factory, atLeastOnce()).setPdxIgnoreUnreadFields(config.getPdxIgnoreUnreadFields());
 		verify(factory, atLeastOnce()).setPdxPersistent(config.getPdxPersistent());
@@ -113,6 +115,5 @@ public class GemfireClientCacheCreatorTest {
 		verify(factory, atLeastOnce()).setPoolSubscriptionMessageTrackingTimeout(config.getPoolSubscriptionMessageTrackingTimeout());
 		verify(factory, atLeastOnce()).setPoolSubscriptionRedundancy(config.getPoolSubscriptionRedundancy());
 		verify(factory, atLeastOnce()).setPoolThreadLocalConnections(config.getPoolThreadLocalConnections());
-		
 	}
 }

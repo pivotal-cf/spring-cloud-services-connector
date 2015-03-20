@@ -1,0 +1,18 @@
+{
+  "user-provided": [
+    {
+      "credentials": {
+        "locators": [
+          "10.0.0.57[55221]",
+          "10.0.0.58[55221]"
+        ],
+        "password": "13917597139205230931",
+        "username": "cd390983-01db-4dcf-75fd-79289d4fdbcd"
+      },
+      "label": "user-provided",
+      "name": "gemcups",
+      "syslog_drain_url": "",
+      "tags": []
+    }
+  ]
+}

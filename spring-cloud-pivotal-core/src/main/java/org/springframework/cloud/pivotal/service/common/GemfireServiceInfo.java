@@ -2,8 +2,8 @@ package org.springframework.cloud.pivotal.service.common;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,23 +19,30 @@ import org.springframework.cloud.service.ServiceInfo.ServiceLabel;
  */
 @ServiceLabel("gemfire")
 public class GemfireServiceInfo extends BaseServiceInfo {
-	final Pattern p = Pattern.compile("(.*)\\[(\\d*)\\]");
+	private final Pattern p = Pattern.compile("(.*)\\[(\\d*)\\]");
 	private URI[] locators;
-	private Map<String, Object> credentials;
+	private final String username;
+	private final String password;
 
-	public GemfireServiceInfo(String id, Map<String, Object> credentials) {
-		super(id);
-		this.credentials = credentials;
-		List<String> locatorList = (List<String>) credentials.get("locators");
-		this.locators = new URI[locatorList.size()];
-		for (int i = 0; i < locatorList.size(); i++) {
-			locators[i] = parseLocators(locatorList.get(i));
-		}
+	public GemfireServiceInfo(String id, List<String> locators) {
+		this(id, locators, null, null);
 	}
 
-	URI parseLocators(String locator) throws IllegalArgumentException {
+	public GemfireServiceInfo(String id, List<String> locators, String username, String password) {
+		super(id);
+
+		ArrayList<URI> uris = new ArrayList<URI>(locators.size());
+		for (String locator : locators) {
+			uris.add(parseLocator(locator));
+		}
+		this.locators = uris.toArray(new URI[uris.size()]);
+
+		this.username = username;
+		this.password = password;
+	}
+
+	private URI parseLocator(String locator) throws IllegalArgumentException {
 		Matcher m = p.matcher(locator);
-		URI uri = null;
 		if (!m.find()) {
 			throw new IllegalArgumentException("Could not parse locator url. Expected format host[port], received: " + locator);
 		} else {
@@ -43,12 +50,11 @@ public class GemfireServiceInfo extends BaseServiceInfo {
 				throw new IllegalArgumentException("Could not parse locator url. Expected format host[port], received: " + locator);
 			}
 			try {
-				uri = new URI("locator://" + m.group(1) + ":" + m.group(2));
+				return new URI("locator://" + m.group(1) + ":" + m.group(2));
 			} catch (URISyntaxException e) {
 				throw new IllegalArgumentException("Malformed URL " + locator);
 			}
 		}
-		return uri;
 	}
 
 	public URI[] getLocators() {
@@ -56,10 +62,10 @@ public class GemfireServiceInfo extends BaseServiceInfo {
 	}
 
 	public String getUsername() {
-		return credentials.get("username") == null ? null : String.valueOf(credentials.get("username"));
+		return username;
 	}
 
 	public String getPassword() {
-		return credentials.get("password") == null ? null : String.valueOf(credentials.get("password"));
+		return password;
 	}
 }

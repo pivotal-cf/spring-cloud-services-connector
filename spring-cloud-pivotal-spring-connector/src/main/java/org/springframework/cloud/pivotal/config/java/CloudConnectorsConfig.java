@@ -1,11 +1,13 @@
 package org.springframework.cloud.pivotal.config.java;
 
+import com.gemstone.gemfire.cache.client.ClientCache;
 import com.netflix.discovery.EurekaClientConfig;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.cloud.CloudException;
 import org.springframework.cloud.config.java.AbstractCloudConfig;
+import org.springframework.cloud.pivotal.service.gemfire.GemfireServiceConnectorConfig;
 import org.springframework.cloud.pivotal.service.hystrix.HystrixAmqpConnection;
 import org.springframework.cloud.service.messaging.RabbitConnectionFactoryConfig;
 
@@ -24,6 +26,50 @@ public class CloudConnectorsConfig extends AbstractCloudConfig {
 	}
 
 	public class ServiceConnectionFactory extends AbstractCloudConfig.ServiceConnectionFactory {
+		/**
+		 * Get the GemFire {@link ClientCache} object associated with the only GemFire service bound to the app.
+		 *
+		 * @return GemFire client
+		 * @throws CloudException if there are either 0 or more than 1 GemFire services.
+		 */
+		public ClientCache gemfireClientCache() {
+			return gemfireClientCache((GemfireServiceConnectorConfig) null);
+		}
+
+		/**
+		 * Get the GemFire {@link ClientCache} object associated with the only GemFire service bound to the app.
+		 *
+		 * @return GemFire client
+		 * @param config configuration for the created {@link ClientCache}
+		 * @throws CloudException if there are either 0 or more than 1 GemFire services.
+		 */
+		public ClientCache gemfireClientCache(GemfireServiceConnectorConfig config) {
+			return cloud().getSingletonServiceConnector(ClientCache.class, config);
+		}
+
+		/**
+		 * Get the GemFire {@link ClientCache} object associated with the specified GemFire service.
+		 *
+		 * @param serviceId the name of the service
+		 * @return GemFire client
+		 * @throws CloudException if the specified service doesn't exist
+		 */
+		public ClientCache gemfireClientCache(String serviceId) {
+			return gemfireClientCache(serviceId, null);
+		}
+
+		/**
+		 * Get the GemFire {@link ClientCache} object associated with the specified GemFire service.
+		 *
+		 * @param serviceId the name of the service
+		 * @param config configuration for the created {@link ClientCache}
+		 * @return GemFire client
+		 * @throws CloudException if the specified service doesn't exist
+		 */
+		public ClientCache gemfireClientCache(String serviceId, GemfireServiceConnectorConfig config) {
+			return cloud().getServiceConnector(serviceId, ClientCache.class, config);
+		}
+
 		/**
 		 * Get the {@link EurekaClientConfig} object associated with the only Eureka service bound to the app.
 		 *

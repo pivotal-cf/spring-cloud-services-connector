@@ -28,37 +28,36 @@ public class GemfireClientCacheCreator  extends AbstractServiceConnectorCreator<
 	
 	@Override
 	public ClientCache create(GemfireServiceInfo serviceInfo, ServiceConnectorConfig serviceConnectorConfig) {
-		for(URI locator: serviceInfo.getLocators()){
+		for (URI locator : serviceInfo.getLocators()) {
 			factory.addPoolLocator(locator.getHost(), locator.getPort());
 		}
-		if(serviceInfo.getUsername() != null){
+		if (serviceInfo.getUsername() != null) {
 			factory.set("security-client-auth-init", "org.springframework.cloud.pivotal.service.gemfire.UserAuthInitialize.create");
-			factory.set("security-username",serviceInfo.getUsername());
+			factory.set("security-username", serviceInfo.getUsername());
 		}
-		if(serviceInfo.getPassword() != null){
-			factory.set("security-password",serviceInfo.getPassword());
+		if (serviceInfo.getPassword() != null) {
+			factory.set("security-password", serviceInfo.getPassword());
 		}
-		if(serviceConnectorConfig != null && serviceConnectorConfig.getClass().isAssignableFrom(GemfireServiceConnectorConfig.class)){
-			apply((GemfireServiceConnectorConfig)serviceConnectorConfig);
+		if (serviceConnectorConfig != null && serviceConnectorConfig.getClass().isAssignableFrom(GemfireServiceConnectorConfig.class)) {
+			apply((GemfireServiceConnectorConfig) serviceConnectorConfig);
 		}
 		return factory.create();
-		 
 	}
 	
 	private void apply(GemfireServiceConnectorConfig config){
 		BeanUtils.copyProperties(config, factory, getNullPropertyNames(config));
 	}
-	
-	private static String[] getNullPropertyNames (Object source) {
-	    final BeanWrapper src = new BeanWrapperImpl(source);
-	    java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
-	    Set<String> emptyNames = new HashSet<String>();
-	    for(java.beans.PropertyDescriptor pd : pds) {
-	        Object srcValue = src.getPropertyValue(pd.getName());
-	        if (srcValue == null) emptyNames.add(pd.getName());
-	    }
-	    String[] result = new String[emptyNames.size()];
-	    return emptyNames.toArray(result);
+	private static String[] getNullPropertyNames(Object source) {
+		final BeanWrapper src = new BeanWrapperImpl(source);
+		java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
+
+		Set<String> emptyNames = new HashSet<String>();
+		for (java.beans.PropertyDescriptor pd : pds) {
+			Object srcValue = src.getPropertyValue(pd.getName());
+			if (srcValue == null) emptyNames.add(pd.getName());
+		}
+		String[] result = new String[emptyNames.size()];
+		return emptyNames.toArray(result);
 	}
 }

@@ -10,7 +10,7 @@ public class EurekaClientConfigJavaConfigTest extends AbstractServiceJavaConfigT
 	}
 
 	protected ServiceInfo createService(String id) {
-		return creatEurekaService(id);
+		return createEurekaService(id);
 	}
 
 	protected Class<EurekaClientConfig> getConnectorType() {

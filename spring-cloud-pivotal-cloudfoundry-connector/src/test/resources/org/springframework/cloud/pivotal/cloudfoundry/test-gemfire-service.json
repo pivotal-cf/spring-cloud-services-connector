@@ -1,0 +1,21 @@
+{
+  "p-gemfire": [
+    {
+      "name": "gemfire1",
+      "label": "p-gemfire",
+      "tags": [
+        "gemfire",
+        "session_replication"
+      ],
+      "plan": "PlanNameGoesHere",
+      "credentials": {
+        "locators": [
+          "10.0.0.57[55221]",
+          "10.0.0.58[55221]"
+        ],
+        "username": "cd390983-01db-4dcf-75fd-79289d4fdbcd",
+        "password": "13917597139205230931"
+      }
+    }
+  ]
+}
