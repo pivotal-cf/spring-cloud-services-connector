@@ -179,14 +179,18 @@ project(':spring-cloud-pivotal-spring-connector') {
 
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector:$springCloudConnectorsVersion")
 
+		// for Spring XD
 		optional("org.apache.hadoop:hadoop-common:$hadoopCommonVersion")
 
+		// for Eureka
 		optional("org.springframework.cloud:spring-cloud-netflix-core:$springCloudNetflixCoreVersion")
 		optional("com.netflix.eureka:eureka-client:$eurekaClientVersion")
 
-		optional("org.springframework.data:spring-data-gemfire:1.6.0.M1")
-
+		// for Hystrix AMQP
 		optional("org.springframework.amqp:spring-rabbit:$springAmqpVersion")
+
+		// for GemFire
+		optional("org.springframework.data:spring-data-gemfire:1.6.0.M1")
 
 		testCompile("org.springframework:spring-test:$springVersion")
 		testCompile("org.springframework.cloud:spring-cloud-core:$springCloudConnectorsVersion:tests")
