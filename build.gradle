@@ -38,6 +38,7 @@ buildscript {
 		eurekaClientVersion = "1.1.135"
 		junitVersion = "4.11"
 		mockitoVersion = "1.9.5"
+		springBootVersion = "1.2.3.RELEASE"
 	}
 }
 
@@ -195,7 +196,8 @@ project(':spring-cloud-pivotal-spring-connector') {
 		// for GemFire
 		optional("org.springframework.data:spring-data-gemfire:1.6.0.M1")
 
-		testCompile("org.springframework:spring-test:$springVersion")
+		testCompile("org.springframework.boot:spring-boot:$springBootVersion")
+		testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 		testCompile("org.springframework.cloud:spring-cloud-core:$springCloudConnectorsVersion:tests")
 		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
 		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion:tests")
