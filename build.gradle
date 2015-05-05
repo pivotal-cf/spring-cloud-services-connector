@@ -209,6 +209,6 @@ project(':spring-cloud-pivotal-spring-connector') {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '1.12'
+	gradleVersion = '2.4'
 }
 
