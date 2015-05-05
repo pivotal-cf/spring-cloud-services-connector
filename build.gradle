@@ -18,9 +18,8 @@ description = 'Pivotal Spring-Cloud Support'
 
 buildscript {
 	repositories {
+		maven { url 'https://repo.spring.io/plugins-release' }
 		mavenCentral()
-		mavenLocal()
-		maven { url 'http://repo.springsource.org/plugins-release' }
 	}
 
 	dependencies {
@@ -72,9 +71,8 @@ subprojects {
 	}
 
 	repositories {
-		maven { url "http://repo.spring.io/libs-milestone" }
+		maven { url "https://repo.spring.io/libs-milestone" }
 		mavenCentral()
-		mavenLocal()
 	}
 
 	javadoc {
