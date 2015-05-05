@@ -2,6 +2,7 @@ package org.springframework.cloud.pivotal.service.config;
 
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.cloud.Cloud;
+import org.springframework.cloud.CloudException;
 import org.springframework.cloud.CloudFactory;
 import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.context.ApplicationListener;
@@ -26,14 +27,19 @@ public class ConfigServerServiceConnector implements ApplicationListener<Applica
 
 	@Override
 	public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
-		if(cloud != null) {
+		if (cloud != null) {
 			return;
 		}
 
-		cloud = new CloudFactory().getCloud();
+		try {
+			cloud = new CloudFactory().getCloud();
+		} catch (CloudException e) {
+			 // not running on a known cloud environment, so nothing to do
+			return;
+		}
 
-		for(ServiceInfo serviceInfo : cloud.getServiceInfos()) {
-			if(serviceInfo instanceof ConfigServerServiceInfo) {
+		for (ServiceInfo serviceInfo : cloud.getServiceInfos()) {
+			if (serviceInfo instanceof ConfigServerServiceInfo) {
 				String uri = ((ConfigServerServiceInfo) serviceInfo).getUri();
 
 				MapPropertySource mapPropertySource = new MapPropertySource(PROPERTY_SOURCE_NAME,

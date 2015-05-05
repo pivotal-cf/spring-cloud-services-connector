@@ -22,28 +22,29 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @IntegrationTest()
 public class ConfigServerServiceConnectorIntegrationTest {
 
-    private static final String URI = "http://username:password@config-server.mydomain.com";
-    
-    @Autowired
-    private Environment environment;
+	private static final String URI = "http://username:password@config-server.mydomain.com";
 
-    @BeforeClass
-    public static void beforeClass() {
-        Mockito.when(MockCloudConnector.instance.isInMatchingCloud()).thenReturn(true);
-        Mockito.when(MockCloudConnector.instance.getServiceInfos()).thenReturn(Collections.singletonList(
-                (ServiceInfo) new ConfigServerServiceInfo("config-server", URI)));
-    }
+	@Autowired
+	private Environment environment;
 
-    @AfterClass
-    public static void afterClass() {
-        MockCloudConnector.reset();
-    }
+	@BeforeClass
+	public static void beforeClass() {
+		Mockito.when(MockCloudConnector.instance.isInMatchingCloud()).thenReturn(true);
+		Mockito.when(MockCloudConnector.instance.getServiceInfos()).thenReturn(Collections.singletonList(
+				(ServiceInfo) new ConfigServerServiceInfo("config-server", URI)));
+	}
 
-    @Test
-    public void propertySourceIsAdded() {
-        Assert.assertEquals(URI, environment.getProperty("spring.cloud.config.uri"));
-    }
+	@AfterClass
+	public static void afterClass() {
+		MockCloudConnector.reset();
+	}
 
-    public static class TestConfig {}
+	@Test
+	public void propertySourceIsAdded() {
+		Assert.assertEquals(URI, environment.getProperty("spring.cloud.config.uri"));
+	}
+
+	public static class TestConfig {
+	}
 
 }
