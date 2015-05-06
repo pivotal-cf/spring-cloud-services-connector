@@ -51,8 +51,14 @@ subprojects {
 	apply plugin: 'propdeps-idea'
 	apply plugin: 'propdeps-eclipse'
 
-	sourceCompatibility = 1.6
-	targetCompatibility = 1.6
+	compileJava {
+		sourceCompatibility=1.6
+		targetCompatibility=1.6
+	}
+	compileTestJava {
+		sourceCompatibility=1.8
+		targetCompatibility=1.8
+	}
 
 	group = "org.springframework.cloud"
 	version = "1.0.0.BUILD-SNAPSHOT"
