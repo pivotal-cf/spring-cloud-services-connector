@@ -11,12 +11,12 @@ import org.springframework.cloud.service.messaging.RabbitConnectionFactoryCreato
  *
  * @author Scott Frederick
  */
-public class HystrixAmqpConnectionCreator extends AbstractServiceConnectorCreator<HystrixAmqpConnection, HystrixAmqpServiceInfo> {
+public class HystrixAmqpConnectionCreator extends AbstractServiceConnectorCreator<HystrixAmqpConnectionFactory, HystrixAmqpServiceInfo> {
 	private RabbitConnectionFactoryCreator delegate = new RabbitConnectionFactoryCreator();
 
 	@Override
-	public HystrixAmqpConnection create(HystrixAmqpServiceInfo serviceInfo, ServiceConnectorConfig serviceConnectorConfig) {
+	public HystrixAmqpConnectionFactory create(HystrixAmqpServiceInfo serviceInfo, ServiceConnectorConfig serviceConnectorConfig) {
 		ConnectionFactory connectionFactory = delegate.create(serviceInfo.getAmqpInfo(), serviceConnectorConfig);
-		return new HystrixAmqpConnection(connectionFactory);
+		return new HystrixAmqpConnectionFactory(connectionFactory);
 	}
 }

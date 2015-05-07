@@ -22,7 +22,7 @@ public class HystrixAmqpConnectionCreatorTest {
 	public void cloudRabbitCreationNoConfig() throws Exception {
 		HystrixAmqpServiceInfo serviceInfo = createServiceInfo();
 
-		HystrixAmqpConnection connector = creator.create(serviceInfo, null);
+		HystrixAmqpConnectionFactory connector = creator.create(serviceInfo, null);
 
 		assertConnectorProperties(serviceInfo, connector.connectionFactory());
 	}

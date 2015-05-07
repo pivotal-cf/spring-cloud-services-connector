@@ -8,7 +8,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.cloud.CloudException;
 import org.springframework.cloud.config.java.AbstractCloudConfig;
 import org.springframework.cloud.pivotal.service.gemfire.GemfireServiceConnectorConfig;
-import org.springframework.cloud.pivotal.service.hystrix.HystrixAmqpConnection;
+import org.springframework.cloud.pivotal.service.hystrix.HystrixAmqpConnectionFactory;
 import org.springframework.cloud.service.messaging.RabbitConnectionFactoryConfig;
 
 public class CloudConnectorsConfig extends AbstractCloudConfig {
@@ -110,7 +110,7 @@ public class CloudConnectorsConfig extends AbstractCloudConfig {
 		 * @throws CloudException if there are either 0 or more than 1 Hystrix AMQP services.
 		 */
 		public ConnectionFactory hystrixConnectionFactory(RabbitConnectionFactoryConfig rabbitConnectionFactoryConfig) {
-			return cloud().getSingletonServiceConnector(HystrixAmqpConnection.class, rabbitConnectionFactoryConfig).connectionFactory();
+			return cloud().getSingletonServiceConnector(HystrixAmqpConnectionFactory.class, rabbitConnectionFactoryConfig).connectionFactory();
 		}
 
 		/**
@@ -134,7 +134,7 @@ public class CloudConnectorsConfig extends AbstractCloudConfig {
 		 */
 		public ConnectionFactory hystrixConnectionFactory(String serviceId,
 														  RabbitConnectionFactoryConfig rabbitConnectionFactoryConfig) {
-			return cloud().getServiceConnector(serviceId, HystrixAmqpConnection.class, rabbitConnectionFactoryConfig).connectionFactory();
+			return cloud().getServiceConnector(serviceId, HystrixAmqpConnectionFactory.class, rabbitConnectionFactoryConfig).connectionFactory();
 		}
 	}
 }
