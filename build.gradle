@@ -61,7 +61,6 @@ subprojects {
 	}
 
 	group = "org.springframework.cloud"
-	version = "1.0.0.BUILD-SNAPSHOT"
 
 	if (project.hasProperty('platformVersion')) {
 		apply plugin: 'spring-io'
