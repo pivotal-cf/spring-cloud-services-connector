@@ -30,7 +30,7 @@ buildscript {
 	ext {
 		jacksonVersion = "2.3.3"
 		springVersion = "3.1.4.RELEASE"
-		springCloudConnectorsVersion = "1.1.2.BUILD-SNAPSHOT"
+		springCloudConnectorsVersion = "1.2.0.RC1"
 		hadoopCommonVersion = "2.2.0"
 		springAmqpVersion = "1.1.1.RELEASE"
 		springCloudNetflixCoreVersion = "1.0.0.RELEASE"
@@ -77,7 +77,6 @@ subprojects {
 	}
 
 	repositories {
-		maven { url "https://repo.spring.io/libs-snapshot" }
 		maven { url "https://repo.spring.io/libs-milestone" }
 		mavenCentral()
 	}
