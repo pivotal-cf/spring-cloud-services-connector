@@ -60,8 +60,6 @@ subprojects {
 		targetCompatibility=1.8
 	}
 
-	group = "org.springframework.cloud"
-
 	if (project.hasProperty('platformVersion')) {
 		apply plugin: 'spring-io'
 

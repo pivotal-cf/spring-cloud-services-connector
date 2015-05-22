@@ -1,5 +1,5 @@
-org.springframework.cloud.pivotal.service.hadoop.HadoopConfigurationCreator
-org.springframework.cloud.pivotal.service.gemfire.GemfireXDDataSourceCreator
-org.springframework.cloud.pivotal.service.eureka.EurekaClientConfigurationCreator
-org.springframework.cloud.pivotal.service.hystrix.HystrixAmqpConnectionCreator
-org.springframework.cloud.pivotal.service.gemfire.GemfireClientCacheCreator
+io.pivotal.spring.cloud.service.hadoop.HadoopConfigurationCreator
+io.pivotal.spring.cloud.service.gemfire.GemfireXDDataSourceCreator
+io.pivotal.spring.cloud.service.eureka.EurekaClientConfigurationCreator
+io.pivotal.spring.cloud.service.hystrix.HystrixAmqpConnectionCreator
+io.pivotal.spring.cloud.service.gemfire.GemfireClientCacheCreator

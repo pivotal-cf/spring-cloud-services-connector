@@ -1,2 +1,2 @@
 org.springframework.context.ApplicationListener=\
-org.springframework.cloud.pivotal.service.config.ConfigServerServiceConnector
+io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector

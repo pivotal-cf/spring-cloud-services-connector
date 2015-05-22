@@ -1,5 +1,5 @@
-org.springframework.cloud.pivotal.cloudfoundry.PhdServiceInfoCreator
-org.springframework.cloud.pivotal.cloudfoundry.EurekaServiceInfoCreator
-org.springframework.cloud.pivotal.cloudfoundry.HystrixAmqpServiceInfoCreator
-org.springframework.cloud.pivotal.cloudfoundry.ConfigServerServiceInfoCreator
-org.springframework.cloud.pivotal.cloudfoundry.GemfireServiceInfoCreator
+io.pivotal.spring.cloud.cloudfoundry.PhdServiceInfoCreator
+io.pivotal.spring.cloud.cloudfoundry.EurekaServiceInfoCreator
+io.pivotal.spring.cloud.cloudfoundry.HystrixAmqpServiceInfoCreator
+io.pivotal.spring.cloud.cloudfoundry.ConfigServerServiceInfoCreator
+io.pivotal.spring.cloud.cloudfoundry.GemfireServiceInfoCreator
