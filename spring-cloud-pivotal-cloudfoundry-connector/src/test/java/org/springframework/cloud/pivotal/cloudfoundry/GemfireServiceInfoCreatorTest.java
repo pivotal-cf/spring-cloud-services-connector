@@ -5,19 +5,20 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.cloud.cloudfoundry.AbstractCloudFoundryConnectorTest;
 import org.springframework.cloud.pivotal.service.common.GemfireServiceInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class GemfireServiceInfoCreatorTest {
+public class GemfireServiceInfoCreatorTest extends AbstractCloudFoundryConnectorTest {
 
 	private ObjectMapper mapper = new ObjectMapper();
 
 	@Test
 	public void testInfoCreator() throws Exception {
 		GemfireServiceInfoCreator creator = new GemfireServiceInfoCreator();
-		Map services = mapper.readValue(GemfireServiceInfoCreatorTest.class.getClassLoader().getSystemResourceAsStream("org/springframework/cloud/pivotal/cloudfoundry/test-gemfire-service.json"), Map.class);
-		Map<String, Object> serviceData = (Map<String, Object>) ((List) services.get("p-gemfire")).get(0);
+		Map services = readServiceData("test-gemfire-service.json");
+		Map<String, Object> serviceData = getServiceData(services, "p-gemfire");
 
 		GemfireServiceInfo info = creator.createServiceInfo(serviceData);
 		Assert.assertNotNull(info);
@@ -26,28 +27,37 @@ public class GemfireServiceInfoCreatorTest {
 	@Test
 	public void testAcceptService() throws Exception {
 		GemfireServiceInfoCreator creator = new GemfireServiceInfoCreator();
-		Map services = mapper.readValue(GemfireServiceInfoCreatorTest.class.getClassLoader().getSystemResourceAsStream("org/springframework/cloud/pivotal/cloudfoundry/test-gemfire-service.json"), Map.class);
-		Map<String, Object> serviceData = (Map<String, Object>) ((List) services.get("p-gemfire")).get(0);
+		Map services = readServiceData("test-gemfire-service.json");
+		Map<String, Object> serviceData = getServiceData(services, "p-gemfire");
 		boolean accepts = creator.accept(serviceData);
 		Assert.assertEquals(true, accepts);
 	}
-	
+
 	@Test
 	public void testInfoCreatorCups() throws Exception {
 		GemfireServiceInfoCreator creator = new GemfireServiceInfoCreator();
-		Map services = mapper.readValue(GemfireServiceInfoCreatorTest.class.getClassLoader().getSystemResourceAsStream("org/springframework/cloud/pivotal/cloudfoundry/test-gemfire-userprovided.json"), Map.class);
-		Map<String, Object> serviceData = (Map<String, Object>) ((List) services.get("user-provided")).get(0);
+		Map services = readServiceData("test-gemfire-userprovided.json");
+		Map<String, Object> serviceData = getServiceData(services, "user-provided");
 
 		GemfireServiceInfo info = creator.createServiceInfo(serviceData);
 		Assert.assertNotNull(info);
 	}
+
 	@Test
 	public void testAcceptCups() throws Exception {
 		GemfireServiceInfoCreator creator = new GemfireServiceInfoCreator();
-		Map services = mapper.readValue(GemfireServiceInfoCreatorTest.class.getClassLoader().getSystemResourceAsStream("org/springframework/cloud/pivotal/cloudfoundry/test-gemfire-userprovided.json"), Map.class);
-		Map<String, Object> serviceData = (Map<String, Object>) ((List) services.get("user-provided")).get(0);
+		Map services = readServiceData("test-gemfire-userprovided.json");
+		Map<String, Object> serviceData = getServiceData(services, "user-provided");
 		boolean accepts = creator.accept(serviceData);
 		Assert.assertEquals(true, accepts);
 	}
-	
+
+	private Map readServiceData(String resource) throws java.io.IOException {
+		return mapper.readValue(readTestDataFile(resource), Map.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> getServiceData(Map services, String name) {
+		return (Map<String, Object>) ((List) services.get(name)).get(0);
+	}
 }
