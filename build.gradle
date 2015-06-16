@@ -36,7 +36,7 @@ buildscript {
 		eurekaClientVersion = "1.1.135"
 		junitVersion = "4.11"
 		mockitoVersion = "1.9.5"
-		springBootVersion = "1.2.3.RELEASE"
+		springBootVersion = "1.2.4.RELEASE"
 	}
 }
 
