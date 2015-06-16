@@ -1,1 +1,1 @@
-include "spring-cloud-pivotal-cloudfoundry-connector", "spring-cloud-pivotal-spring-connector", "spring-cloud-pivotal-core"
+include "spring-cloud-services-cloudfoundry-connector", "spring-cloud-services-spring-connector", "spring-cloud-services-connector-core"

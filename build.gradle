@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-description = 'Pivotal Spring-Cloud Support'
+description = 'Spring Cloud Connectors for Spring Cloud Services on Cloud Foundry'
 
 buildscript {
 	repositories {
@@ -31,7 +31,6 @@ buildscript {
 		jacksonVersion = "2.3.3"
 		springVersion = "3.1.4.RELEASE"
 		springCloudConnectorsVersion = "1.2.0.RC1"
-		hadoopCommonVersion = "2.2.0"
 		springAmqpVersion = "1.1.1.RELEASE"
 		springCloudNetflixCoreVersion = "1.0.0.RELEASE"
 		eurekaClientVersion = "1.1.135"
@@ -145,8 +144,8 @@ subprojects {
 	}
 }
 
-project(':spring-cloud-pivotal-core') {
-	archivesBaseName = "spring-cloud-pivotal-core"
+project(':spring-cloud-services-connector-core') {
+	archivesBaseName = "spring-cloud-services-connector-core"
 
 	dependencies {
 		compile("org.springframework.cloud:spring-cloud-core:$springCloudConnectorsVersion")
@@ -156,11 +155,11 @@ project(':spring-cloud-pivotal-core') {
 	}
 }
 
-project(':spring-cloud-pivotal-cloudfoundry-connector') {
-	archivesBaseName = "spring-cloud-pivotal-cloudfoundry-connector"
+project(':spring-cloud-services-cloudfoundry-connector') {
+	archivesBaseName = "spring-cloud-services-cloudfoundry-connector"
 
 	dependencies {
-		compile project(':spring-cloud-pivotal-core')
+		compile project(':spring-cloud-services-connector-core')
 
 		compile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:$springCloudConnectorsVersion")
 
@@ -173,16 +172,13 @@ project(':spring-cloud-pivotal-cloudfoundry-connector') {
 	}
 }
 
-project(':spring-cloud-pivotal-spring-connector') {
-	archivesBaseName = "spring-cloud-pivotal-spring-connector"
+project(':spring-cloud-services-spring-connector') {
+	archivesBaseName = "spring-cloud-services-spring-connector"
 
 	dependencies {
-		compile project(':spring-cloud-pivotal-core')
+		compile project(':spring-cloud-services-connector-core')
 
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector:$springCloudConnectorsVersion")
-
-		// for Spring XD
-		optional("org.apache.hadoop:hadoop-common:$hadoopCommonVersion")
 
 		// for Eureka
 		optional("org.springframework.cloud:spring-cloud-netflix-core:$springCloudNetflixCoreVersion")
@@ -190,9 +186,6 @@ project(':spring-cloud-pivotal-spring-connector') {
 
 		// for Hystrix AMQP
 		optional("org.springframework.amqp:spring-rabbit:$springAmqpVersion")
-
-		// for GemFire
-		optional("org.springframework.data:spring-data-gemfire:1.6.0.M1")
 
 		testCompile("org.springframework.boot:spring-boot:$springBootVersion")
 		testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
@@ -208,4 +201,3 @@ project(':spring-cloud-pivotal-spring-connector') {
 task wrapper(type: Wrapper) {
 	gradleVersion = '2.4'
 }
-

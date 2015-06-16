@@ -1,0 +1,3 @@
+io.pivotal.spring.cloud.cloudfoundry.EurekaServiceInfoCreator
+io.pivotal.spring.cloud.cloudfoundry.HystrixAmqpServiceInfoCreator
+io.pivotal.spring.cloud.cloudfoundry.ConfigServerServiceInfoCreator
