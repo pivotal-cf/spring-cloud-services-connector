@@ -1,1 +1,3 @@
-include "spring-cloud-services-cloudfoundry-connector", "spring-cloud-services-spring-connector", "spring-cloud-services-connector-core"
+include "spring-cloud-services-cloudfoundry-connector"
+include "spring-cloud-services-spring-connector"
+include "spring-cloud-services-connector-core"

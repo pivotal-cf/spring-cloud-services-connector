@@ -29,7 +29,6 @@ buildscript {
 
 	ext {
 		jacksonVersion = "2.3.3"
-		springVersion = "3.1.4.RELEASE"
 		springCloudConnectorsVersion = "1.2.0.RC1"
 		springAmqpVersion = "1.1.1.RELEASE"
 		springCloudNetflixCoreVersion = "1.0.0.RELEASE"
