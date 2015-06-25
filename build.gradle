@@ -161,9 +161,7 @@ project(':spring-cloud-services-cloudfoundry-connector') {
 	dependencies {
 		compile project(':spring-cloud-services-connector-core')
 		compile("org.springframework.cloud:spring-cloud-cloudfoundry-connector")
-		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-cloudfoundry-connector", classifier: "tests")
-		testCompile("com.fasterxml.jackson.core:jackson-core")
 		testCompile("com.fasterxml.jackson.core:jackson-databind")
 	}
 }
@@ -177,7 +175,6 @@ project(':spring-cloud-services-spring-connector') {
 		optional("org.springframework.cloud:spring-cloud-netflix-core")
 		optional("com.netflix.eureka:eureka-client")
 		optional("org.springframework.amqp:spring-rabbit")
-		testCompile("org.springframework.boot:spring-boot")
 		testCompile("org.springframework.boot:spring-boot-starter-test")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-core", classifier: "tests")
 		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector")
