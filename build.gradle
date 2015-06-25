@@ -18,14 +18,14 @@ description = 'Spring Cloud Connectors for Spring Cloud Services on Cloud Foundr
 
 buildscript {
 	repositories {
-		maven { url 'https://repo.spring.io/plugins-release' }
+		maven { url "https://repo.spring.io/plugins-release" }
 		mavenCentral()
 	}
 
 	dependencies {
-		classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
-		classpath('io.spring.gradle:dependency-management-plugin:0.5.1.RELEASE')
-		classpath 'org.springframework.build.gradle:spring-io-plugin:0.0.3.RELEASE'
+		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
+		classpath("io.spring.gradle:dependency-management-plugin:0.5.1.RELEASE")
+		classpath("org.springframework.build.gradle:spring-io-plugin:0.0.3.RELEASE")
 	}
 
 	ext["spring-cloud-connectors.version"] = "1.2.0.RC1"
@@ -33,14 +33,14 @@ buildscript {
 
 subprojects {
 	apply plugin: 'java'
-	apply from: "${rootProject.projectDir}/publish-maven.gradle"
 	apply plugin: 'eclipse'
-
+	apply plugin: 'idea'
 	apply plugin: 'propdeps'
 	apply plugin: 'propdeps-maven'
-	apply plugin: 'propdeps-idea'
 	apply plugin: 'propdeps-eclipse'
+	apply plugin: 'propdeps-idea'
 	apply plugin: 'io.spring.dependency-management'
+	apply from: "${rootProject.projectDir}/publish-maven.gradle"
 
 	compileJava {
 		sourceCompatibility=1.7
@@ -147,7 +147,7 @@ subprojects {
 	}
 }
 
-project(':spring-cloud-services-connector-core') {
+project(":spring-cloud-services-connector-core") {
 	archivesBaseName = "spring-cloud-services-connector-core"
 
 	dependencies {
@@ -155,22 +155,22 @@ project(':spring-cloud-services-connector-core') {
 	}
 }
 
-project(':spring-cloud-services-cloudfoundry-connector') {
+project(":spring-cloud-services-cloudfoundry-connector") {
 	archivesBaseName = "spring-cloud-services-cloudfoundry-connector"
 
 	dependencies {
-		compile project(':spring-cloud-services-connector-core')
+		compile(project(":spring-cloud-services-connector-core"))
 		compile("org.springframework.cloud:spring-cloud-cloudfoundry-connector")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-cloudfoundry-connector", classifier: "tests")
 		testCompile("com.fasterxml.jackson.core:jackson-databind")
 	}
 }
 
-project(':spring-cloud-services-spring-connector') {
+project(":spring-cloud-services-spring-connector") {
 	archivesBaseName = "spring-cloud-services-spring-connector"
 
 	dependencies {
-		compile project(':spring-cloud-services-connector-core')
+		compile(project(":spring-cloud-services-connector-core"))
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector")
 		optional("org.springframework.cloud:spring-cloud-netflix-core")
 		optional("com.netflix.eureka:eureka-client")
