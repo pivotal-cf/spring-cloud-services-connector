@@ -28,7 +28,7 @@ buildscript {
 		classpath("io.spring.gradle:spring-io-plugin:0.0.4.RELEASE")
 	}
 
-	ext["spring-cloud-connectors.version"] = "1.2.0.RC1"
+	ext["spring-cloud-connectors.version"] = "1.2.0.RELEASE"
 }
 
 subprojects {
@@ -80,7 +80,7 @@ subprojects {
 	}
 
 	repositories {
-		maven { url "https://repo.spring.io/libs-milestone" }
+		maven { url "https://repo.spring.io/libs-release" }
 		mavenCentral()
 	}
 
