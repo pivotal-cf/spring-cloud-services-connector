@@ -2,6 +2,7 @@ package io.pivotal.spring.cloud.cloudfoundry;
 
 import org.springframework.cloud.cloudfoundry.CloudFoundryServiceInfoCreator;
 import org.springframework.cloud.cloudfoundry.Tags;
+
 import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
 
 import java.util.Map;
@@ -22,8 +23,13 @@ public class EurekaServiceInfoCreator extends CloudFoundryServiceInfoCreator<Eur
 	@Override
 	public EurekaServiceInfo createServiceInfo(Map<String, Object> serviceData) {
 		String id = (String) serviceData.get(CREDENTIALS_ID_KEY);
-		String uri = getUriFromCredentials(getCredentials(serviceData));
-
-		return new EurekaServiceInfo(id, uri);
+		Map<String, Object> credentials = getCredentials(serviceData);
+		String uri = getUriFromCredentials(credentials);
+		
+		String clientId = getStringFromCredentials(credentials, "client_id");
+		String clientSecret = getStringFromCredentials(credentials, "client_secret");
+		String accessTokenUri = getStringFromCredentials(credentials, "access_token_uri");
+		
+		return new EurekaServiceInfo(id, uri, clientId, clientSecret, accessTokenUri);
 	}
 }

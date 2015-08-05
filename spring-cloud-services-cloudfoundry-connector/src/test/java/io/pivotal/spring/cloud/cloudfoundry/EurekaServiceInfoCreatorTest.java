@@ -1,8 +1,10 @@
 package io.pivotal.spring.cloud.cloudfoundry;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.cloud.cloudfoundry.AbstractCloudFoundryConnectorTest;
 import org.springframework.cloud.service.ServiceInfo;
+
 import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
 
 import java.util.List;
@@ -31,6 +33,16 @@ public class EurekaServiceInfoCreatorTest extends AbstractCloudFoundryConnectorT
 
 		List<ServiceInfo> serviceInfos = testCloudConnector.getServiceInfos();
 		assertServiceFoundOfType(serviceInfos, EUREKA_SERVICE_TAG_NAME, EurekaServiceInfo.class);
+		for (ServiceInfo serviceInfo : serviceInfos) {
+			if (serviceInfo instanceof EurekaServiceInfo) {
+				EurekaServiceInfo eurekaServiceInfo = (EurekaServiceInfo) serviceInfo;
+				Assert.assertEquals("theClientId", eurekaServiceInfo.getClientId());
+				Assert.assertEquals("theClientSecret", eurekaServiceInfo.getClientSecret());
+				Assert.assertEquals("https://p-spring-cloud-services.uaa.my-cf.com/oauth/token", eurekaServiceInfo.getAccessTokenUri());
+				return;
+			}
+		}
+		Assert.fail("A EurekaServiceInfo should exist");
 	}
 
 	private String getEurekaServicePayload(String serviceName, String hostname, int port, String user, String password) {

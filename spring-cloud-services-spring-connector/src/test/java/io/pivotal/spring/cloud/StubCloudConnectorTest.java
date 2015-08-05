@@ -29,7 +29,7 @@ abstract public class StubCloudConnectorTest {
 	}
 
 	protected EurekaServiceInfo createEurekaService(String id) {
-		return new EurekaServiceInfo(id, "http://username:password@10.20.30.40:1234");
+		return new EurekaServiceInfo(id, "http://username:password@10.20.30.40:1234", null, null, null);
 	}
 
 	protected HystrixAmqpServiceInfo createHystrixAmqpService(String id) {
