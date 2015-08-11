@@ -25,7 +25,7 @@ public class EurekaClientConfigurationCreatorTest {
 
 	@Test
 	public void testClientConfiguration() {
-		EurekaServiceInfo eurekaServiceInfo = new EurekaServiceInfo(SERVICE_INFO_ID, URI);
+		EurekaServiceInfo eurekaServiceInfo = new EurekaServiceInfo(SERVICE_INFO_ID, URI, null, null, null);
 
 		EurekaClientConfig eurekaClientConfig = eurekaClientConfigurationCreator.create(eurekaServiceInfo, null);
 		List<String> serviceUrls = eurekaClientConfig.getEurekaServerServiceUrls(null);
