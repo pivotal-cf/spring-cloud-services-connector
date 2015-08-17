@@ -11,7 +11,8 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.MapPropertySource;
 import io.pivotal.spring.cloud.service.common.ConfigServerServiceInfo;
 
-import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Connector to Config Server service
@@ -21,7 +22,14 @@ import java.util.Collections;
 @Configuration
 public class ConfigServerServiceConnector implements ApplicationListener<ApplicationEnvironmentPreparedEvent>, Ordered {
 	private static final String PROPERTY_SOURCE_NAME = "vcapConfigServerUri";
+
 	private static final String SPRING_CLOUD_CONFIG_URI = "spring.cloud.config.uri";
+
+	private static final String SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_ID = "spring.cloud.config.client.oauth2.clientId";
+
+	private static final String SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_SECRET = "spring.cloud.config.client.oauth2.clientSecret";
+
+	private static final String SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI = "spring.cloud.config.client.oauth2.accessTokenUri";
 
 	private Cloud cloud;
 
@@ -40,10 +48,13 @@ public class ConfigServerServiceConnector implements ApplicationListener<Applica
 
 		for (ServiceInfo serviceInfo : cloud.getServiceInfos()) {
 			if (serviceInfo instanceof ConfigServerServiceInfo) {
-				String uri = ((ConfigServerServiceInfo) serviceInfo).getUri();
-
-				MapPropertySource mapPropertySource = new MapPropertySource(PROPERTY_SOURCE_NAME,
-						Collections.<String, Object>singletonMap(SPRING_CLOUD_CONFIG_URI, uri));
+				final ConfigServerServiceInfo configServerServiceInfo = (ConfigServerServiceInfo) serviceInfo;
+				Map<String, Object> properties = new LinkedHashMap<>();
+				properties.put(SPRING_CLOUD_CONFIG_URI, configServerServiceInfo.getUri());
+				properties.put(SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_ID, configServerServiceInfo.getClientId());
+				properties.put(SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_SECRET, configServerServiceInfo.getClientSecret());
+				properties.put(SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI, configServerServiceInfo.getAccessTokenUri());
+				MapPropertySource mapPropertySource = new MapPropertySource(PROPERTY_SOURCE_NAME, properties);
 
 				event.getEnvironment().getPropertySources().addFirst(mapPropertySource);
 			}

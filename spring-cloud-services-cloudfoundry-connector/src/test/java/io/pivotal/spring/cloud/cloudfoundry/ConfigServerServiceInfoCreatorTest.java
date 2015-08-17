@@ -1,5 +1,6 @@
 package io.pivotal.spring.cloud.cloudfoundry;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.cloud.cloudfoundry.AbstractCloudFoundryConnectorTest;
 import org.springframework.cloud.service.ServiceInfo;
@@ -32,6 +33,14 @@ public class ConfigServerServiceInfoCreatorTest extends AbstractCloudFoundryConn
 
 		List<ServiceInfo> serviceInfos = testCloudConnector.getServiceInfos();
 		assertServiceFoundOfType(serviceInfos, CONFIG_SERVER_SERVICE_TAG_NAME, ConfigServerServiceInfo.class);
+		ConfigServerServiceInfo configServiceInfo = (ConfigServerServiceInfo) serviceInfos.stream()
+				.filter(serviceInfo -> serviceInfo instanceof ConfigServerServiceInfo)
+				.findFirst()
+				.orElseThrow(() -> new AssertionError("A ConfigServiceInfo should exist"));
+		Assert.assertEquals("config_client_id", configServiceInfo.getClientId());
+		Assert.assertEquals("its_a_secret_dont_tell", configServiceInfo.getClientSecret());
+		Assert.assertEquals("https://p-spring-cloud-services.uaa.my-cf.com/oauth/token", configServiceInfo.getAccessTokenUri());
+
 	}
 
 	private String getConfigServerServicePayload(String serviceName, String hostname, int port, String user, String password) {

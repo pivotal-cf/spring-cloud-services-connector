@@ -24,6 +24,11 @@ public class ConfigServerServiceInfoCreator extends CloudFoundryServiceInfoCreat
 		String id = (String) serviceData.get(CREDENTIALS_ID_KEY);
 		String uri = getUriFromCredentials(getCredentials(serviceData));
 
-		return new ConfigServerServiceInfo(id, uri);
+		Map<String, Object> credentials = getCredentials(serviceData);
+		String clientId = getStringFromCredentials(credentials, "client_id");
+		String clientSecret = getStringFromCredentials(credentials, "client_secret");
+		String accessTokenUri = getStringFromCredentials(credentials, "access_token_uri");
+
+		return new ConfigServerServiceInfo(id, uri, clientId, clientSecret, accessTokenUri);
 	}
 }
