@@ -14,6 +14,11 @@ import org.springframework.security.oauth2.client.OAuth2RequestAuthenticator;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 
+/**
+ * 
+ * @author Will Tran
+ *
+ */
 public class EurekaOAuth2RequestDecorator implements DiscoveryRequestDecorator {
 
 	private final OAuth2RestTemplate oauth2RestTemplate;

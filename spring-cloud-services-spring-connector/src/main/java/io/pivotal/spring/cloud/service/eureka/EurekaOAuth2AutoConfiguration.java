@@ -12,6 +12,11 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 
 import com.netflix.discovery.EurekaClientConfig;
 
+/**
+ * 
+ * @author Will Tran
+ *
+ */
 @Configuration
 @EnableConfigurationProperties
 @ConditionalOnClass({EurekaClientConfig.class, OAuth2RestTemplate.class})

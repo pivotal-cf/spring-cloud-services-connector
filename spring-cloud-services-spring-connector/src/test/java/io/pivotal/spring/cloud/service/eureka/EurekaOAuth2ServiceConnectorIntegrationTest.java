@@ -18,6 +18,11 @@ import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * 
+ * @author Will Tran
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EurekaOAuth2ServiceConnectorIntegrationTest.TestConfig.class)
 @IntegrationTest()

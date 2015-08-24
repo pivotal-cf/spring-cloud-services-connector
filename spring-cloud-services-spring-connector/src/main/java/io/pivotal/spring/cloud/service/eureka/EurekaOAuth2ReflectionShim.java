@@ -21,6 +21,11 @@ import com.netflix.discovery.DiscoveryManager;
 import com.netflix.discovery.EurekaClientConfig;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
 
+/**
+ * 
+ * @author Will Tran
+ *
+ */
 @Configuration
 @ConditionalOnClass({EurekaClientConfig.class, OAuth2RestTemplate.class})
 @ConditionalOnProperty(value = "eureka.client.oauth2.clientId")

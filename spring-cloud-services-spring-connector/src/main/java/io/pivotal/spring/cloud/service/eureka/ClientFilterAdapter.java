@@ -10,6 +10,11 @@ import com.sun.jersey.api.client.ClientRequest;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.filter.ClientFilter;
 
+/**
+ * 
+ * @author Will Tran
+ *
+ */
 @RequiredArgsConstructor
 public class ClientFilterAdapter extends ClientFilter {
 	private final DiscoveryRequestDecorator decorator;
