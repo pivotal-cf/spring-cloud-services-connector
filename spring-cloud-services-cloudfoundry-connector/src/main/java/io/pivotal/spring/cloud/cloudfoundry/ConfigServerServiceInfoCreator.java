@@ -10,6 +10,7 @@ import java.util.Map;
  * Service info creator for Config Server services
  *
  * @author Chris Schaefer
+ * @author Will Tran
  */
 public class ConfigServerServiceInfoCreator extends CloudFoundryServiceInfoCreator<ConfigServerServiceInfo> {
 	private static final String CREDENTIALS_ID_KEY = "name";
