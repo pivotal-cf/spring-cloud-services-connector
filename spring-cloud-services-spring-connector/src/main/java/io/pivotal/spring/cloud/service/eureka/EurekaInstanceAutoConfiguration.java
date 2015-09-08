@@ -39,6 +39,12 @@ public class EurekaInstanceAutoConfiguration {
 	@Value("${cf.instance.port:80}")
 	private int directPort;
 
+	@Value("${spring.application.name:unknown}")
+	private String appname = "unknown";
+
+	@Value("${spring.application.name:unknown}")
+	private String virtualHostName;
+
 	private String registrationMethod;
 
 	@Bean
@@ -99,6 +105,8 @@ public class EurekaInstanceAutoConfiguration {
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = new EurekaInstanceConfigBean();
 		eurekaInstanceConfigBean.setHostname(hostname);
 		eurekaInstanceConfigBean.setNonSecurePort(port);
+		eurekaInstanceConfigBean.setAppname(appname);
+		eurekaInstanceConfigBean.setVirtualHostName(virtualHostName);
 
 		return eurekaInstanceConfigBean;
 	}
