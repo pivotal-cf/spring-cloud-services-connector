@@ -1,6 +1,7 @@
 package io.pivotal.spring.cloud.service.eureka;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
  */
 @Configuration
 @ConfigurationProperties("spring.cloud.services")
+@ConditionalOnClass(EurekaInstanceConfigBean.class)
 public class EurekaInstanceAutoConfiguration {
 	private static Logger LOGGER = Logger.getLogger(EurekaInstanceAutoConfiguration.class.getName());
 
@@ -28,13 +30,13 @@ public class EurekaInstanceAutoConfiguration {
 	private static final String DIRECT_REGISTRATION_METHOD = "direct";
 	private static final String CUSTOM_REGISTRATION_METHOD = "custom";
 
-	@Value("${vcap.application.uris[0]}")
+	@Value("${vcap.application.uris[0]:localhost}")
 	private String routeHostName;
 
-	@Value("${cf.instance.ip}")
+	@Value("${cf.instance.ip:localhost}")
 	private String directHostName;
 
-	@Value("${cf.instance.port}")
+	@Value("${cf.instance.port:80}")
 	private int directPort;
 
 	private String registrationMethod;
