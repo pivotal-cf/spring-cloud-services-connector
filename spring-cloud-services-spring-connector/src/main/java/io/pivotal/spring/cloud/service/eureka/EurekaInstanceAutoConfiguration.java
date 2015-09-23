@@ -13,9 +13,9 @@ import java.util.logging.Logger;
 /**
  * Configuration class to configure a Eureka instance's settings based
  * on route, direct or custom registration methods. Route and direct
- * use predefined CloudFoundry variables for configuration, custom allows
- * the use of any eureka.instance.* properties. If no configuration is
- * present, the default behavior is route.
+ * use predefined CloudFoundry variables for configuration. The properties
+ * eureka.instance.* can still be used regardless of registration method.
+ * If no configuration is present, the default behavior is route.
  *
  * @author Chris Schaefer
  */
@@ -28,7 +28,6 @@ public class EurekaInstanceAutoConfiguration {
 	private static final int ROUTE_NON_SECURE_PORT = 80;
 	private static final String ROUTE_REGISTRATION_METHOD = "route";
 	private static final String DIRECT_REGISTRATION_METHOD = "direct";
-	private static final String CUSTOM_REGISTRATION_METHOD = "custom";
 
 	@Value("${vcap.application.uris[0]:localhost}")
 	private String routeHostName;
@@ -59,10 +58,6 @@ public class EurekaInstanceAutoConfiguration {
 			if(DIRECT_REGISTRATION_METHOD.equals(registrationMethod)) {
 				return getDirectRegistration();
 			}
-
-			if(CUSTOM_REGISTRATION_METHOD.equals(registrationMethod)) {
-				return getCustomRegistration();
-			}
 		}
 
 		return getDefaultRegistration();
@@ -90,10 +85,6 @@ public class EurekaInstanceAutoConfiguration {
 
 	private EurekaInstanceConfigBean getDirectRegistration() {
 		return getEurekaInstanceConfigBean(directHostName, directPort);
-	}
-
-	private EurekaInstanceConfigBean getCustomRegistration() {
-		return new EurekaInstanceConfigBean();
 	}
 
 	private EurekaInstanceConfigBean getDefaultRegistration() {
