@@ -60,11 +60,11 @@ public class EurekaOAuth2ReflectionShim {
 					super.init();
 					DiscoveryClient discoveryClient = DiscoveryManager.getInstance().getDiscoveryClient();
 					ApacheHttpClient4 discoveryApacheClient = getDiscoveryApacheClient(discoveryClient);
-		            for (DiscoveryRequestDecorator requestDecorator : requestDecorators) {
-		            	discoveryApacheClient.addFilter(new ClientFilterAdapter(requestDecorator));
-					} 
-		            if (shouldFetchRegistry || shouldRegisterWithEureka) {
-		            	clientConfig.setFetchRegistry(shouldFetchRegistry);
+					for (DiscoveryRequestDecorator requestDecorator : requestDecorators) {
+						discoveryApacheClient.addFilter(new ClientFilterAdapter(requestDecorator));
+					}
+					if (shouldFetchRegistry || shouldRegisterWithEureka) {
+						clientConfig.setFetchRegistry(shouldFetchRegistry);
 						clientConfig.setRegisterWithEureka(shouldRegisterWithEureka);
 						// replay https://github.com/Netflix/eureka/blob/v1.1.147/eureka-client/src/main/java/com/netflix/discovery/DiscoveryClient.java#L320-L323
 						// this was initially skipped because we set flags to false
@@ -72,9 +72,9 @@ public class EurekaOAuth2ReflectionShim {
 							fetchRegistryFromBackup(discoveryClient);
 						}
 						initScheduledTasks(discoveryClient);
-		            }
+					}
 				}
-				
+
 			}
 
 			private ApacheHttpClient4 getDiscoveryApacheClient(DiscoveryClient discoveryClient) {
@@ -83,19 +83,19 @@ public class EurekaOAuth2ReflectionShim {
 				ApacheHttpClient4 discoveryApacheClient = (ApacheHttpClient4) ReflectionUtils.getField(field, discoveryClient);
 				return discoveryApacheClient;
 			}
-			
+
 			private boolean fetchRegistry(DiscoveryClient discoveryClient, boolean forceFullRegistryFetch) {
 				Method fetchRegistry = ReflectionUtils.findMethod(DiscoveryClient.class, FETCH_REGISTRY, boolean.class);
 				ReflectionUtils.makeAccessible(fetchRegistry);
 				return (boolean) ReflectionUtils.invokeMethod(fetchRegistry, discoveryClient, forceFullRegistryFetch);
 			}
-			
+
 			private void fetchRegistryFromBackup(DiscoveryClient discoveryClient) {
 				Method fetchRegistryFromBackup = ReflectionUtils.findMethod(DiscoveryClient.class, FETCH_REGISTRY_FROM_BACKUP);
 				ReflectionUtils.makeAccessible(fetchRegistryFromBackup);
 				ReflectionUtils.invokeMethod(fetchRegistryFromBackup, discoveryClient);
 			}
-			
+
 			private void initScheduledTasks(DiscoveryClient discoveryClient) {
 				Method initScheduledTasks = ReflectionUtils.findMethod(DiscoveryClient.class, INIT_SCHEDULED_TASKS);
 				ReflectionUtils.makeAccessible(initScheduledTasks);
