@@ -1,10 +1,10 @@
 package io.pivotal.spring.cloud.config.java;
 
-import com.netflix.discovery.EurekaClientConfig;
+import org.springframework.cloud.netflix.eureka.EurekaClientConfigBean;
 import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.context.annotation.Bean;
 
-public class EurekaClientConfigJavaConfigTest extends AbstractServiceJavaConfigTest<EurekaClientConfig> {
+public class EurekaClientConfigJavaConfigTest extends AbstractServiceJavaConfigTest<EurekaClientConfigBean> {
 	public EurekaClientConfigJavaConfigTest() {
 		super(EurekaClientConfigWithId.class, EurekaClientConfigWithoutId.class);
 	}
@@ -13,21 +13,21 @@ public class EurekaClientConfigJavaConfigTest extends AbstractServiceJavaConfigT
 		return createEurekaService(id);
 	}
 
-	protected Class<EurekaClientConfig> getConnectorType() {
-		return EurekaClientConfig.class;
+	protected Class<EurekaClientConfigBean> getConnectorType() {
+		return EurekaClientConfigBean.class;
 	}
 }
 
 class EurekaClientConfigWithId extends CloudConnectorsConfig {
 	@Bean(name="my-service")
-	public EurekaClientConfig testEurekaClientConfig() {
+	public EurekaClientConfigBean testEurekaClientConfig() {
 		return connectionFactory().eurekaClientConfig("my-service");
 	}
 }
 
 class EurekaClientConfigWithoutId extends CloudConnectorsConfig {
 	@Bean(name="my-service")
-	public EurekaClientConfig testEurekaClientConfig() {
+	public EurekaClientConfigBean testEurekaClientConfig() {
 		return connectionFactory().eurekaClientConfig();
 	}
 }

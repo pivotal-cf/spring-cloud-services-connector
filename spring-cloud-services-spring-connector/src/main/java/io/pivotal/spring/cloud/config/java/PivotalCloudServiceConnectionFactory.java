@@ -1,12 +1,12 @@
 package io.pivotal.spring.cloud.config.java;
 
-import com.netflix.discovery.EurekaClientConfig;
 import io.pivotal.spring.cloud.service.hystrix.HystrixAmqpConnectionFactory;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.cloud.Cloud;
 import org.springframework.cloud.CloudException;
 import org.springframework.cloud.config.java.CloudServiceConnectionFactory;
+import org.springframework.cloud.netflix.eureka.EurekaClientConfigBean;
 import org.springframework.cloud.service.messaging.RabbitConnectionFactoryConfig;
 
 public class PivotalCloudServiceConnectionFactory extends CloudServiceConnectionFactory implements PivotalServiceConnectionFactory {
@@ -18,26 +18,26 @@ public class PivotalCloudServiceConnectionFactory extends CloudServiceConnection
 	}
 
 	/**
-	 * Get the {@link EurekaClientConfig} object associated with the only Eureka service bound to the app.
+	 * Get the {@link EurekaClientConfigBean} object associated with the only Eureka service bound to the app.
 	 *
 	 * @return Eureka client config
 	 * @throws CloudException if there are either 0 or more than 1 Eureka services.
 	 */
 	@Override
-	public EurekaClientConfig eurekaClientConfig() {
-		return cloudConnectorsConfig.cloud().getSingletonServiceConnector(EurekaClientConfig.class, null);
+	public EurekaClientConfigBean eurekaClientConfig() {
+		return cloudConnectorsConfig.cloud().getSingletonServiceConnector(EurekaClientConfigBean.class, null);
 	}
 
 	/**
-	 * Get the {@link EurekaClientConfig} object for the specified Eureka service.
+	 * Get the {@link EurekaClientConfigBean} object for the specified Eureka service.
 	 *
 	 * @param serviceId the name of the service
 	 * @return Eureka client config
 	 * @throws CloudException if the specified service doesn't exist
 	 */
 	@Override
-	public EurekaClientConfig eurekaClientConfig(String serviceId) {
-		return cloudConnectorsConfig.cloud().getServiceConnector(serviceId, EurekaClientConfig.class, null);
+	public EurekaClientConfigBean eurekaClientConfig(String serviceId) {
+		return cloudConnectorsConfig.cloud().getServiceConnector(serviceId, EurekaClientConfigBean.class, null);
 	}
 
 	/**
