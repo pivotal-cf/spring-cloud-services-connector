@@ -1,14 +1,15 @@
 package io.pivotal.spring.cloud.service.eureka;
 
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
-
-import java.util.logging.Logger;
 
 /**
  * Configuration class to configure a Eureka instance's settings based
@@ -22,11 +23,15 @@ import java.util.logging.Logger;
 @Configuration
 @ConfigurationProperties("spring.cloud.services")
 @ConditionalOnClass(EurekaInstanceConfigBean.class)
+@ConditionalOnExpression("'${vcap.application.uris[0]:}'!='' || '${cf.instance.ip:}'!=''")
 public class EurekaInstanceAutoConfiguration {
+
 	private static Logger LOGGER = Logger.getLogger(EurekaInstanceAutoConfiguration.class.getName());
 
 	private static final int ROUTE_NON_SECURE_PORT = 80;
+
 	private static final String ROUTE_REGISTRATION_METHOD = "route";
+
 	private static final String DIRECT_REGISTRATION_METHOD = "direct";
 
 	@Value("${vcap.application.uris[0]:localhost}")
