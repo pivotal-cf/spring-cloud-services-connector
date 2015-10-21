@@ -1,6 +1,7 @@
 org.springframework.context.ApplicationListener=\
 io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector,\
-io.pivotal.spring.cloud.service.eureka.EurekaOAuth2ServiceConnector
+io.pivotal.spring.cloud.service.eureka.EurekaOAuth2ServiceConnector,\
+io.pivotal.spring.cloud.config.java.DefaultSpringApplicationName
 
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 io.pivotal.spring.cloud.service.eureka.EurekaOAuth2AutoConfiguration,\
