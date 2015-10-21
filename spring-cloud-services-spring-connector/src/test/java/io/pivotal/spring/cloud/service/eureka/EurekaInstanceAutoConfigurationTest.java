@@ -1,53 +1,62 @@
 package io.pivotal.spring.cloud.service.eureka;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.UUID;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Test cases for {@link io.pivotal.spring.cloud.service.eureka.EurekaInstanceAutoConfiguration}
  *
  * @author Chris Schaefer
+ * @author Will Tran
  */
 public class EurekaInstanceAutoConfigurationTest {
-	private static final int NON_SECURE_PORT = 80;
 	private static final String ROUTE_REGISTRATION_METHOD = "route";
 	private static final String DIRECT_REGISTRATION_METHOD = "direct";
-	private static final String ROUTE_HOSTNAME = "http://www.route.com";
-	private static final String DIRECT_HOSTNAME = "http://www.direct.com";
-	private static final String DEFAULT_HOSTNAME = ROUTE_HOSTNAME;
+	private static final String HOSTNAME = "www.route.com";
+	private static final String IP = "1.2.3.4";
+	private static final int PORT = 54321;
+	private static final String INSTANCE_ID = UUID.randomUUID().toString();
+	private EurekaInstanceAutoConfiguration eurekaInstanceAutoConfiguration;
 
-	@Test
-	public void testRouteRegistration() {
-		EurekaInstanceAutoConfiguration eurekaInstanceAutoConfiguration = new EurekaInstanceAutoConfiguration();
-		eurekaInstanceAutoConfiguration.setRegistrationMethod(ROUTE_REGISTRATION_METHOD);
-		eurekaInstanceAutoConfiguration.setRouteHostName(ROUTE_HOSTNAME);
-
-		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
-		assertEquals(ROUTE_HOSTNAME, eurekaInstanceConfigBean.getHostname());
-		assertEquals(NON_SECURE_PORT, eurekaInstanceConfigBean.getNonSecurePort());
+	@Before
+	public void setup() {
+		eurekaInstanceAutoConfiguration = new EurekaInstanceAutoConfiguration();
+		eurekaInstanceAutoConfiguration.setHostname(HOSTNAME);
+		eurekaInstanceAutoConfiguration.setInstanceId(INSTANCE_ID);
+		eurekaInstanceAutoConfiguration.setIp(IP);
+		eurekaInstanceAutoConfiguration.setPort(PORT);
 	}
 
 	@Test
-	public void testDirectRegistration() {
-		EurekaInstanceAutoConfiguration eurekaInstanceAutoConfiguration = new EurekaInstanceAutoConfiguration();
-		eurekaInstanceAutoConfiguration.setRegistrationMethod(DIRECT_REGISTRATION_METHOD);
-		eurekaInstanceAutoConfiguration.setDirectHostName(DIRECT_HOSTNAME);
-		eurekaInstanceAutoConfiguration.setDirectPort(NON_SECURE_PORT);
-
-		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
-		assertEquals(DIRECT_HOSTNAME, eurekaInstanceConfigBean.getHostname());
-		assertEquals(NON_SECURE_PORT, eurekaInstanceConfigBean.getNonSecurePort());
+	public void testRouteRegistration() {
+		eurekaInstanceAutoConfiguration.setRegistrationMethod(ROUTE_REGISTRATION_METHOD);
+		testDefaultRegistration();
 	}
 
 	@Test
 	public void testDefaultRegistration() {
-		EurekaInstanceAutoConfiguration eurekaInstanceAutoConfiguration = new EurekaInstanceAutoConfiguration();
-		eurekaInstanceAutoConfiguration.setRouteHostName(DEFAULT_HOSTNAME);
-
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
-		assertEquals(DEFAULT_HOSTNAME, eurekaInstanceConfigBean.getHostname());
-		assertEquals(NON_SECURE_PORT, eurekaInstanceConfigBean.getNonSecurePort());
+		assertEquals(INSTANCE_ID, eurekaInstanceConfigBean.getMetadataMap().get("instanceId"));
+		assertEquals(HOSTNAME, eurekaInstanceConfigBean.getHostname());
+		assertEquals(80, eurekaInstanceConfigBean.getNonSecurePort());
+		assertEquals(443, eurekaInstanceConfigBean.getSecurePort());
+		assertTrue(eurekaInstanceConfigBean.getSecurePortEnabled());
+	}
+
+	@Test
+	public void testDirectRegistration() {
+		eurekaInstanceAutoConfiguration.setRegistrationMethod(DIRECT_REGISTRATION_METHOD);
+		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
+		assertEquals(INSTANCE_ID, eurekaInstanceConfigBean.getMetadataMap().get("instanceId"));
+		assertEquals(IP, eurekaInstanceConfigBean.getHostname());
+		assertEquals(PORT, eurekaInstanceConfigBean.getNonSecurePort());
+		assertFalse(eurekaInstanceConfigBean.getSecurePortEnabled());
 	}
 }
