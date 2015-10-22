@@ -20,15 +20,21 @@ buildscript {
 	repositories {
 		maven { url "https://repo.spring.io/plugins-release" }
 		mavenCentral()
+		jcenter()
 	}
 
 	dependencies {
 		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
 		classpath("io.spring.gradle:dependency-management-plugin:0.5.3.RELEASE")
 		classpath("io.spring.gradle:spring-io-plugin:0.0.4.RELEASE")
+		classpath("nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0")
 	}
 
 	ext["spring-cloud-connectors.version"] = "1.2.0.RELEASE"
+}
+
+configure(allprojects) {
+	apply plugin: "license"
 }
 
 subprojects {
@@ -198,3 +204,8 @@ project(":spring-cloud-services-spring-connector") {
 task wrapper(type: Wrapper) {
 	gradleVersion = '2.7'
 }
+
+downloadLicenses {
+	dependencyConfiguration "compile"
+}
+
