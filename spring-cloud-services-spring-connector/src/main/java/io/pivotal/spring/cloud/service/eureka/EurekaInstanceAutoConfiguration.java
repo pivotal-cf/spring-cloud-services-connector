@@ -34,6 +34,9 @@ public class EurekaInstanceAutoConfiguration {
 	@Value("${vcap.application.uris[0]:}")
 	private String hostname;
 
+	@Value("${spring.application.name:unknown}")
+	private String appname = "unknown";
+
 	@Value("${cf.instance.ip:}")
 	private String ip;
 
@@ -66,6 +69,7 @@ public class EurekaInstanceAutoConfiguration {
 	private EurekaInstanceConfigBean getRouteRegistration() {
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = getDefaults();
 		eurekaInstanceConfigBean.setSecurePortEnabled(true);
+		eurekaInstanceConfigBean.setSecureVirtualHostName(appname);
 		return eurekaInstanceConfigBean;
 	}
 
