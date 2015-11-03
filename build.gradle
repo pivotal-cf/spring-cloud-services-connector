@@ -164,6 +164,12 @@ project(":spring-cloud-services-spring-connector") {
 configure(rootProject) {
 	description = "Spring Cloud Services Connector"
 
+	// do not publish the default jar for the root project
+	configurations.archives.artifacts.clear()
+
+	dependencies { // for integration tests
+	}
+
 	task api(type: Javadoc) {
 		group = "Documentation"
 		description = "Generates aggregated Javadoc API documentation."
