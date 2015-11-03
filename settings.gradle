@@ -1,3 +1,5 @@
+rootProject.name = "spring-cloud-services-connector"
+
 include "spring-cloud-services-cloudfoundry-connector"
 include "spring-cloud-services-spring-connector"
 include "spring-cloud-services-connector-core"
