@@ -14,16 +14,15 @@ buildscript {
 allprojects {
 	group = "io.pivotal.spring.cloud"
 
-	ext.springCloudVersion 					= "Angel.SR3"
-	ext["spring-cloud-connectors.version"] 	= "1.2.0.RELEASE"
+	ext.springCloudVersion = "Angel.SR3"
+	ext["spring-cloud-connectors.version"] = "1.2.0.RELEASE"
 
+	apply plugin: "propdeps"
+	apply plugin: "propdeps-eclipse"
+	apply plugin: "propdeps-idea"
 	apply plugin: "java"
 	apply plugin: "eclipse"
 	apply plugin: "idea"
-	apply plugin: "propdeps"
-	apply plugin: "propdeps-maven"
-	apply plugin: "propdeps-eclipse"
-	apply plugin: "propdeps-idea"
 	apply plugin: "io.spring.dependency-management"
 
 	dependencyManagement {
