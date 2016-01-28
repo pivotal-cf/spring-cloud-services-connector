@@ -14,7 +14,7 @@ buildscript {
 allprojects {
 	group = "io.pivotal.spring.cloud"
 
-	ext.springCloudVersion = "Angel.SR3"
+	ext.springCloudVersion = "Angel.SR4"
 	ext["spring-cloud-connectors.version"] = "1.2.1.RELEASE"
 
 	apply plugin: "propdeps"
