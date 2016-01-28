@@ -15,7 +15,7 @@ allprojects {
 	group = "io.pivotal.spring.cloud"
 
 	ext.springCloudVersion = "Angel.SR3"
-	ext["spring-cloud-connectors.version"] = "1.2.0.RELEASE"
+	ext["spring-cloud-connectors.version"] = "1.2.1.RELEASE"
 
 	apply plugin: "propdeps"
 	apply plugin: "propdeps-eclipse"
