@@ -19,9 +19,6 @@ allprojects {
 	ext.springSecurityOauth2Version = "2.0.8.RELEASE"
 	ext.lombokVersion = "1.16.6"
 
-	// override managed version from Spring Boot
-//	ext["spring-cloud-connectors.version"] = "1.2.1.RELEASE"
-
 	apply plugin: "propdeps"
 	apply plugin: "propdeps-eclipse"
 	apply plugin: "propdeps-idea"
@@ -148,7 +145,7 @@ project(":spring-cloud-services-spring-connector") {
 		compile(project(":spring-cloud-services-connector-core"))
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector")
 		optional("org.springframework.cloud:spring-cloud-config-client")
-		optional("org.springframework.cloud:spring-cloud-netflix-core")
+		optional("org.springframework.cloud:spring-cloud-netflix-eureka-client")
 		optional("com.netflix.eureka:eureka-client")
 		optional("org.springframework.amqp:spring-rabbit")
 		optional("com.sun.jersey:jersey-client")
