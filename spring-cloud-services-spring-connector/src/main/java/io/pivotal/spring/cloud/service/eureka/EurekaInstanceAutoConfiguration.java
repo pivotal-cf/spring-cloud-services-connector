@@ -103,7 +103,7 @@ public class EurekaInstanceAutoConfiguration {
 		inetUtilsProperties.setDefaultHostname(hostname);
 		inetUtilsProperties.setDefaultIpAddress(ip);
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = new EurekaInstanceConfigBean(new InetUtils(inetUtilsProperties));
-		eurekaInstanceConfigBean.getMetadataMap().put("instanceId", instanceId);
+		eurekaInstanceConfigBean.setInstanceId(instanceId);
 		eurekaInstanceConfigBean.setHostname(hostname);
 		eurekaInstanceConfigBean.setIpAddress(ip);
 		return eurekaInstanceConfigBean;

@@ -51,7 +51,7 @@ public class EurekaAutoConfigRouteIntegrationTest {
 	public void eurekaConfigBean() throws Exception {
 		final EurekaInstanceConfigBean config = context
 				.getBean(EurekaInstanceConfigBean.class);
-		assertEquals("instance-id", config.getMetadataMap().get("instanceId"));
+		assertEquals("instance-id", config.getInstanceId());
 		assertEquals("app-name", config.getVirtualHostName());
 		assertEquals("www.route.local", config.getHostname());
 		assertEquals(80, config.getNonSecurePort());
