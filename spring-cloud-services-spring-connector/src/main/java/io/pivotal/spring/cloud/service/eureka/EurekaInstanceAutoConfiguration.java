@@ -88,6 +88,7 @@ public class EurekaInstanceAutoConfiguration {
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = getDefaults();
 		eurekaInstanceConfigBean.setSecurePortEnabled(true);
 		eurekaInstanceConfigBean.setSecureVirtualHostName(appname);
+		eurekaInstanceConfigBean.setInstanceId(hostname+":"+instanceId);
 		return eurekaInstanceConfigBean;
 	}
 
@@ -95,6 +96,7 @@ public class EurekaInstanceAutoConfiguration {
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = getDefaults();
 		eurekaInstanceConfigBean.setNonSecurePort(port);
 		eurekaInstanceConfigBean.setPreferIpAddress(true);
+		eurekaInstanceConfigBean.setInstanceId(ip+":"+instanceId);
 		return eurekaInstanceConfigBean;
 	}
 
@@ -103,7 +105,6 @@ public class EurekaInstanceAutoConfiguration {
 		inetUtilsProperties.setDefaultHostname(hostname);
 		inetUtilsProperties.setDefaultIpAddress(ip);
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = new EurekaInstanceConfigBean(new InetUtils(inetUtilsProperties));
-		eurekaInstanceConfigBean.setInstanceId(instanceId);
 		eurekaInstanceConfigBean.setHostname(hostname);
 		eurekaInstanceConfigBean.setIpAddress(ip);
 		return eurekaInstanceConfigBean;

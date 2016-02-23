@@ -28,7 +28,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test cases for {@link io.pivotal.spring.cloud.service.eureka.EurekaInstanceAutoConfiguration}
+ * Test cases for
+ * {@link io.pivotal.spring.cloud.service.eureka.EurekaInstanceAutoConfiguration}
  *
  * @author Chris Schaefer
  * @author Will Tran
@@ -60,7 +61,7 @@ public class EurekaInstanceAutoConfigurationTest {
 	@Test
 	public void testDefaultRegistration() {
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
-		assertEquals(INSTANCE_ID, eurekaInstanceConfigBean.getInstanceId());
+		assertEquals(HOSTNAME + ":" + INSTANCE_ID, eurekaInstanceConfigBean.getInstanceId());
 		assertEquals(HOSTNAME, eurekaInstanceConfigBean.getHostname());
 		assertEquals(80, eurekaInstanceConfigBean.getNonSecurePort());
 		assertEquals(443, eurekaInstanceConfigBean.getSecurePort());
@@ -71,7 +72,7 @@ public class EurekaInstanceAutoConfigurationTest {
 	public void testDirectRegistration() {
 		eurekaInstanceAutoConfiguration.setRegistrationMethod(DIRECT_REGISTRATION_METHOD);
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
-		assertEquals(INSTANCE_ID, eurekaInstanceConfigBean.getInstanceId());
+		assertEquals(IP + ":" + INSTANCE_ID, eurekaInstanceConfigBean.getInstanceId());
 		assertEquals(IP, eurekaInstanceConfigBean.getHostname());
 		assertEquals(PORT, eurekaInstanceConfigBean.getNonSecurePort());
 		assertFalse(eurekaInstanceConfigBean.getSecurePortEnabled());
