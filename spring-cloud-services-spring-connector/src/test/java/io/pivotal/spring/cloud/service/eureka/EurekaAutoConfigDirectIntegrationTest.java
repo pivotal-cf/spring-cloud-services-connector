@@ -51,7 +51,7 @@ public class EurekaAutoConfigDirectIntegrationTest {
 	public void eurekaConfigBean() throws Exception {
 		final EurekaInstanceConfigBean config = context
 				.getBean(EurekaInstanceConfigBean.class);
-		assertEquals("instance-id", config.getInstanceId());
+		assertEquals("1.2.3.4:instance-id", config.getInstanceId());
 		assertEquals("app-name", config.getVirtualHostName());
 		assertEquals("1.2.3.4", config.getHostname());
 		assertEquals(54321, config.getNonSecurePort());
