@@ -16,6 +16,16 @@
 
 package io.pivotal.spring.cloud.service.hystrix;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
 import java.util.Collections;
 
 import org.junit.AfterClass;
@@ -24,15 +34,21 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.amqp.rabbit.connection.Connection;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.hystrix.stream.HystrixStreamProperties;
 import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.rabbitmq.client.AMQP.Exchange.DeclareOk;
+import com.rabbitmq.client.Channel;
 
 import io.pivotal.spring.cloud.MockCloudConnector;
 import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
@@ -48,41 +64,58 @@ public class HystrixAmqpServiceConnectorIntegrationTest {
 
 	@Autowired
 	private Environment environment;
-	
+
 	@Autowired
 	private HystrixStreamProperties properties;
 
+	private static final Channel mockChannel = mock(Channel.class);
+	private static final ConnectionFactory mockConnectionFactory = mock(ConnectionFactory.class);
 
 	@BeforeClass
-	public static void beforeClass() {
-		Mockito.when(MockCloudConnector.instance.isInMatchingCloud()).thenReturn(true);
-		Mockito.when(MockCloudConnector.instance.getServiceInfos()).thenReturn(Collections.singletonList(
-				(ServiceInfo) new HystrixAmqpServiceInfo("circuit-breaker",URI)));
+	public static void beforeClass() throws IOException {
+		when(MockCloudConnector.instance.isInMatchingCloud()).thenReturn(true);
+		when(MockCloudConnector.instance.getServiceInfos()).thenReturn(Collections.singletonList(
+				(ServiceInfo) new HystrixAmqpServiceInfo("circuit-breaker", URI)));
+
+		Connection connection = mock(Connection.class);
+		when(mockConnectionFactory.createConnection()).thenReturn(connection);
+		when(connection.createChannel(anyBoolean())).thenReturn(mockChannel);
+		when(mockChannel.exchangeDeclare(anyString(), anyString(), anyBoolean(),
+				anyBoolean(), any())).thenReturn(mock(DeclareOk.class));
 	}
 
 	@AfterClass
 	public static void afterClass() {
 		MockCloudConnector.reset();
+		Mockito.reset(mockChannel, mockConnectionFactory);
 	}
 
 	@Test
 	public void propertySourceIsAdded() {
 		Assert.assertEquals("spring.cloud.hystrix.stream", environment.getProperty("hystrix.stream.queue.destination"));
+		Assert.assertEquals("", environment.getProperty("spring.cloud.stream.binder.rabbit.default.prefix"));
 	}
-	
+
 	@Test
 	public void destinationPropertyIsSet() {
 		Assert.assertEquals("spring.cloud.hystrix.stream", properties.getDestination());
 	}
 
+	@Test
+	public void exchangeIsDeclared() throws IOException {
+		verify(mockChannel, atLeastOnce()).exchangeDeclare(eq("spring.cloud.hystrix.stream"), anyString(), anyBoolean(),
+				anyBoolean(), any());
+	}
 
-	@EnableConfigurationProperties
+	@SpringBootApplication
+	@EnableCircuitBreaker
 	public static class TestConfig {
-		
+
 		@Bean
-		public HystrixStreamProperties hystrixStreamProperties() {
-			return new HystrixStreamProperties();
+		public ConnectionFactory mockConnectionFactory() throws IOException {
+			return mockConnectionFactory;
 		}
+
 	}
 
 }

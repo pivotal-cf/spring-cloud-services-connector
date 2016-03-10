@@ -157,9 +157,9 @@ project(":spring-cloud-services-spring-connector") {
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-core", classifier: "tests")
 		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-cloudfoundry-connector", classifier: "tests")
-		testCompile("org.springframework.cloud:spring-cloud-netflix-hystrix-stream") {
-			exclude group: "org.springframework.cloud", module: "spring-cloud-stream"
-		}
+		testCompile("org.springframework.cloud:spring-cloud-starter-hystrix")
+		testCompile("org.springframework.cloud:spring-cloud-netflix-hystrix-stream")
+		testCompile("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
 		testCompile("commons-logging:commons-logging")
 	}
 }

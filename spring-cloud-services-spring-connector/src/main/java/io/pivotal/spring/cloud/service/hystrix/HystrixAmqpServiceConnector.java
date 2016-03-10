@@ -63,6 +63,9 @@ public class HystrixAmqpServiceConnector implements ApplicationListener<Applicat
 			if (serviceInfo instanceof HystrixAmqpServiceInfo) {
 				Map<String, Object> properties = new LinkedHashMap<>();
 				properties.put(HYSTRIX_STREAM_QUEUE_DESTINATION, SPRING_CLOUD_HYSTRIX_STREAM);
+				// set up this property to force spring cloud stream to not use prefixes
+				// This may change with https://github.com/spring-cloud/spring-cloud-stream/issues/307
+				properties.put("spring.cloud.stream.binder.rabbit.default.prefix", "");
 				MapPropertySource mapPropertySource = new MapPropertySource(PROPERTY_SOURCE_NAME, properties);
 				event.getEnvironment().getPropertySources().addFirst(mapPropertySource);
 			}
