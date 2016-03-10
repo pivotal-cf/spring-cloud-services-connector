@@ -33,9 +33,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.amqp.rabbit.connection.Connection;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.IntegrationTest;
@@ -43,14 +40,14 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.hystrix.stream.HystrixStreamProperties;
 import org.springframework.cloud.service.ServiceInfo;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.rabbitmq.client.AMQP.Exchange.DeclareOk;
-import com.rabbitmq.client.Channel;
 
 import io.pivotal.spring.cloud.MockCloudConnector;
+import io.pivotal.spring.cloud.MockRabbit;
 import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -68,8 +65,6 @@ public class HystrixAmqpServiceConnectorIntegrationTest {
 	@Autowired
 	private HystrixStreamProperties properties;
 
-	private static final Channel mockChannel = mock(Channel.class);
-	private static final ConnectionFactory mockConnectionFactory = mock(ConnectionFactory.class);
 
 	@BeforeClass
 	public static void beforeClass() throws IOException {
@@ -77,17 +72,14 @@ public class HystrixAmqpServiceConnectorIntegrationTest {
 		when(MockCloudConnector.instance.getServiceInfos()).thenReturn(Collections.singletonList(
 				(ServiceInfo) new HystrixAmqpServiceInfo("circuit-breaker", URI)));
 
-		Connection connection = mock(Connection.class);
-		when(mockConnectionFactory.createConnection()).thenReturn(connection);
-		when(connection.createChannel(anyBoolean())).thenReturn(mockChannel);
-		when(mockChannel.exchangeDeclare(anyString(), anyString(), anyBoolean(),
+		when(MockRabbit.mockChannel.exchangeDeclare(anyString(), anyString(), anyBoolean(),
 				anyBoolean(), any())).thenReturn(mock(DeclareOk.class));
 	}
 
 	@AfterClass
 	public static void afterClass() {
 		MockCloudConnector.reset();
-		Mockito.reset(mockChannel, mockConnectionFactory);
+		MockRabbit.reset();
 	}
 
 	@Test
@@ -103,18 +95,14 @@ public class HystrixAmqpServiceConnectorIntegrationTest {
 
 	@Test
 	public void exchangeIsDeclared() throws IOException {
-		verify(mockChannel, atLeastOnce()).exchangeDeclare(eq("spring.cloud.hystrix.stream"), anyString(), anyBoolean(),
+		verify(MockRabbit.mockChannel, atLeastOnce()).exchangeDeclare(eq("spring.cloud.hystrix.stream"), anyString(), anyBoolean(),
 				anyBoolean(), any());
 	}
 
 	@SpringBootApplication
 	@EnableCircuitBreaker
+	@Import(MockRabbit.class)
 	public static class TestConfig {
-
-		@Bean
-		public ConnectionFactory mockConnectionFactory() throws IOException {
-			return mockConnectionFactory;
-		}
 
 	}
 
