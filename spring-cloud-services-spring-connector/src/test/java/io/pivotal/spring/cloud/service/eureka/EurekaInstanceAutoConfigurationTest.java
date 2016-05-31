@@ -66,6 +66,7 @@ public class EurekaInstanceAutoConfigurationTest {
 		assertEquals(80, eurekaInstanceConfigBean.getNonSecurePort());
 		assertEquals(443, eurekaInstanceConfigBean.getSecurePort());
 		assertTrue(eurekaInstanceConfigBean.getSecurePortEnabled());
+		assertEquals(INSTANCE_ID, eurekaInstanceConfigBean.getMetadataMap().get("instanceId"));
 	}
 
 	@Test

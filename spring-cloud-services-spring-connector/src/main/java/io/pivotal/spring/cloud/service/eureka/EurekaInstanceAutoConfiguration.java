@@ -44,10 +44,12 @@ import org.springframework.util.StringUtils;
 @ConditionalOnClass(EurekaInstanceConfigBean.class)
 @ConditionalOnExpression("'${vcap.application.uris[0]:}'!='' || '${cf.instance.ip:}'!=''")
 public class EurekaInstanceAutoConfiguration {
+
 	private static Logger LOGGER = Logger.getLogger(EurekaInstanceAutoConfiguration.class.getName());
 
 	private static final String ROUTE_REGISTRATION_METHOD = "route";
 	private static final String DIRECT_REGISTRATION_METHOD = "direct";
+	private static final String INSTANCE_ID = "instanceId";
 
 	@Value("${vcap.application.uris[0]:}")
 	private String hostname;
@@ -107,6 +109,7 @@ public class EurekaInstanceAutoConfiguration {
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = new EurekaInstanceConfigBean(new InetUtils(inetUtilsProperties));
 		eurekaInstanceConfigBean.setHostname(hostname);
 		eurekaInstanceConfigBean.setIpAddress(ip);
+		eurekaInstanceConfigBean.getMetadataMap().put(INSTANCE_ID, instanceId);
 		return eurekaInstanceConfigBean;
 	}
 
