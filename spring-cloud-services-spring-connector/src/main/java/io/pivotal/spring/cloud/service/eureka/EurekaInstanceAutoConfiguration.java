@@ -89,7 +89,6 @@ public class EurekaInstanceAutoConfiguration {
 	private EurekaInstanceConfigBean getRouteRegistration() {
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = getDefaults();
 		eurekaInstanceConfigBean.setSecurePortEnabled(true);
-		eurekaInstanceConfigBean.setSecureVirtualHostName(appname);
 		eurekaInstanceConfigBean.setInstanceId(hostname+":"+instanceId);
 		return eurekaInstanceConfigBean;
 	}
@@ -110,12 +109,18 @@ public class EurekaInstanceAutoConfiguration {
 		eurekaInstanceConfigBean.setHostname(hostname);
 		eurekaInstanceConfigBean.setIpAddress(ip);
 		eurekaInstanceConfigBean.getMetadataMap().put(INSTANCE_ID, instanceId);
+		eurekaInstanceConfigBean.setSecureVirtualHostName(appname);
+		eurekaInstanceConfigBean.setVirtualHostName(appname);
 		return eurekaInstanceConfigBean;
 	}
 
 	private EurekaInstanceConfigBean getDefaultRegistration() {
 		LOGGER.info("Eureka registration method not provided, defaulting to route");
 		return getRouteRegistration();
+	}
+
+	void setAppname(String appName) {
+		this.appname = appName;
 	}
 
 	void setHostname(String hostname) {
