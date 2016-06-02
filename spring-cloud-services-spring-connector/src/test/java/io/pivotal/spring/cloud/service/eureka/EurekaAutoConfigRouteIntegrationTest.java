@@ -40,7 +40,7 @@ import static org.junit.Assert.assertTrue;
 		"cf.instance.ip=1.2.3.4",
 		"cf.instance.port=54321",
 		"vcap.application.instance_id=instance-id",
-		"spring.application.name=app-name",
+		"spring.application.name=app-name_",
 		"spring.cloud.services.registrationMethod=route" })
 public class EurekaAutoConfigRouteIntegrationTest {
 
@@ -52,7 +52,9 @@ public class EurekaAutoConfigRouteIntegrationTest {
 		final EurekaInstanceConfigBean config = context
 				.getBean(EurekaInstanceConfigBean.class);
 		assertEquals("www.route.local:instance-id", config.getInstanceId());
-		assertEquals("app-name", config.getVirtualHostName());
+		assertEquals("app-name_", config.getAppname());
+		assertEquals("app-name-", config.getVirtualHostName());
+		assertEquals("app-name-", config.getSecureVirtualHostName());
 		assertEquals("www.route.local", config.getHostname());
 		assertEquals(80, config.getNonSecurePort());
 		assertEquals(443, config.getSecurePort());

@@ -16,17 +16,17 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
-import java.util.logging.Logger;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.commons.util.InetUtilsProperties;
+import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
+
+import java.util.logging.Logger;
 
 /**
  * Configuration class to configure a Eureka instance's settings based on the
@@ -105,13 +105,25 @@ public class EurekaInstanceAutoConfiguration {
 		InetUtilsProperties inetUtilsProperties = new InetUtilsProperties();
 		inetUtilsProperties.setDefaultHostname(hostname);
 		inetUtilsProperties.setDefaultIpAddress(ip);
-		EurekaInstanceConfigBean eurekaInstanceConfigBean = new EurekaInstanceConfigBean(new InetUtils(inetUtilsProperties));
+		final String virtualHostname = appNameToVirtualHostname(appname);
+		EurekaInstanceConfigBean eurekaInstanceConfigBean = new EurekaInstanceConfigBeanOverride(new InetUtils(inetUtilsProperties), virtualHostname, virtualHostname);
 		eurekaInstanceConfigBean.setHostname(hostname);
 		eurekaInstanceConfigBean.setIpAddress(ip);
 		eurekaInstanceConfigBean.getMetadataMap().put(INSTANCE_ID, instanceId);
-		eurekaInstanceConfigBean.setSecureVirtualHostName(appname);
-		eurekaInstanceConfigBean.setVirtualHostName(appname);
+
 		return eurekaInstanceConfigBean;
+	}
+
+	private static String appNameToVirtualHostname(String appName) {
+		// RFC 952 defines the valid character set for hostnames.
+		final String virtualHostname = appName.replaceAll("[^0-9a-zA-Z\\-\\.]", "-");
+
+		if (!appName.equals(virtualHostname)) {
+			// Log a warning since this sanitised virtual hostname could clash with the virtual hostname of other applications.
+			LOGGER.warning("Application name '" + appName + "' was sanitised to produce virtual hostname '" + virtualHostname + "'");
+		}
+
+		return virtualHostname;
 	}
 
 	private EurekaInstanceConfigBean getDefaultRegistration() {
