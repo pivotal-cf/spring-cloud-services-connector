@@ -41,6 +41,9 @@ public class EurekaInstanceAutoConfigurationTest {
 	private static final String IP = "1.2.3.4";
 	private static final int PORT = 54321;
 	private static final String INSTANCE_ID = UUID.randomUUID().toString();
+	private static final String APPNAME = "test-app";
+	private static final String APPNAME_INVALID_AS_HOSTNAME = "My.1st-test_app+";
+	private static final String SANITISED_APPNAME_INVALID_AS_HOSTNAME = "My.1st-test-app-";
 	private EurekaInstanceAutoConfiguration eurekaInstanceAutoConfiguration;
 
 	@Before
@@ -50,6 +53,7 @@ public class EurekaInstanceAutoConfigurationTest {
 		eurekaInstanceAutoConfiguration.setInstanceId(INSTANCE_ID);
 		eurekaInstanceAutoConfiguration.setIp(IP);
 		eurekaInstanceAutoConfiguration.setPort(PORT);
+		eurekaInstanceAutoConfiguration.setAppname(APPNAME);
 	}
 
 	@Test
@@ -67,6 +71,16 @@ public class EurekaInstanceAutoConfigurationTest {
 		assertEquals(443, eurekaInstanceConfigBean.getSecurePort());
 		assertTrue(eurekaInstanceConfigBean.getSecurePortEnabled());
 		assertEquals(INSTANCE_ID, eurekaInstanceConfigBean.getMetadataMap().get("instanceId"));
+		assertEquals(APPNAME, eurekaInstanceConfigBean.getVirtualHostName());
+		assertEquals(APPNAME, eurekaInstanceConfigBean.getSecureVirtualHostName());
+	}
+
+	@Test
+	public void testDefaultRegistrationSanitisesVirtualHostNames() {
+		eurekaInstanceAutoConfiguration.setAppname(APPNAME_INVALID_AS_HOSTNAME);
+		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
+		assertEquals(SANITISED_APPNAME_INVALID_AS_HOSTNAME, eurekaInstanceConfigBean.getVirtualHostName());
+		assertEquals(SANITISED_APPNAME_INVALID_AS_HOSTNAME, eurekaInstanceConfigBean.getSecureVirtualHostName());
 	}
 
 	@Test
@@ -77,5 +91,16 @@ public class EurekaInstanceAutoConfigurationTest {
 		assertEquals(IP, eurekaInstanceConfigBean.getHostname());
 		assertEquals(PORT, eurekaInstanceConfigBean.getNonSecurePort());
 		assertFalse(eurekaInstanceConfigBean.getSecurePortEnabled());
+		assertEquals(APPNAME, eurekaInstanceConfigBean.getVirtualHostName());
+		assertEquals(APPNAME, eurekaInstanceConfigBean.getSecureVirtualHostName());
+	}
+
+	@Test
+	public void testDirectRegistrationSanitisesVirtualHostNames() {
+		eurekaInstanceAutoConfiguration.setRegistrationMethod(DIRECT_REGISTRATION_METHOD);
+		eurekaInstanceAutoConfiguration.setAppname(APPNAME_INVALID_AS_HOSTNAME);
+		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
+		assertEquals(SANITISED_APPNAME_INVALID_AS_HOSTNAME, eurekaInstanceConfigBean.getVirtualHostName());
+		assertEquals(SANITISED_APPNAME_INVALID_AS_HOSTNAME, eurekaInstanceConfigBean.getSecureVirtualHostName());
 	}
 }

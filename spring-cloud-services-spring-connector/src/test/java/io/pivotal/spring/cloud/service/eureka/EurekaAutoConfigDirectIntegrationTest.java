@@ -35,12 +35,12 @@ import static org.junit.Assert.assertFalse;
  * @author Will Tran
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = TestApplication.class)
+@SpringApplicationConfiguration(classes = {TestApplication.class})
 @IntegrationTest({ "server.port=0", "vcap.application.uris[0]=www.route.local",
 		"cf.instance.ip=1.2.3.4",
 		"cf.instance.port=54321",
 		"vcap.application.instance_id=instance-id",
-		"spring.application.name=app-name",
+		"spring.application.name=app-name_",
 		"spring.cloud.services.registrationMethod=direct" })
 public class EurekaAutoConfigDirectIntegrationTest {
 
@@ -52,7 +52,9 @@ public class EurekaAutoConfigDirectIntegrationTest {
 		final EurekaInstanceConfigBean config = context
 				.getBean(EurekaInstanceConfigBean.class);
 		assertEquals("1.2.3.4:instance-id", config.getInstanceId());
-		assertEquals("app-name", config.getVirtualHostName());
+		assertEquals("app-name_", config.getAppname());
+		assertEquals("app-name-", config.getVirtualHostName());
+		assertEquals("app-name-", config.getSecureVirtualHostName());
 		assertEquals("1.2.3.4", config.getHostname());
 		assertEquals(54321, config.getNonSecurePort());
 		assertFalse(config.getSecurePortEnabled());
