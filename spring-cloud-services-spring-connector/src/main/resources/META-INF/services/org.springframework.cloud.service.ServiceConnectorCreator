@@ -1,2 +1,1 @@
 io.pivotal.spring.cloud.service.eureka.EurekaClientConfigurationCreator
-io.pivotal.spring.cloud.service.hystrix.HystrixAmqpConnectionCreator

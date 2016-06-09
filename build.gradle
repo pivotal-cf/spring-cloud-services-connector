@@ -6,7 +6,7 @@ buildscript {
 
 	dependencies {
 		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
-		classpath("io.spring.gradle:dependency-management-plugin:0.5.4.RELEASE")
+		classpath("io.spring.gradle:dependency-management-plugin:0.5.6.RELEASE")
 		classpath("io.spring.gradle:spring-io-plugin:0.0.4.RELEASE")
 	}
 }
@@ -51,8 +51,8 @@ allprojects {
 	}
 
 	repositories {
-		maven { url "https://repo.spring.io/libs-snapshot" }
 		mavenCentral()
+		maven { url "https://repo.spring.io/libs-snapshot" }
 	}
 
 	dependencies {
@@ -150,8 +150,6 @@ project(":spring-cloud-services-spring-connector") {
 		optional("org.springframework.amqp:spring-rabbit")
 		optional("com.sun.jersey:jersey-client")
 		optional("org.springframework.security.oauth:spring-security-oauth2")
-		optional("org.springframework.data:spring-data-redis")
-		optional("org.springframework.data:spring-data-mongodb")
 		testCompile("org.apache.tomcat.embed:tomcat-embed-el")
 		testCompile("org.springframework.boot:spring-boot-starter-test")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-commons")

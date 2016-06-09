@@ -35,6 +35,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector.SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI;
+import static io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector.SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_ID;
+import static io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector.SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_SECRET;
+import static io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector.SPRING_CLOUD_CONFIG_URI;
+import static org.junit.Assert.assertEquals;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {
 		ConfigServerServiceConnectorIntegrationTest.TestConfig.class,
@@ -71,10 +77,10 @@ public class ConfigServerServiceConnectorIntegrationTest {
 
 	@Test
 	public void propertySourceIsAdded() {
-		Assert.assertEquals(URI, environment.getProperty("spring.cloud.config.uri"));
-		Assert.assertEquals(CLIENT_ID, environment.getProperty("spring.cloud.config.client.oauth2.clientId"));
-		Assert.assertEquals(CLIENT_SECRET, environment.getProperty("spring.cloud.config.client.oauth2.clientSecret"));
-		Assert.assertEquals(ACCESS_TOKEN_URI, environment.getProperty("spring.cloud.config.client.oauth2.accessTokenUri"));
+		assertPropertyEquals(URI, SPRING_CLOUD_CONFIG_URI);
+		assertPropertyEquals(CLIENT_ID, SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_ID);
+		assertPropertyEquals(CLIENT_SECRET, SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_SECRET);
+		assertPropertyEquals(ACCESS_TOKEN_URI, SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI);
 	}
 
 	@Test
@@ -85,7 +91,10 @@ public class ConfigServerServiceConnectorIntegrationTest {
 		Assert.assertEquals(ACCESS_TOKEN_URI, resourceDetails.getAccessTokenUri());
 	}
 
-	public static class TestConfig {
+	private void assertPropertyEquals(String expected, String key) {
+		assertEquals(expected, environment.getProperty(key));
 	}
 
+	public static class TestConfig {
+	}
 }
