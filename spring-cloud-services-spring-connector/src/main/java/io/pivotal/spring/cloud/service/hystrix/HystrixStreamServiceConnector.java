@@ -19,10 +19,10 @@ package io.pivotal.spring.cloud.service.hystrix;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import io.pivotal.spring.cloud.config.java.SpringEnvironmentServiceConnector;
+import io.pivotal.spring.cloud.config.java.ServiceInfoPropertySourceAdapter;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertySource;
 
 import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
 
@@ -33,8 +33,8 @@ import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
  * @author Scott Frederick
  */
 @Configuration
-public class HystrixStreamServiceConnector extends SpringEnvironmentServiceConnector<HystrixAmqpServiceInfo> {
-	public static final String PROPERTY_SOURCE_NAME = "springCloudHystrixStream";
+public class HystrixStreamServiceConnector extends ServiceInfoPropertySourceAdapter<HystrixAmqpServiceInfo> {
+	public static final String PROPERTY_SOURCE_NAME = "springCloudServicesCircuitBreaker";
 
 	public static final String SPRING_CLOUD_HYSTRIX_STREAM = "spring.cloud.hystrix.stream";
 
@@ -42,7 +42,8 @@ public class HystrixStreamServiceConnector extends SpringEnvironmentServiceConne
 	public static final String HYSTRIX_STREAM_BINDING_PREFIX = HYSTRIX_STREAM_PREFIX + "bindings.hystrixStreamOutput.";
 	public static final String HYSTRIX_STREAM_BINDER_PREFIX = HYSTRIX_STREAM_PREFIX + "binders.hystrix.";
 
-	protected void prepareEnvironment(ConfigurableEnvironment environment, HystrixAmqpServiceInfo serviceInfo) {
+	@Override
+	protected PropertySource<?> toPropertySource(HystrixAmqpServiceInfo serviceInfo) {
 		Map<String, Object> properties = new LinkedHashMap<>();
 
 		properties.put(HYSTRIX_STREAM_BINDING_PREFIX + "destination", SPRING_CLOUD_HYSTRIX_STREAM);
@@ -56,7 +57,7 @@ public class HystrixStreamServiceConnector extends SpringEnvironmentServiceConne
 				serviceInfo.getAmqpInfo().getUri());
 		properties.put(HYSTRIX_STREAM_BINDER_PREFIX + "default.prefix", "");
 
-		MapPropertySource mapPropertySource = new MapPropertySource(PROPERTY_SOURCE_NAME, properties);
-		environment.getPropertySources().addFirst(mapPropertySource);
+		return new MapPropertySource(PROPERTY_SOURCE_NAME, properties);
 	}
+
 }

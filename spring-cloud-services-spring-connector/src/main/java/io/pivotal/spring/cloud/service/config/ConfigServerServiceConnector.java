@@ -19,11 +19,11 @@ package io.pivotal.spring.cloud.service.config;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import io.pivotal.spring.cloud.config.java.SpringEnvironmentServiceConnector;
+import io.pivotal.spring.cloud.config.java.ServiceInfoPropertySourceAdapter;
 import io.pivotal.spring.cloud.service.common.ConfigServerServiceInfo;
 
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertySource;
 
 /**
  * Connector to Config Server service
@@ -31,8 +31,8 @@ import org.springframework.core.env.MapPropertySource;
  * @author Chris Schaefer
  * @author Scott Frederick
  */
-public class ConfigServerServiceConnector extends SpringEnvironmentServiceConnector<ConfigServerServiceInfo> {
-	private static final String PROPERTY_SOURCE_NAME = "springCloudConfigServer";
+public class ConfigServerServiceConnector extends ServiceInfoPropertySourceAdapter<ConfigServerServiceInfo> {
+	private static final String PROPERTY_SOURCE_NAME = "springCloudServicesConfigServer";
 
 	public static final String SPRING_CLOUD_CONFIG_URI = "spring.cloud.config.uri";
 	public static final String SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_ID = "spring.cloud.config.client.oauth2.clientId";
@@ -40,15 +40,13 @@ public class ConfigServerServiceConnector extends SpringEnvironmentServiceConnec
 	public static final String SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI = "spring.cloud.config.client.oauth2.accessTokenUri";
 
 	@Override
-	protected void prepareEnvironment(ConfigurableEnvironment environment, ConfigServerServiceInfo serviceInfo) {
+	protected PropertySource<?> toPropertySource(ConfigServerServiceInfo serviceInfo) {
 		Map<String, Object> properties = new LinkedHashMap<>();
-
 		properties.put(SPRING_CLOUD_CONFIG_URI, serviceInfo.getUri());
 		properties.put(SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_ID, serviceInfo.getClientId());
 		properties.put(SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_SECRET, serviceInfo.getClientSecret());
 		properties.put(SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI, serviceInfo.getAccessTokenUri());
-
-		MapPropertySource mapPropertySource = new MapPropertySource(PROPERTY_SOURCE_NAME, properties);
-		environment.getPropertySources().addFirst(mapPropertySource);
+		return new MapPropertySource(PROPERTY_SOURCE_NAME, properties);
 	}
+
 }

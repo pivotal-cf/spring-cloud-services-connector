@@ -7,15 +7,30 @@ import org.springframework.cloud.CloudFactory;
 import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
-import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.PropertySource;
+import org.springframework.core.env.StandardEnvironment;
 
-public abstract class SpringEnvironmentServiceConnector<T extends ServiceInfo>
+/**
+ * Transforms a {@link ServiceInfo} into a {@link PropertySource} with highest precedence
+ * 
+ * @author Scott Frederick
+ * @author Will Tran
+ * 
+ * @see <a href=
+ *      "http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config">
+ *      http://docs.spring.io/spring-boot/docs/current/reference/html/boot-
+ *      features-external-config.html#boot-features-external-config</a>
+ * @param <T>
+ *            the {@link ServiceInfo} type
+ */
+public abstract class ServiceInfoPropertySourceAdapter<T extends ServiceInfo>
 		implements ApplicationListener<ApplicationEnvironmentPreparedEvent>, Ordered {
 
 	private Cloud cloud;
 
-	protected abstract void prepareEnvironment(ConfigurableEnvironment environment, T serviceInfo);
+	protected abstract PropertySource<?> toPropertySource(T serviceInfo);
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
 		if (cloud != null) {
@@ -31,7 +46,9 @@ public abstract class SpringEnvironmentServiceConnector<T extends ServiceInfo>
 
 		for (ServiceInfo serviceInfo : cloud.getServiceInfos()) {
 			try {
-				prepareEnvironment(event.getEnvironment(), (T) serviceInfo);
+				PropertySource<?> propertySource = toPropertySource((T) serviceInfo);
+				event.getEnvironment().getPropertySources()
+						.addAfter(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME, propertySource);
 			} catch (ClassCastException e) {
 				// non-matching ServiceInfo
 			}

@@ -40,9 +40,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = EurekaOAuth2ServiceConnectorIntegrationTest.TestConfig.class)
+@SpringApplicationConfiguration(classes = EurekaServiceConnectorIntegrationTest.TestConfig.class)
 @IntegrationTest()
-public class EurekaOAuth2ServiceConnectorIntegrationTest {
+public class EurekaServiceConnectorIntegrationTest {
 
 	private static final String ACCESS_TOKEN_URI = "https://p-spring-cloud-services.uaa.my-cf.com/oauth/token";
 
@@ -69,6 +69,8 @@ public class EurekaOAuth2ServiceConnectorIntegrationTest {
 
 	@Test
 	public void propertySourceIsAdded() {
+		Assert.assertEquals(URI + "/eureka/", environment.getProperty("eureka.client.serviceUrl.defaultZone"));
+		Assert.assertEquals("default", environment.getProperty("eureka.client.region"));
 		Assert.assertEquals(CLIENT_ID, environment.getProperty("eureka.client.oauth2.clientId"));
 		Assert.assertEquals(CLIENT_SECRET, environment.getProperty("eureka.client.oauth2.clientSecret"));
 		Assert.assertEquals(ACCESS_TOKEN_URI, environment.getProperty("eureka.client.oauth2.accessTokenUri"));

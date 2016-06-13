@@ -23,6 +23,6 @@ import org.springframework.context.annotation.PropertySource;
  * Bootstrap configuration to set properties for applications using Spring Cloud Services.
  */
 @Configuration
-@PropertySource(name="springCloudServices", value="classpath:/io/pivotal/spring/cloud/config/java/app-name.properties")
+@PropertySource(name="springCloudServicesBootstrap", value="classpath:/io/pivotal/spring/cloud/config/java/app-name.properties")
 public class CloudEnvironmentBootstrapConfiguration {	
 }
