@@ -54,9 +54,6 @@ public class HystrixStreamServiceConnector extends SpringEnvironmentServiceConne
 		properties.put(HYSTRIX_STREAM_BINDER_PREFIX + "environment.spring.cloud.stream.overrideCloudConnectors", true);
 		properties.put(HYSTRIX_STREAM_BINDER_PREFIX + "environment.spring.rabbitmq.addresses",
 				serviceInfo.getAmqpInfo().getUri());
-
-		// set up this property to force spring cloud stream to not use prefixes
-		// This may change with https://github.com/spring-cloud/spring-cloud-stream/issues/307
 		properties.put(HYSTRIX_STREAM_BINDER_PREFIX + "default.prefix", "");
 
 		MapPropertySource mapPropertySource = new MapPropertySource(PROPERTY_SOURCE_NAME, properties);
