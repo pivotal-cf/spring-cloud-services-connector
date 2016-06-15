@@ -47,8 +47,7 @@ public abstract class ServiceInfoPropertySourceAdapter<T extends ServiceInfo>
 		for (ServiceInfo serviceInfo : cloud.getServiceInfos()) {
 			try {
 				PropertySource<?> propertySource = toPropertySource((T) serviceInfo);
-				event.getEnvironment().getPropertySources()
-						.addAfter(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME, propertySource);
+				event.getEnvironment().getPropertySources().addFirst(propertySource);
 			} catch (ClassCastException e) {
 				// non-matching ServiceInfo
 			}
