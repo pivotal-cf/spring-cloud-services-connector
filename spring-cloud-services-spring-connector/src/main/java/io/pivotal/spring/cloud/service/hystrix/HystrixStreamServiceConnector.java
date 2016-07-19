@@ -20,42 +20,65 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import io.pivotal.spring.cloud.config.java.ServiceInfoPropertySourceAdapter;
+import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 
-import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
-
 /**
- * Sets properties specific to Spring Cloud Services circuit breaker, overriding defaults in Spring Cloud Netflix.
+ * Sets properties specific to Spring Cloud Services circuit breaker, overriding defaults
+ * in Spring Cloud Netflix.
  *
  * @author Will Tran
  * @author Scott Frederick
+ * @author Roy Clarkson
  */
 @Configuration
-public class HystrixStreamServiceConnector extends ServiceInfoPropertySourceAdapter<HystrixAmqpServiceInfo> {
+public class HystrixStreamServiceConnector
+		extends ServiceInfoPropertySourceAdapter<HystrixAmqpServiceInfo> {
+
 	public static final String PROPERTY_SOURCE_NAME = "springCloudServicesCircuitBreaker";
 
 	public static final String SPRING_CLOUD_HYSTRIX_STREAM = "spring.cloud.hystrix.stream";
 
-	public static final String HYSTRIX_STREAM_PREFIX = "spring.cloud.stream.";
-	public static final String HYSTRIX_STREAM_BINDING_PREFIX = HYSTRIX_STREAM_PREFIX + "bindings.hystrixStreamOutput.";
-	public static final String HYSTRIX_STREAM_BINDER_PREFIX = HYSTRIX_STREAM_PREFIX + "binders.hystrix.";
+	public static final String SPRING_CLOUD_STREAM = "spring.cloud.stream.";
+
+	public static final String SPRING_CLOUD_STREAM_BINDINGS_HYSTRIXSTREAMOUTPUT = SPRING_CLOUD_STREAM
+			+ "bindings.hystrixStreamOutput.";
+
+	public static final String SPRING_CLOUD_STREAM_BINDERS_HYSTRIX = SPRING_CLOUD_STREAM
+			+ "binders.hystrix.";
+
+	public static final String SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ = SPRING_CLOUD_STREAM_BINDERS_HYSTRIX
+			+ "environment.spring.rabbitmq.";
 
 	@Override
 	protected PropertySource<?> toPropertySource(HystrixAmqpServiceInfo serviceInfo) {
 		Map<String, Object> properties = new LinkedHashMap<>();
 
-		properties.put(HYSTRIX_STREAM_BINDING_PREFIX + "destination", SPRING_CLOUD_HYSTRIX_STREAM);
-		properties.put(HYSTRIX_STREAM_BINDING_PREFIX + "binder", "hystrix");
-
-		properties.put(HYSTRIX_STREAM_BINDER_PREFIX + "type", "rabbit");
-		properties.put(HYSTRIX_STREAM_BINDER_PREFIX + "inheritEnvironment", false);
-		properties.put(HYSTRIX_STREAM_BINDER_PREFIX + "defaultCandidate", false);
-		properties.put(HYSTRIX_STREAM_BINDER_PREFIX + "environment.spring.cloud.stream.overrideCloudConnectors", true);
-		properties.put(HYSTRIX_STREAM_BINDER_PREFIX + "environment.spring.rabbitmq.addresses",
-				serviceInfo.getAmqpInfo().getUri());
-		properties.put(HYSTRIX_STREAM_BINDER_PREFIX + "default.prefix", "");
+		properties.put(SPRING_CLOUD_STREAM_BINDINGS_HYSTRIXSTREAMOUTPUT + "destination",
+				SPRING_CLOUD_HYSTRIX_STREAM);
+		properties.put(SPRING_CLOUD_STREAM_BINDINGS_HYSTRIXSTREAMOUTPUT + "binder",
+				"hystrix");
+		properties.put(SPRING_CLOUD_STREAM_BINDERS_HYSTRIX + "type", "rabbit");
+		properties.put(SPRING_CLOUD_STREAM_BINDERS_HYSTRIX + "inheritEnvironment", false);
+		properties.put(SPRING_CLOUD_STREAM_BINDERS_HYSTRIX + "defaultCandidate", false);
+		properties.put(
+				SPRING_CLOUD_STREAM_BINDERS_HYSTRIX
+						+ "environment.spring.cloud.stream.overrideCloudConnectors",
+				true);
+		properties.put(SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ
+				+ "addresses", serviceInfo.getAddresses());
+		properties.put(SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ
+				+ "username", serviceInfo.getUserName());
+		properties.put(SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ
+				+ "password", serviceInfo.getPassword());
+		properties.put(SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ
+				+ "virtualHost", serviceInfo.getVirtualHost());
+		properties.put(SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ
+				+ "ssl.enabled", serviceInfo.getSslEnabled());
+		properties.put(SPRING_CLOUD_STREAM_BINDERS_HYSTRIX + "default.prefix", "");
 
 		return new MapPropertySource(PROPERTY_SOURCE_NAME, properties);
 	}

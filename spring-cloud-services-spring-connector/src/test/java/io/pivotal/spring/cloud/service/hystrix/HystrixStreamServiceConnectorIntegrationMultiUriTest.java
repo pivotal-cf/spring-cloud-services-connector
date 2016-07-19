@@ -18,6 +18,7 @@ package io.pivotal.spring.cloud.service.hystrix;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import io.pivotal.spring.cloud.MockCloudConnector;
 import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
@@ -44,12 +45,16 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {
-		HystrixStreamServiceConnectorIntegrationTest.TestConfig.class
+		HystrixStreamServiceConnectorIntegrationMultiUriTest.TestConfig.class
 })
 @IntegrationTest()
-public class HystrixStreamServiceConnectorIntegrationTest {
+public class HystrixStreamServiceConnectorIntegrationMultiUriTest {
 
-	private static final String URI = "amqp://username:password@p-rabbitmq.mydomain.com/testvhost";
+	private static final String URI = "amqps://username:password@p-rabbitmq1.mydomain.com/testvhost";
+
+	private static final List<String> URIS = Arrays.asList(
+			"amqps://username:password@p-rabbitmq1.mydomain.com/testvhost",
+			"amqps://username:password@p-rabbitmq2.mydomain.com/testvhost");
 
 	@Autowired
 	private Environment environment;
@@ -60,7 +65,7 @@ public class HystrixStreamServiceConnectorIntegrationTest {
 		when(MockCloudConnector.instance.isInMatchingCloud()).thenReturn(true);
 		when(MockCloudConnector.instance.getServiceInfos()).thenReturn(
 				Arrays.asList(
-						(ServiceInfo) new HystrixAmqpServiceInfo("circuit-breaker", URI),
+						(ServiceInfo) new HystrixAmqpServiceInfo("circuit-breaker", URI, URIS, true),
 						(ServiceInfo) new EurekaServiceInfo("service-registry", "http://example.com", "clientId", "clientSecret", "http://example.com/token")
 				)
 		);
@@ -78,11 +83,11 @@ public class HystrixStreamServiceConnectorIntegrationTest {
 		assertPropertyEquals("rabbit", SPRING_CLOUD_STREAM_BINDERS_HYSTRIX + "type");
 		assertPropertyEquals("false", SPRING_CLOUD_STREAM_BINDERS_HYSTRIX + "inheritEnvironment");
 		assertPropertyEquals("false", SPRING_CLOUD_STREAM_BINDERS_HYSTRIX + "defaultCandidate");
-		assertPropertyEquals("p-rabbitmq.mydomain.com:5672", SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ + "addresses");
+		assertPropertyEquals("p-rabbitmq1.mydomain.com:5671,p-rabbitmq2.mydomain.com:5671", SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ + "addresses");
 		assertPropertyEquals("username", SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ + "username");
 		assertPropertyEquals("password", SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ + "password");
 		assertPropertyEquals("testvhost", SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ + "virtualHost");
-		assertPropertyEquals("false", SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ + "ssl.enabled");
+		assertPropertyEquals("true", SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ + "ssl.enabled");
 		assertPropertyEquals("true", SPRING_CLOUD_STREAM_BINDERS_HYSTRIX + "environment.spring.cloud.stream.overrideCloudConnectors");
 		assertPropertyEquals("", SPRING_CLOUD_STREAM_BINDERS_HYSTRIX + "default.prefix");
 	}
