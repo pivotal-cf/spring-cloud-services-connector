@@ -1,0 +1,20 @@
+= Spring Cloud Services Connector image:https://build.spring.io/plugins/servlet/buildStatusImage/CLOUD-SCPC["Build Status", link="https://build.spring.io/browse/CLOUD-SCPC"]
+
+link:http://cloud.spring.io/spring-cloud-connectors/[Spring Cloud Connectors] for link:http://docs.pivotal.io/spring-cloud-services/index.html[Spring Cloud Services] in a link:http://pivotal.io/platform[Pivotal Cloud Foundry] environment
+
+- Config Server
+- Circuit Breaker (Netflix Hystrix)
+- Service Registry (Netflix Eureka)
+
+== Build
+
+This project uses Gradle. Build from source with the following command:
+
+----
+./gradlew build
+----
+
+== License
+
+Spring Cloud Services Connector is Open Source software released under the
+http://www.apache.org/licenses/LICENSE-2.0.html[Apache 2.0 license].
