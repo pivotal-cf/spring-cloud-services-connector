@@ -84,6 +84,22 @@ public class EurekaInstanceAutoConfigurationTest {
 	}
 
 	@Test
+	public void testProvidedVirtualHostNameIsNotOverridden() {
+		eurekaInstanceAutoConfiguration.setProvidedVirtualHostname("provided-virtual-hostname");
+		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
+		assertEquals("provided-virtual-hostname", eurekaInstanceConfigBean.getVirtualHostName());
+		assertEquals(APPNAME, eurekaInstanceConfigBean.getSecureVirtualHostName());
+	}
+
+	@Test
+	public void testProvidedSecureVirtualHostNameIsNotOverridden() {
+		eurekaInstanceAutoConfiguration.setProvidedSecureVirtualHostname("provided-secure-virtual-hostname");
+		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
+		assertEquals(APPNAME, eurekaInstanceConfigBean.getVirtualHostName());
+		assertEquals("provided-secure-virtual-hostname", eurekaInstanceConfigBean.getSecureVirtualHostName());
+	}
+
+	@Test
 	public void testDirectRegistration() {
 		eurekaInstanceAutoConfiguration.setRegistrationMethod(DIRECT_REGISTRATION_METHOD);
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
