@@ -69,6 +69,12 @@ public class EurekaInstanceAutoConfiguration {
 	@Value("${spring.cloud.services.registrationMethod:route}")
 	private String registrationMethod;
 
+	@Value("${virtual-host-name:#{null}}")
+	private String providedVirtualHostname;
+
+	@Value("${secure-virtual-host-name:#{null}}")
+	private String providedSecureVirtualHostname;
+
 	@Bean
 	public EurekaInstanceConfigBean eurekaInstanceConfigBean() {
 		if(!StringUtils.isEmpty(registrationMethod)) {
@@ -105,8 +111,11 @@ public class EurekaInstanceAutoConfiguration {
 		InetUtilsProperties inetUtilsProperties = new InetUtilsProperties();
 		inetUtilsProperties.setDefaultHostname(hostname);
 		inetUtilsProperties.setDefaultIpAddress(ip);
-		final String virtualHostname = appNameToVirtualHostname(appname);
-		EurekaInstanceConfigBean eurekaInstanceConfigBean = new EurekaInstanceConfigBeanOverride(new InetUtils(inetUtilsProperties), virtualHostname, virtualHostname);
+
+		final String virtualHostname = providedVirtualHostname == null ? appNameToVirtualHostname(appname) : providedVirtualHostname;
+		final String secureVirtualHostname = providedSecureVirtualHostname == null ? appNameToVirtualHostname(appname) : providedSecureVirtualHostname;
+
+		EurekaInstanceConfigBean eurekaInstanceConfigBean = new EurekaInstanceConfigBeanOverride(new InetUtils(inetUtilsProperties), virtualHostname, secureVirtualHostname);
 		eurekaInstanceConfigBean.setHostname(hostname);
 		eurekaInstanceConfigBean.setIpAddress(ip);
 		eurekaInstanceConfigBean.getMetadataMap().put(INSTANCE_ID, instanceId);
@@ -155,4 +164,11 @@ public class EurekaInstanceAutoConfiguration {
 		this.registrationMethod = registrationMethod;
 	}
 
+	void setProvidedVirtualHostname(String providedVirtualHostname) {
+		this.providedVirtualHostname = providedVirtualHostname;
+	}
+
+	void setProvidedSecureVirtualHostname(String providedSecureVirtualHostname) {
+		this.providedSecureVirtualHostname = providedSecureVirtualHostname;
+	}
 }
