@@ -69,10 +69,10 @@ public class EurekaInstanceAutoConfiguration {
 	@Value("${spring.cloud.services.registrationMethod:route}")
 	private String registrationMethod;
 
-	@Value("${virtual-host-name:#{null}}")
+	@Value("${eureka.instance.virtual-host-name:#{null}}")
 	private String providedVirtualHostname;
 
-	@Value("${secure-virtual-host-name:#{null}}")
+	@Value("${eureka.instance.secure-virtual-host-name:#{null}}")
 	private String providedSecureVirtualHostname;
 
 	@Bean
