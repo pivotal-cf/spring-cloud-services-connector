@@ -19,12 +19,12 @@ package io.pivotal.spring.cloud.service.eureka;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 
-final class EurekaInstanceConfigBeanOverride extends EurekaInstanceConfigBean {
+final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean {
 
     private final String virtualHostName;
     private final String secureVirtualHostName;
 
-    EurekaInstanceConfigBeanOverride(InetUtils inetUtils, String virtualHostName, String secureVirtualHostName) {
+    SanitizingEurekaInstanceConfigBean(InetUtils inetUtils, String virtualHostName, String secureVirtualHostName) {
         super(inetUtils);
         this.virtualHostName = virtualHostName;
         this.secureVirtualHostName = secureVirtualHostName;

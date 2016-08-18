@@ -26,21 +26,21 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Test cases for
- * {@link io.pivotal.spring.cloud.service.eureka.EurekaInstanceConfigBeanOverride}
+ * {@link SanitizingEurekaInstanceConfigBean}
  */
-public class EurekaInstanceConfigBeanOverrideTest {
+public class SanitizingEurekaInstanceConfigBeanTest {
 
     public static final String VIRTUAL_HOSTNAME = "virtual-hostname";
     public static final String SECURE_VIRTUAL_HOSTNAME = "secure-virtual-hostname";
     public static final String NEW_VIRTUAL_HOSTNAME = "new-virtual-hostname";
 
     private InetUtils mockInetutils;
-    private EurekaInstanceConfigBeanOverride override;
+    private SanitizingEurekaInstanceConfigBean override;
 
     @Before
     public void setup() {
         this.mockInetutils = new InetUtils(mock(InetUtilsProperties.class));
-        this.override = new EurekaInstanceConfigBeanOverride(this.mockInetutils, VIRTUAL_HOSTNAME, SECURE_VIRTUAL_HOSTNAME);
+        this.override = new SanitizingEurekaInstanceConfigBean(this.mockInetutils, VIRTUAL_HOSTNAME, SECURE_VIRTUAL_HOSTNAME);
     }
 
     @Test
