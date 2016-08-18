@@ -16,38 +16,39 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
+import java.util.logging.Logger;
+
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 
-final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean {
+final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean implements InitializingBean {
 
-    private final String virtualHostName;
-    private final String secureVirtualHostName;
+	private static Logger LOGGER = Logger.getLogger(SanitizingEurekaInstanceConfigBean.class.getName());
 
-    SanitizingEurekaInstanceConfigBean(InetUtils inetUtils, String virtualHostName, String secureVirtualHostName) {
-        super(inetUtils);
-        this.virtualHostName = virtualHostName;
-        this.secureVirtualHostName = secureVirtualHostName;
-    }
+	public SanitizingEurekaInstanceConfigBean(InetUtils inetUtils) {
+		super(inetUtils);
+	}
 
-    @Override
-    public String getVirtualHostName() {
-        return this.virtualHostName;
-    }
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		setVirtualHostName(sanitize(getVirtualHostName()));
+		setSecureVirtualHostName(sanitize(getSecureVirtualHostName()));
+	}
 
-    @Override
-    public void setVirtualHostName(String virtualHostName) {
-        throw new UnsupportedOperationException("virtualHostName is final");
-    }
+	private static String sanitize(String appName) {
+		if (appName == null) {
+			return null;
+		}
+		// RFC 952 defines the valid character set for hostnames.
+		final String virtualHostname = appName.replaceAll("[^0-9a-zA-Z\\-\\.]", "-");
 
-    @Override
-    public String getSecureVirtualHostName() {
-        return this.secureVirtualHostName;
-    }
+		if (!appName.equals(virtualHostname)) {
+			// Log a warning since this sanitised virtual hostname could clash with the virtual hostname of other applications.
+			LOGGER.warning("Application name '" + appName + "' was sanitised to produce virtual hostname '" + virtualHostname + "'");
+		}
 
-    @Override
-    public void setSecureVirtualHostName(String secureVirtualHostName) {
-        throw new UnsupportedOperationException("secureVirtualHostName is final");
+		return virtualHostname;
+	}
 
-    }
 }

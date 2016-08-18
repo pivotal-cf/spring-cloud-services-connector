@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 the original author or authors.
+ * Copyright 2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -25,8 +27,6 @@ import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
-
-import java.util.logging.Logger;
 
 /**
  * Configuration class to configure a Eureka instance's settings based on the
@@ -69,14 +69,8 @@ public class EurekaInstanceAutoConfiguration {
 	@Value("${spring.cloud.services.registrationMethod:route}")
 	private String registrationMethod;
 
-	@Value("${eureka.instance.virtual-host-name:#{null}}")
-	private String providedVirtualHostname;
-
-	@Value("${eureka.instance.secure-virtual-host-name:#{null}}")
-	private String providedSecureVirtualHostname;
-
 	@Bean
-	public EurekaInstanceConfigBean eurekaInstanceConfigBean() {
+	public SanitizingEurekaInstanceConfigBean eurekaInstanceConfigBean() {
 		if(!StringUtils.isEmpty(registrationMethod)) {
 			LOGGER.info("Eureka registration method: " + registrationMethod);
 
@@ -92,30 +86,27 @@ public class EurekaInstanceAutoConfiguration {
 		return getDefaultRegistration();
 	}
 
-	private EurekaInstanceConfigBean getRouteRegistration() {
-		EurekaInstanceConfigBean eurekaInstanceConfigBean = getDefaults();
+	private SanitizingEurekaInstanceConfigBean getRouteRegistration() {
+		SanitizingEurekaInstanceConfigBean eurekaInstanceConfigBean = getDefaults();
 		eurekaInstanceConfigBean.setSecurePortEnabled(true);
 		eurekaInstanceConfigBean.setInstanceId(hostname+":"+instanceId);
 		return eurekaInstanceConfigBean;
 	}
 
-	private EurekaInstanceConfigBean getDirectRegistration() {
-		EurekaInstanceConfigBean eurekaInstanceConfigBean = getDefaults();
+	private SanitizingEurekaInstanceConfigBean getDirectRegistration() {
+		SanitizingEurekaInstanceConfigBean eurekaInstanceConfigBean = getDefaults();
 		eurekaInstanceConfigBean.setNonSecurePort(port);
 		eurekaInstanceConfigBean.setPreferIpAddress(true);
 		eurekaInstanceConfigBean.setInstanceId(ip+":"+instanceId);
 		return eurekaInstanceConfigBean;
 	}
 
-	private EurekaInstanceConfigBean getDefaults() {
+	private SanitizingEurekaInstanceConfigBean getDefaults() {
 		InetUtilsProperties inetUtilsProperties = new InetUtilsProperties();
 		inetUtilsProperties.setDefaultHostname(hostname);
 		inetUtilsProperties.setDefaultIpAddress(ip);
 
-		final String virtualHostname = providedVirtualHostname == null ? appNameToVirtualHostname(appname) : providedVirtualHostname;
-		final String secureVirtualHostname = providedSecureVirtualHostname == null ? appNameToVirtualHostname(appname) : providedSecureVirtualHostname;
-
-		EurekaInstanceConfigBean eurekaInstanceConfigBean = new EurekaInstanceConfigBeanOverride(new InetUtils(inetUtilsProperties), virtualHostname, secureVirtualHostname);
+		SanitizingEurekaInstanceConfigBean eurekaInstanceConfigBean = new SanitizingEurekaInstanceConfigBean(new InetUtils(inetUtilsProperties));
 		eurekaInstanceConfigBean.setHostname(hostname);
 		eurekaInstanceConfigBean.setIpAddress(ip);
 		eurekaInstanceConfigBean.getMetadataMap().put(INSTANCE_ID, instanceId);
@@ -123,19 +114,7 @@ public class EurekaInstanceAutoConfiguration {
 		return eurekaInstanceConfigBean;
 	}
 
-	private static String appNameToVirtualHostname(String appName) {
-		// RFC 952 defines the valid character set for hostnames.
-		final String virtualHostname = appName.replaceAll("[^0-9a-zA-Z\\-\\.]", "-");
-
-		if (!appName.equals(virtualHostname)) {
-			// Log a warning since this sanitised virtual hostname could clash with the virtual hostname of other applications.
-			LOGGER.warning("Application name '" + appName + "' was sanitised to produce virtual hostname '" + virtualHostname + "'");
-		}
-
-		return virtualHostname;
-	}
-
-	private EurekaInstanceConfigBean getDefaultRegistration() {
+	private SanitizingEurekaInstanceConfigBean getDefaultRegistration() {
 		LOGGER.info("Eureka registration method not provided, defaulting to route");
 		return getRouteRegistration();
 	}
@@ -164,11 +143,4 @@ public class EurekaInstanceAutoConfiguration {
 		this.registrationMethod = registrationMethod;
 	}
 
-	void setProvidedVirtualHostname(String providedVirtualHostname) {
-		this.providedVirtualHostname = providedVirtualHostname;
-	}
-
-	void setProvidedSecureVirtualHostname(String providedSecureVirtualHostname) {
-		this.providedSecureVirtualHostname = providedSecureVirtualHostname;
-	}
 }
