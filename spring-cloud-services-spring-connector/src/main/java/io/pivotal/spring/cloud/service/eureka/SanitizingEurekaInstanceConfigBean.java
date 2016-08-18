@@ -16,15 +16,19 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
-import java.util.logging.Logger;
-
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
+
+import java.util.logging.Logger;
 
 final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean implements InitializingBean {
 
 	private static Logger LOGGER = Logger.getLogger(SanitizingEurekaInstanceConfigBean.class.getName());
+
+	@Autowired
+	private VirtualHostNamesBean virtualHostNamesBean;
 
 	public SanitizingEurekaInstanceConfigBean(InetUtils inetUtils) {
 		super(inetUtils);
@@ -32,20 +36,25 @@ final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean 
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		setVirtualHostName(sanitize(getVirtualHostName()));
-		setSecureVirtualHostName(sanitize(getSecureVirtualHostName()));
+		setVirtualHostName(determineVirtualHostName(this.virtualHostNamesBean.getVirtualHostName(), ""));
+		setSecureVirtualHostName(determineVirtualHostName(this.virtualHostNamesBean.getSecureVirtualHostName(), "secure "));
 	}
 
-	private static String sanitize(String appName) {
-		if (appName == null) {
-			return null;
-		}
+	private String determineVirtualHostName(String provided, String type) {
+		String result = provided == null ? virtualHostnameFromSanitizedAppName(type) : provided;
+		LOGGER.info("Determined " + type + "virtual hostname '" + result + "' from provided value '" + provided + "'");
+		return result;
+	}
+
+	private String virtualHostnameFromSanitizedAppName(String type) {
+		String appName = this.getAppname();
+
 		// RFC 952 defines the valid character set for hostnames.
 		final String virtualHostname = appName.replaceAll("[^0-9a-zA-Z\\-\\.]", "-");
 
 		if (!appName.equals(virtualHostname)) {
 			// Log a warning since this sanitised virtual hostname could clash with the virtual hostname of other applications.
-			LOGGER.warning("Application name '" + appName + "' was sanitised to produce virtual hostname '" + virtualHostname + "'");
+			LOGGER.warning("Application name '" + appName + "' was sanitised to produce " + type + "virtual hostname '" + virtualHostname + "'");
 		}
 
 		return virtualHostname;

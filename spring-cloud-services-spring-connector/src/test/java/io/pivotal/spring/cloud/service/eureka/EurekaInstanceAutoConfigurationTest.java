@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 the original author or authors.
+ * Copyright 2015-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,6 @@ public class EurekaInstanceAutoConfigurationTest {
 	private static final String IP = "1.2.3.4";
 	private static final int PORT = 54321;
 	private static final String INSTANCE_ID = UUID.randomUUID().toString();
-	private static final String APPNAME = "test-app";
-	private static final String APPNAME_INVALID_AS_HOSTNAME = "My.1st-test_app+";
-	private static final String SANITISED_APPNAME_INVALID_AS_HOSTNAME = "My.1st-test-app-";
 	private EurekaInstanceAutoConfiguration eurekaInstanceAutoConfiguration;
 
 	@Before
@@ -53,7 +50,6 @@ public class EurekaInstanceAutoConfigurationTest {
 		eurekaInstanceAutoConfiguration.setInstanceId(INSTANCE_ID);
 		eurekaInstanceAutoConfiguration.setIp(IP);
 		eurekaInstanceAutoConfiguration.setPort(PORT);
-		eurekaInstanceAutoConfiguration.setAppname(APPNAME);
 	}
 
 	@Test
@@ -71,32 +67,6 @@ public class EurekaInstanceAutoConfigurationTest {
 		assertEquals(443, eurekaInstanceConfigBean.getSecurePort());
 		assertTrue(eurekaInstanceConfigBean.getSecurePortEnabled());
 		assertEquals(INSTANCE_ID, eurekaInstanceConfigBean.getMetadataMap().get("instanceId"));
-		assertEquals(APPNAME, eurekaInstanceConfigBean.getVirtualHostName());
-		assertEquals(APPNAME, eurekaInstanceConfigBean.getSecureVirtualHostName());
-	}
-
-	@Test
-	public void testDefaultRegistrationSanitisesVirtualHostNames() {
-		eurekaInstanceAutoConfiguration.setAppname(APPNAME_INVALID_AS_HOSTNAME);
-		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
-		assertEquals(SANITISED_APPNAME_INVALID_AS_HOSTNAME, eurekaInstanceConfigBean.getVirtualHostName());
-		assertEquals(SANITISED_APPNAME_INVALID_AS_HOSTNAME, eurekaInstanceConfigBean.getSecureVirtualHostName());
-	}
-
-	@Test
-	public void testProvidedVirtualHostNameIsNotOverridden() {
-		eurekaInstanceAutoConfiguration.setProvidedVirtualHostname("provided-virtual-hostname");
-		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
-		assertEquals("provided-virtual-hostname", eurekaInstanceConfigBean.getVirtualHostName());
-		assertEquals(APPNAME, eurekaInstanceConfigBean.getSecureVirtualHostName());
-	}
-
-	@Test
-	public void testProvidedSecureVirtualHostNameIsNotOverridden() {
-		eurekaInstanceAutoConfiguration.setProvidedSecureVirtualHostname("provided-secure-virtual-hostname");
-		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
-		assertEquals(APPNAME, eurekaInstanceConfigBean.getVirtualHostName());
-		assertEquals("provided-secure-virtual-hostname", eurekaInstanceConfigBean.getSecureVirtualHostName());
 	}
 
 	@Test
@@ -107,16 +77,5 @@ public class EurekaInstanceAutoConfigurationTest {
 		assertEquals(IP, eurekaInstanceConfigBean.getHostname());
 		assertEquals(PORT, eurekaInstanceConfigBean.getNonSecurePort());
 		assertFalse(eurekaInstanceConfigBean.getSecurePortEnabled());
-		assertEquals(APPNAME, eurekaInstanceConfigBean.getVirtualHostName());
-		assertEquals(APPNAME, eurekaInstanceConfigBean.getSecureVirtualHostName());
-	}
-
-	@Test
-	public void testDirectRegistrationSanitisesVirtualHostNames() {
-		eurekaInstanceAutoConfiguration.setRegistrationMethod(DIRECT_REGISTRATION_METHOD);
-		eurekaInstanceAutoConfiguration.setAppname(APPNAME_INVALID_AS_HOSTNAME);
-		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
-		assertEquals(SANITISED_APPNAME_INVALID_AS_HOSTNAME, eurekaInstanceConfigBean.getVirtualHostName());
-		assertEquals(SANITISED_APPNAME_INVALID_AS_HOSTNAME, eurekaInstanceConfigBean.getSecureVirtualHostName());
 	}
 }
