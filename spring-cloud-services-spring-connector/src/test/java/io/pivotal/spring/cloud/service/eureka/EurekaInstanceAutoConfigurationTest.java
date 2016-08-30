@@ -16,16 +16,13 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
-import java.util.UUID;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 /**
  * Test cases for
@@ -41,6 +38,9 @@ public class EurekaInstanceAutoConfigurationTest {
 	private static final String IP = "1.2.3.4";
 	private static final int PORT = 54321;
 	private static final String INSTANCE_ID = UUID.randomUUID().toString();
+	private static final String ZONE_URI = "https://eureka-123.west.my-cf.com/eureka/";
+	private static final String ZONE = "west.my-cf.com";
+	private static final String UNKNOWN_ZONE = "unknown";
 	private EurekaInstanceAutoConfiguration eurekaInstanceAutoConfiguration;
 
 	@Before
@@ -50,6 +50,7 @@ public class EurekaInstanceAutoConfigurationTest {
 		eurekaInstanceAutoConfiguration.setInstanceId(INSTANCE_ID);
 		eurekaInstanceAutoConfiguration.setIp(IP);
 		eurekaInstanceAutoConfiguration.setPort(PORT);
+		eurekaInstanceAutoConfiguration.setZoneUri(ZONE_URI);
 	}
 
 	@Test
@@ -67,6 +68,7 @@ public class EurekaInstanceAutoConfigurationTest {
 		assertEquals(443, eurekaInstanceConfigBean.getSecurePort());
 		assertTrue(eurekaInstanceConfigBean.getSecurePortEnabled());
 		assertEquals(INSTANCE_ID, eurekaInstanceConfigBean.getMetadataMap().get("instanceId"));
+		assertEquals(ZONE, eurekaInstanceConfigBean.getMetadataMap().get("zone"));
 	}
 
 	@Test
@@ -77,5 +79,33 @@ public class EurekaInstanceAutoConfigurationTest {
 		assertEquals(IP, eurekaInstanceConfigBean.getHostname());
 		assertEquals(PORT, eurekaInstanceConfigBean.getNonSecurePort());
 		assertFalse(eurekaInstanceConfigBean.getSecurePortEnabled());
+	}
+
+	@Test
+	public void testMissingDefaultZoneUri() {
+		eurekaInstanceAutoConfiguration.setZoneUri(null);
+		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
+		assertEquals(UNKNOWN_ZONE, eurekaInstanceConfigBean.getMetadataMap().get("zone"));
+	}
+
+	@Test
+	public void testEmptyDefaultZoneUri() {
+		eurekaInstanceAutoConfiguration.setZoneUri("");
+		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
+		assertEquals(UNKNOWN_ZONE, eurekaInstanceConfigBean.getMetadataMap().get("zone"));
+	}
+
+	@Test
+	public void testShortDefaultZoneUri() {
+		eurekaInstanceAutoConfiguration.setZoneUri("https://funkylocaldomainname/eureka/");
+		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
+		assertEquals(UNKNOWN_ZONE, eurekaInstanceConfigBean.getMetadataMap().get("zone"));
+	}
+
+	@Test
+	public void testMalformedDefaultZoneUri() {
+		eurekaInstanceAutoConfiguration.setZoneUri(":" + ZONE_URI);
+		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
+		assertEquals(UNKNOWN_ZONE, eurekaInstanceConfigBean.getMetadataMap().get("zone"));
 	}
 }

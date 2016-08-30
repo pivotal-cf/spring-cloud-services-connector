@@ -19,7 +19,6 @@ package io.pivotal.spring.cloud.service.eureka;
 import io.pivotal.spring.cloud.TestApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -39,6 +38,7 @@ import static org.junit.Assert.assertTrue;
 @IntegrationTest({ "server.port=0", "vcap.application.uris[0]=www.route.local",
 		"cf.instance.ip=1.2.3.4",
 		"cf.instance.port=54321",
+		"eureka.client.serviceUrl.defaultZone=https://eureka-123.west.my-cf.com/eureka/",
 		"vcap.application.instance_id=instance-id",
 		"spring.application.name=app-name_",
 		"spring.cloud.services.registrationMethod=route" })
@@ -59,6 +59,7 @@ public class EurekaAutoConfigRouteIntegrationTest {
 		assertEquals(80, config.getNonSecurePort());
 		assertEquals(443, config.getSecurePort());
 		assertTrue(config.getSecurePortEnabled());
+		assertEquals("west.my-cf.com", config.getMetadataMap().get("zone"));
 	}
 
 }
