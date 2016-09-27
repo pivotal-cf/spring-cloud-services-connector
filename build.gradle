@@ -15,7 +15,7 @@ allprojects {
 	group = "io.pivotal.spring.cloud"
 
 	ext.springBootVersion = "1.3.7.RELEASE"
-	ext.springCloudVersion = "Brixton.SR5"
+	ext.springCloudVersion = "Brixton.SR6"
 	ext.lombokVersion = "1.16.8"
 
 	apply plugin: "propdeps"
