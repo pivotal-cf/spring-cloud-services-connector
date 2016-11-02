@@ -36,6 +36,7 @@ final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean 
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		super.afterPropertiesSet();
 		setVirtualHostName(determineVirtualHostName(this.virtualHostNamesBean.getVirtualHostName(), ""));
 		setSecureVirtualHostName(determineVirtualHostName(this.virtualHostNamesBean.getSecureVirtualHostName(), "secure "));
 	}
