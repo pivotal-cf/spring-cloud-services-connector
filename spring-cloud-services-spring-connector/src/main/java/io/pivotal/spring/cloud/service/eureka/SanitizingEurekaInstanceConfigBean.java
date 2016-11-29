@@ -36,19 +36,23 @@ final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean 
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		String providedEurekaAppname = this.getAppname();
 		super.afterPropertiesSet();
-		setVirtualHostName(determineVirtualHostName(this.virtualHostNamesBean.getVirtualHostName(), ""));
-		setSecureVirtualHostName(determineVirtualHostName(this.virtualHostNamesBean.getSecureVirtualHostName(), "secure "));
+		setVirtualHostName(determineVirtualHostName(this.virtualHostNamesBean.getVirtualHostName(), "", providedEurekaAppname));
+		setSecureVirtualHostName(determineVirtualHostName(this.virtualHostNamesBean.getSecureVirtualHostName(), "secure ", providedEurekaAppname));
+		if (providedEurekaAppname != "unknown") {
+			setAppname(providedEurekaAppname);
+		}
 	}
 
-	private String determineVirtualHostName(String provided, String type) {
-		String result = provided == null ? virtualHostnameFromSanitizedAppName(type) : provided;
-		LOGGER.info("Determined " + type + "virtual hostname '" + result + "' from provided value '" + provided + "'");
+	private String determineVirtualHostName(String providedVirtualHostname, String type, String providedEurekaAppname) {
+		String result = providedVirtualHostname == null ? virtualHostnameFromSanitizedAppNames(type, providedEurekaAppname) : providedVirtualHostname;
+		LOGGER.info("Determined " + type + "virtual hostname '" + result + "' from provided value '" + providedVirtualHostname + "' and provided Eureka appname'" + providedEurekaAppname + "'");
 		return result;
 	}
 
-	private String virtualHostnameFromSanitizedAppName(String type) {
-		String appName = this.getAppname();
+	private String virtualHostnameFromSanitizedAppNames(String type, String providedEurekaAppname) {
+		String appName = providedEurekaAppname == "unknown" ? this.getAppname() : providedEurekaAppname;
 
 		// RFC 952 defines the valid character set for hostnames.
 		final String virtualHostname = appName.replaceAll("[^0-9a-zA-Z\\-\\.]", "-");

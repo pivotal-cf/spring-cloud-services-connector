@@ -179,9 +179,21 @@ public class SanitizingEurekaInstanceConfigBeanTest {
     }
 
     @Test
+    public void testVirtualHostNameDefaultsToEurekaApplicationName() {
+        SanitizingEurekaInstanceConfigBean bean = createBeanWithProps("spring.application.name:san", "eureka.instance.appname:ean");
+        assertEquals("ean", bean.getVirtualHostName());
+    }
+
+    @Test
     public void testSecureVirtualHostNameDefaultsToApplicationName() {
         SanitizingEurekaInstanceConfigBean bean = createBeanWithProps("spring.application.name:san");
         assertEquals("san", bean.getSecureVirtualHostName());
+    }
+
+    @Test
+    public void testSecureVirtualHostNameDefaultsToEurekaApplicationName() {
+        SanitizingEurekaInstanceConfigBean bean = createBeanWithProps("spring.application.name:san", "eureka.instance.appname:ean");
+        assertEquals("ean", bean.getSecureVirtualHostName());
     }
 
     @Test
