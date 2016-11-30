@@ -14,8 +14,8 @@ buildscript {
 allprojects {
 	group = "io.pivotal.spring.cloud"
 
-	ext.springBootVersion = "1.4.1.RELEASE"
-	ext.springCloudVersion = "Camden.SR2"
+	ext.springBootVersion = "1.4.2.RELEASE"
+	ext.springCloudVersion = "Camden.SR3"
 	ext.lombokVersion = "1.16.8"
 
 	apply plugin: "propdeps"
