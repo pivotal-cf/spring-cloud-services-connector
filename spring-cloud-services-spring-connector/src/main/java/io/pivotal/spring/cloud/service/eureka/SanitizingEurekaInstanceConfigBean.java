@@ -36,26 +36,37 @@ final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean 
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		String providedEurekaAppname = this.getAppname();
 		super.afterPropertiesSet();
-		setVirtualHostName(determineVirtualHostName(this.virtualHostNamesBean.getVirtualHostName(), ""));
-		setSecureVirtualHostName(determineVirtualHostName(this.virtualHostNamesBean.getSecureVirtualHostName(), "secure "));
+
+		if (providedEurekaAppname != "unknown") {
+			if (this.virtualHostNamesBean.getVirtualHostName() == null) {
+				setVirtualHostName(providedEurekaAppname);
+			}
+			if (this.virtualHostNamesBean.getSecureVirtualHostName() == null) {
+				setSecureVirtualHostName(providedEurekaAppname);
+			}
+			setAppname(providedEurekaAppname);
+		} else {
+			setVirtualHostName(determineName(this.virtualHostNamesBean.getVirtualHostName(), "virtual hostname"));
+			setSecureVirtualHostName(determineName(this.virtualHostNamesBean.getSecureVirtualHostName(), "secure virtual hostname"));
+			setAppname(sanitizedSpringApplicationName("eureka application name"));
+		}
 	}
 
-	private String determineVirtualHostName(String provided, String type) {
-		String result = provided == null ? virtualHostnameFromSanitizedAppName(type) : provided;
-		LOGGER.info("Determined " + type + "virtual hostname '" + result + "' from provided value '" + provided + "'");
-		return result;
+	private String determineName(String providedName, String type) {
+		return providedName == null ? sanitizedSpringApplicationName(type) : providedName;
 	}
 
-	private String virtualHostnameFromSanitizedAppName(String type) {
+	private String sanitizedSpringApplicationName(String type) {
 		String appName = this.getAppname();
 
 		// RFC 952 defines the valid character set for hostnames.
 		final String virtualHostname = appName.replaceAll("[^0-9a-zA-Z\\-\\.]", "-");
 
 		if (!appName.equals(virtualHostname)) {
-			// Log a warning since this sanitised virtual hostname could clash with the virtual hostname of other applications.
-			LOGGER.warning("Application name '" + appName + "' was sanitised to produce " + type + "virtual hostname '" + virtualHostname + "'");
+			// Log a warning since this sanitised name could clash with the a non-sanitised name.
+			LOGGER.warning("Spring application name '" + appName + "' was sanitised to produce " + type + " '" + virtualHostname + "'");
 		}
 
 		return virtualHostname;

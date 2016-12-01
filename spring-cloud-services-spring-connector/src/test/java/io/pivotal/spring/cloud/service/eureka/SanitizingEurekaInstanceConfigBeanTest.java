@@ -173,34 +173,31 @@ public class SanitizingEurekaInstanceConfigBeanTest {
     }
 
     @Test
-    public void testVirtualHostNameDefaultsToApplicationName() {
-        SanitizingEurekaInstanceConfigBean bean = createBeanWithProps("spring.application.name:san");
+    public void testAppIdentifiersAreDefaultedIfOnlySpringAppNameIsSet() {
+        SanitizingEurekaInstanceConfigBean bean = createBeanWithProps(
+                "spring.application.name:san");
+        assertEquals("san", bean.getAppname());
         assertEquals("san", bean.getVirtualHostName());
-    }
-
-    @Test
-    public void testSecureVirtualHostNameDefaultsToApplicationName() {
-        SanitizingEurekaInstanceConfigBean bean = createBeanWithProps("spring.application.name:san");
         assertEquals("san", bean.getSecureVirtualHostName());
     }
 
     @Test
-    public void testDefaultVirtualHostNameIsSanitised() {
-        SanitizingEurekaInstanceConfigBean bean = createBeanWithProps("spring.application.name:s_an");
+    public void testAppIdentifiersAreSanitisedIfOnlySpringAppNameIsSet() {
+        SanitizingEurekaInstanceConfigBean bean = createBeanWithProps(
+                "spring.application.name:s_an");
+        assertEquals("s-an", bean.getAppname());
         assertEquals("s-an", bean.getVirtualHostName());
-    }
-
-    @Test
-    public void testDefaultSecureVirtualHostNameIsSanitised() {
-        SanitizingEurekaInstanceConfigBean bean = createBeanWithProps("spring.application.name:s_an");
         assertEquals("s-an", bean.getSecureVirtualHostName());
     }
 
     @Test
-    public void testApplicationNameIsNotSanitised() {
-        // Virtual hostnames should be sanitised without affecting the application name.
-        SanitizingEurekaInstanceConfigBean bean = createBeanWithProps("spring.application.name:s_an");
-        assertEquals("s_an", bean.getAppname());
+    public void testAppIdentifiersDefaultToEurekaAppName() {
+        SanitizingEurekaInstanceConfigBean bean = createBeanWithProps(
+                "spring.application.name:s_an",
+                "eureka.instance.appname:e_an");
+        assertEquals("e_an", bean.getAppname());
+        assertEquals("e_an", bean.getVirtualHostName());
+        assertEquals("e_an", bean.getSecureVirtualHostName());
     }
 
     private SanitizingEurekaInstanceConfigBean createBeanWithProps(String... pairs) {
