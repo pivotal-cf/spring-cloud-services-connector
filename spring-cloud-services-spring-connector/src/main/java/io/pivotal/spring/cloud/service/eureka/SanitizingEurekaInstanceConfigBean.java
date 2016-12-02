@@ -17,9 +17,11 @@
 package io.pivotal.spring.cloud.service.eureka;
 
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
+import org.springframework.core.env.Environment;
+import org.springframework.util.StringUtils;
 
 import java.util.logging.Logger;
 
@@ -27,38 +29,66 @@ final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean 
 
 	private static Logger LOGGER = Logger.getLogger(SanitizingEurekaInstanceConfigBean.class.getName());
 
-	@Autowired
-	private VirtualHostNamesBean virtualHostNamesBean;
-
 	public SanitizingEurekaInstanceConfigBean(InetUtils inetUtils) {
 		super(inetUtils);
 	}
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		super.afterPropertiesSet();
-		setVirtualHostName(determineVirtualHostName(this.virtualHostNamesBean.getVirtualHostName(), ""));
-		setSecureVirtualHostName(determineVirtualHostName(this.virtualHostNamesBean.getSecureVirtualHostName(), "secure "));
-	}
-
-	private String determineVirtualHostName(String provided, String type) {
-		String result = provided == null ? virtualHostnameFromSanitizedAppName(type) : provided;
-		LOGGER.info("Determined " + type + "virtual hostname '" + result + "' from provided value '" + provided + "'");
-		return result;
-	}
-
-	private String virtualHostnameFromSanitizedAppName(String type) {
-		String appName = this.getAppname();
-
-		// RFC 952 defines the valid character set for hostnames.
-		final String virtualHostname = appName.replaceAll("[^0-9a-zA-Z\\-\\.]", "-");
-
-		if (!appName.equals(virtualHostname)) {
-			// Log a warning since this sanitised virtual hostname could clash with the virtual hostname of other applications.
-			LOGGER.warning("Application name '" + appName + "' was sanitised to produce " + type + "virtual hostname '" + virtualHostname + "'");
+	public void setEnvironment(Environment environment) {
+		super.setEnvironment(environment);
+		// set some defaults from the environment, but allow the defaults to use
+		// relaxed binding
+		String springAppName = getSpringApplicationName();
+		String eurekaInstanceAppname = getEurekaInstanceAppnameProperty();
+		if (StringUtils.hasText(eurekaInstanceAppname)) {
+			// default to eureka.instance.appname if defined
+			setVirtualHostName(eurekaInstanceAppname);
+			setSecureVirtualHostName(eurekaInstanceAppname);
+		} else if (StringUtils.hasText(springAppName)) {
+			// default to a hostname-sanitized spring application name
+			String sanitizedAppName = sanitizeHostname(springAppName);
+			if (!springAppName.equals(sanitizedAppName)) {
+				LOGGER.warning("Spring application name '" + springAppName
+						+ "' was sanitised to produce eureka.instance.appname '" + sanitizedAppName + "'");
+			}
+			setAppname(sanitizedAppName);
+			setVirtualHostName(sanitizedAppName);
+			setSecureVirtualHostName(sanitizedAppName);
 		}
+	}
 
-		return virtualHostname;
+	private String getSpringApplicationName() {
+		RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(getEnvironment(), "spring.application.");
+		return propertyResolver.getProperty("name");
+	}
+
+	private String getEurekaInstanceAppnameProperty() {
+		RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(getEnvironment(), "eureka.instance.");
+		return propertyResolver.getProperty("appname");
+	}
+
+	// RFC 952 defines the valid character set for hostnames.
+	private String sanitizeHostname(String hostname) {
+		if (hostname == null) {
+			return null;
+		}
+		return hostname.replaceAll("[^0-9a-zA-Z\\-\\.]", "-");
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// don't call super, it's a bug in Camden.SR1-2
+		String messageSuffix = "' is set to a different value than eureka.instance.appname '" + getAppname()
+				+ "', and is disallowed in Spring Cloud Services. Try only setting eureka.instance.appname."
+				+ " Please refer to our documentation and reach out to us if you think you require different values.";
+		if (StringUtils.hasText(getVirtualHostName()) && !getVirtualHostName().equalsIgnoreCase(getAppname())) {
+			throw new IllegalArgumentException(
+					"eureka.instance.virtualHostName '" + getVirtualHostName() + messageSuffix);
+		}
+		if (StringUtils.hasText(getSecureVirtualHostName()) && !getSecureVirtualHostName().equalsIgnoreCase(getAppname())) {
+			throw new IllegalArgumentException(
+					"eureka.instance.secureVirtualHostName '" + getSecureVirtualHostName() + messageSuffix);
+		}
 	}
 
 }
