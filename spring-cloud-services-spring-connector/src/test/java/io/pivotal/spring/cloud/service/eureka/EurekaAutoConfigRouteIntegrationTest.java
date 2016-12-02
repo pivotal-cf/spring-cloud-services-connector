@@ -52,7 +52,7 @@ public class EurekaAutoConfigRouteIntegrationTest {
 		final EurekaInstanceConfigBean config = context
 				.getBean(EurekaInstanceConfigBean.class);
 		assertEquals("www.route.local:instance-id", config.getInstanceId());
-		assertEquals("app-name_", config.getAppname());
+		assertEquals("app-name-", config.getAppname());
 		assertEquals("app-name-", config.getVirtualHostName());
 		assertEquals("app-name-", config.getSecureVirtualHostName());
 		assertEquals("www.route.local", config.getHostname());

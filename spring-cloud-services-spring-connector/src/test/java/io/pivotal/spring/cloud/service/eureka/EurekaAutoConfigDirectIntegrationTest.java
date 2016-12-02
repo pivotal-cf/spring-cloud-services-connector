@@ -52,7 +52,7 @@ public class EurekaAutoConfigDirectIntegrationTest {
 		final EurekaInstanceConfigBean config = context
 				.getBean(EurekaInstanceConfigBean.class);
 		assertEquals("1.2.3.4:instance-id", config.getInstanceId());
-		assertEquals("app-name_", config.getAppname());
+		assertEquals("app-name-", config.getAppname());
 		assertEquals("app-name-", config.getVirtualHostName());
 		assertEquals("app-name-", config.getSecureVirtualHostName());
 		assertEquals("1.2.3.4", config.getHostname());

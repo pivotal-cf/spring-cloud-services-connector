@@ -49,7 +49,7 @@ final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean 
 			String sanitizedAppName = sanitizeHostname(springAppName);
 			if (!springAppName.equals(sanitizedAppName)) {
 				LOGGER.warning("Spring application name '" + springAppName
-						+ "' was sanitised to produce eureka.instance.appname '" + sanitizedAppName + "'");
+						+ "' was sanitized to produce eureka.instance.appname '" + sanitizedAppName + "'");
 			}
 			setAppname(sanitizedAppName);
 			setVirtualHostName(sanitizedAppName);
