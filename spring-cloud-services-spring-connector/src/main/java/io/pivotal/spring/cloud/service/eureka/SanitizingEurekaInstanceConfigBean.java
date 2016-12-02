@@ -74,10 +74,21 @@ final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean 
 		}
 		return hostname.replaceAll("[^0-9a-zA-Z\\-\\.]", "-");
 	}
-	
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		// prevent super from being called, it's a bug in Camden.SR1-2
+		// don't call super, it's a bug in Camden.SR1-2
+		String messageSuffix = "' is set to a different value than eureka.instance.appname '" + getAppname()
+				+ "', and is disallowed in Spring Cloud Services. Try only setting eureka.instance.appname."
+				+ " Please refer to our documentation and reach out to us if you think you require different values.";
+		if (StringUtils.hasText(getVirtualHostName()) && !getVirtualHostName().equalsIgnoreCase(getAppname())) {
+			throw new IllegalArgumentException(
+					"eureka.instance.virtualHostName '" + getVirtualHostName() + messageSuffix);
+		}
+		if (StringUtils.hasText(getSecureVirtualHostName()) && !getSecureVirtualHostName().equalsIgnoreCase(getAppname())) {
+			throw new IllegalArgumentException(
+					"eureka.instance.secureVirtualHostName '" + getSecureVirtualHostName() + messageSuffix);
+		}
 	}
 
 }
