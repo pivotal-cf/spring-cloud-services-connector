@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -34,6 +35,8 @@ import static org.junit.Assert.*;
 public class EurekaInstanceAutoConfigurationTest {
 	private static final String ROUTE_REGISTRATION_METHOD = "route";
 	private static final String DIRECT_REGISTRATION_METHOD = "direct";
+	private static final String INSTANCE_GUID = UUID.randomUUID().toString();
+	private static final String INSTANCE_INDEX = "12";
 	private static final String HOSTNAME = "www.route.com";
 	private static final String IP = "1.2.3.4";
 	private static final int PORT = 54321;
@@ -47,6 +50,8 @@ public class EurekaInstanceAutoConfigurationTest {
 	public void setup() {
 		eurekaInstanceAutoConfiguration = new EurekaInstanceAutoConfiguration();
 		eurekaInstanceAutoConfiguration.setHostname(HOSTNAME);
+		eurekaInstanceAutoConfiguration.setCfAppGuid(INSTANCE_GUID);
+		eurekaInstanceAutoConfiguration.setCfInstanceIndex(INSTANCE_INDEX);
 		eurekaInstanceAutoConfiguration.setInstanceId(INSTANCE_ID);
 		eurekaInstanceAutoConfiguration.setIp(IP);
 		eurekaInstanceAutoConfiguration.setPort(PORT);
@@ -67,8 +72,12 @@ public class EurekaInstanceAutoConfigurationTest {
 		assertEquals(80, eurekaInstanceConfigBean.getNonSecurePort());
 		assertEquals(443, eurekaInstanceConfigBean.getSecurePort());
 		assertTrue(eurekaInstanceConfigBean.getSecurePortEnabled());
-		assertEquals(INSTANCE_ID, eurekaInstanceConfigBean.getMetadataMap().get("instanceId"));
-		assertEquals(ZONE, eurekaInstanceConfigBean.getMetadataMap().get("zone"));
+
+		Map<String, String> metadata = eurekaInstanceConfigBean.getMetadataMap();
+		assertEquals(INSTANCE_GUID, metadata.get("cfAppGuid"));
+		assertEquals(INSTANCE_INDEX, metadata.get("cfInstanceIndex"));
+		assertEquals(INSTANCE_ID, metadata.get("instanceId"));
+		assertEquals(ZONE, metadata.get("zone"));
 	}
 
 	@Test
