@@ -54,6 +54,8 @@ public class EurekaInstanceAutoConfiguration {
 	private static final String DEFAULT_ZONE_PROPERTY = "eureka.client.serviceUrl.defaultZone";
 	private static final String ROUTE_REGISTRATION_METHOD = "route";
 	private static final String DIRECT_REGISTRATION_METHOD = "direct";
+	private static final String CF_APP_GUID = "cfAppGuid";
+	private static final String CF_INSTANCE_INDEX = "cfInstanceIndex";
 	private static final String INSTANCE_ID = "instanceId";
 	private static final String ZONE = "zone";
 
@@ -62,6 +64,12 @@ public class EurekaInstanceAutoConfiguration {
 
 	@Value("${spring.application.name:unknown}")
 	private String appname = "unknown";
+
+	@Value("${cf.instance.guid:}")
+	private String cfAppGuid;
+
+	@Value("${cf.instance.index:}")
+	private String cfInstanceIndex;
 
 	@Value("${cf.instance.ip:}")
 	private String ip;
@@ -85,14 +93,14 @@ public class EurekaInstanceAutoConfiguration {
 
 	@Bean
 	public EurekaInstanceConfigBean eurekaInstanceConfigBean() {
-		if(!StringUtils.isEmpty(registrationMethod)) {
+		if (!StringUtils.isEmpty(registrationMethod)) {
 			LOGGER.info("Eureka registration method: " + registrationMethod);
 
-			if(ROUTE_REGISTRATION_METHOD.equals(registrationMethod)) {
+			if (ROUTE_REGISTRATION_METHOD.equals(registrationMethod)) {
 				return getRouteRegistration();
 			}
 
-			if(DIRECT_REGISTRATION_METHOD.equals(registrationMethod)) {
+			if (DIRECT_REGISTRATION_METHOD.equals(registrationMethod)) {
 				return getDirectRegistration();
 			}
 		}
@@ -103,7 +111,7 @@ public class EurekaInstanceAutoConfiguration {
 	private SanitizingEurekaInstanceConfigBean getRouteRegistration() {
 		SanitizingEurekaInstanceConfigBean eurekaInstanceConfigBean = getDefaults();
 		eurekaInstanceConfigBean.setSecurePortEnabled(true);
-		eurekaInstanceConfigBean.setInstanceId(hostname+":"+instanceId);
+		eurekaInstanceConfigBean.setInstanceId(hostname + ":" + instanceId);
 		return eurekaInstanceConfigBean;
 	}
 
@@ -111,7 +119,7 @@ public class EurekaInstanceAutoConfiguration {
 		SanitizingEurekaInstanceConfigBean eurekaInstanceConfigBean = getDefaults();
 		eurekaInstanceConfigBean.setNonSecurePort(port);
 		eurekaInstanceConfigBean.setPreferIpAddress(true);
-		eurekaInstanceConfigBean.setInstanceId(ip+":"+instanceId);
+		eurekaInstanceConfigBean.setInstanceId(ip + ":" + instanceId);
 		return eurekaInstanceConfigBean;
 	}
 
@@ -124,6 +132,8 @@ public class EurekaInstanceAutoConfiguration {
 		eurekaInstanceConfigBean.setHostname(hostname);
 		eurekaInstanceConfigBean.setIpAddress(ip);
 		Map<String, String> metadataMap = eurekaInstanceConfigBean.getMetadataMap();
+		metadataMap.put(CF_APP_GUID, cfAppGuid);
+		metadataMap.put(CF_INSTANCE_INDEX, cfInstanceIndex);
 		metadataMap.put(INSTANCE_ID, instanceId);
 		metadataMap.put(ZONE, zoneFromUri(zoneUri));
 
@@ -152,6 +162,14 @@ public class EurekaInstanceAutoConfiguration {
 
 	void setHostname(String hostname) {
 		this.hostname = hostname;
+	}
+
+	void setCfAppGuid(String cfAppGuid) {
+		this.cfAppGuid = cfAppGuid;
+	}
+
+	void setCfInstanceIndex(String cfInstanceIndex) {
+		this.cfInstanceIndex = cfInstanceIndex;
 	}
 
 	void setIp(String ip) {
