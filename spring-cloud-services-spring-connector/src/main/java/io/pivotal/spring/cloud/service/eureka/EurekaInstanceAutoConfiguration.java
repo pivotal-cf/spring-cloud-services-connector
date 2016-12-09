@@ -65,7 +65,7 @@ public class EurekaInstanceAutoConfiguration {
 	@Value("${spring.application.name:unknown}")
 	private String appname = "unknown";
 
-	@Value("${cf.instance.guid:}")
+	@Value("${vcap.application.application_id:}")
 	private String cfAppGuid;
 
 	@Value("${cf.instance.index:}")
