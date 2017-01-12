@@ -54,8 +54,6 @@ public class EurekaInstanceAutoConfiguration {
 	private static final String DEFAULT_ZONE_PROPERTY = "eureka.client.serviceUrl.defaultZone";
 	private static final String ROUTE_REGISTRATION_METHOD = "route";
 	private static final String DIRECT_REGISTRATION_METHOD = "direct";
-	private static final String CF_APP_GUID = "cfAppGuid";
-	private static final String CF_INSTANCE_INDEX = "cfInstanceIndex";
 	private static final String INSTANCE_ID = "instanceId";
 	private static final String ZONE = "zone";
 
@@ -107,6 +105,11 @@ public class EurekaInstanceAutoConfiguration {
 
 		return getDefaultRegistration();
 	}
+	
+	@Bean
+	public SurgicalRoutingRequestTransformer surgicalRoutingLoadBalancerRequestTransformer() {
+		return new SurgicalRoutingRequestTransformer();
+	}
 
 	private SanitizingEurekaInstanceConfigBean getRouteRegistration() {
 		SanitizingEurekaInstanceConfigBean eurekaInstanceConfigBean = getDefaults();
@@ -132,8 +135,8 @@ public class EurekaInstanceAutoConfiguration {
 		eurekaInstanceConfigBean.setHostname(hostname);
 		eurekaInstanceConfigBean.setIpAddress(ip);
 		Map<String, String> metadataMap = eurekaInstanceConfigBean.getMetadataMap();
-		metadataMap.put(CF_APP_GUID, cfAppGuid);
-		metadataMap.put(CF_INSTANCE_INDEX, cfInstanceIndex);
+		metadataMap.put(SurgicalRoutingRequestTransformer.CF_APP_GUID, cfAppGuid);
+		metadataMap.put(SurgicalRoutingRequestTransformer.CF_INSTANCE_INDEX, cfInstanceIndex);
 		metadataMap.put(INSTANCE_ID, instanceId);
 		metadataMap.put(ZONE, zoneFromUri(zoneUri));
 

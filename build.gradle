@@ -15,7 +15,7 @@ allprojects {
 	group = "io.pivotal.spring.cloud"
 
 	ext.springBootVersion = "1.4.2.RELEASE"
-	ext.springCloudVersion = "Camden.SR3"
+	ext.springCloudVersion = "Camden.SR4"
 	ext.lombokVersion = "1.16.8"
 
 	apply plugin: "propdeps"
@@ -160,6 +160,7 @@ project(":spring-cloud-services-spring-connector") {
 		testCompile("org.springframework.cloud:spring-cloud-starter-hystrix")
 		testCompile("org.springframework.cloud:spring-cloud-netflix-hystrix-stream")
 		testCompile("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
+		testCompile("org.springframework.cloud:spring-cloud-starter-ribbon")
 		testCompile("commons-logging:commons-logging")
 	}
 }
