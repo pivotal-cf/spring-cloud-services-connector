@@ -84,6 +84,7 @@ public class EurekaInstanceAutoConfigurationTest {
 	public void testDirectRegistration() {
 		eurekaInstanceAutoConfiguration.setRegistrationMethod(DIRECT_REGISTRATION_METHOD);
 		EurekaInstanceConfigBean eurekaInstanceConfigBean = eurekaInstanceAutoConfiguration.eurekaInstanceConfigBean();
+		assertTrue(eurekaInstanceConfigBean.isPreferIpAddress());
 		assertEquals(IP + ":" + INSTANCE_ID, eurekaInstanceConfigBean.getInstanceId());
 		assertEquals(IP, eurekaInstanceConfigBean.getHostname());
 		assertEquals(PORT, eurekaInstanceConfigBean.getNonSecurePort());

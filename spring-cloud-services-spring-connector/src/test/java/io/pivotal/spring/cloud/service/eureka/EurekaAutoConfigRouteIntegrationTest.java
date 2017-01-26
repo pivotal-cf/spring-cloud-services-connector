@@ -20,10 +20,8 @@ import io.pivotal.spring.cloud.TestApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -34,23 +32,24 @@ import static org.junit.Assert.assertTrue;
  * @author Will Tran
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = TestApplication.class)
-@IntegrationTest({ "server.port=0", "vcap.application.uris[0]=www.route.local",
-		"cf.instance.ip=1.2.3.4",
-		"cf.instance.port=54321",
-		"eureka.client.serviceUrl.defaultZone=https://eureka-123.west.my-cf.com/eureka/",
-		"vcap.application.instance_id=instance-id",
-		"spring.application.name=app-name_",
-		"spring.cloud.services.registrationMethod=route" })
+@SpringBootTest(classes = TestApplication.class,
+		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+		properties = {
+				"vcap.application.uris[0]=www.route.local",
+				"cf.instance.ip=1.2.3.4",
+				"cf.instance.port=54321",
+				"eureka.client.serviceUrl.defaultZone=https://eureka-123.west.my-cf.com/eureka/",
+				"vcap.application.instance_id=instance-id",
+				"spring.application.name=app-name_",
+				"spring.cloud.services.registrationMethod=route"
+		})
 public class EurekaAutoConfigRouteIntegrationTest {
 
 	@Autowired
-	private ApplicationContext context;
+	private EurekaInstanceConfigBean config;
 
 	@Test
 	public void eurekaConfigBean() throws Exception {
-		final EurekaInstanceConfigBean config = context
-				.getBean(EurekaInstanceConfigBean.class);
 		assertEquals("www.route.local:instance-id", config.getInstanceId());
 		assertEquals("app-name-", config.getAppname());
 		assertEquals("app-name-", config.getVirtualHostName());

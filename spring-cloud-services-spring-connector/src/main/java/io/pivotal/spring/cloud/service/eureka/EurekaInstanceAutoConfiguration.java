@@ -33,8 +33,8 @@ import java.util.logging.Logger;
 /**
  * Configuration class to configure a Eureka instance's settings based on the
  * value of <code>spring.cloud.services.registrationMethod</code>. "route" will
- * register vcap.application.uris[0] while "direct" will register CF_INSTANCE_IP
- * and CF_INSTANCE_PORT registration methods. The default behaviour is "route" <br>
+ * register vcap.application.uris[0] while "direct" will register using the container IP address
+ * and PORT environment variable. The default behaviour is "route".<br>
  * <br>
  * Any defined eureka.instance.* property will override those set by this
  * auto-configuration.
@@ -69,10 +69,10 @@ public class EurekaInstanceAutoConfiguration {
 	@Value("${cf.instance.index:}")
 	private String cfInstanceIndex;
 
-	@Value("${cf.instance.ip:}")
+	@Value("${cf.instance.internal.ip:}")
 	private String ip;
 
-	@Value("${cf.instance.port:-1}")
+	@Value("${port:-1}")
 	private int port;
 
 	@Value("${vcap.application.instance_id:${random.value}}")
@@ -120,8 +120,8 @@ public class EurekaInstanceAutoConfiguration {
 
 	private SanitizingEurekaInstanceConfigBean getDirectRegistration() {
 		SanitizingEurekaInstanceConfigBean eurekaInstanceConfigBean = getDefaults();
-		eurekaInstanceConfigBean.setNonSecurePort(port);
 		eurekaInstanceConfigBean.setPreferIpAddress(true);
+		eurekaInstanceConfigBean.setNonSecurePort(port);
 		eurekaInstanceConfigBean.setInstanceId(ip + ":" + instanceId);
 		return eurekaInstanceConfigBean;
 	}

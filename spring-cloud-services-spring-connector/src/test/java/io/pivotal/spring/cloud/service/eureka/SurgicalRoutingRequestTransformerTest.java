@@ -28,11 +28,10 @@ public class SurgicalRoutingRequestTransformerTest {
 	private ServiceInstance instance;
 	@Mock
 	private HttpRequest request;
-	private HttpHeaders existingHeaders;
 
 	@Before
 	public void setup() {
-		existingHeaders = new HttpHeaders();
+		HttpHeaders existingHeaders = new HttpHeaders();
 		existingHeaders.add("foo", "bar");
 		existingHeaders.add("foo", "baz");
 		when(request.getHeaders()).thenReturn(HttpHeaders.readOnlyHttpHeaders(existingHeaders));

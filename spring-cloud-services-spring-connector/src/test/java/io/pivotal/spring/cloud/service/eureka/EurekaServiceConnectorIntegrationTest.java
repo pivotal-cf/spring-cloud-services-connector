@@ -28,9 +28,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.cloud.service.ServiceInfo;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -40,8 +38,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = EurekaServiceConnectorIntegrationTest.TestConfig.class)
-@IntegrationTest()
+@SpringBootTest(classes = EurekaServiceConnectorIntegrationTest.TestConfig.class)
 public class EurekaServiceConnectorIntegrationTest {
 
 	private static final String ACCESS_TOKEN_URI = "https://p-spring-cloud-services.uaa.my-cf.com/oauth/token";
@@ -59,7 +56,7 @@ public class EurekaServiceConnectorIntegrationTest {
 	public static void beforeClass() {
 		Mockito.when(MockCloudConnector.instance.isInMatchingCloud()).thenReturn(true);
 		Mockito.when(MockCloudConnector.instance.getServiceInfos()).thenReturn(Collections.singletonList(
-				(ServiceInfo) new EurekaServiceInfo("eureka", URI, CLIENT_ID, CLIENT_SECRET, ACCESS_TOKEN_URI)));
+				new EurekaServiceInfo("eureka", URI, CLIENT_ID, CLIENT_SECRET, ACCESS_TOKEN_URI)));
 	}
 
 	@AfterClass
