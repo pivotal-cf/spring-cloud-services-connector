@@ -14,7 +14,7 @@ buildscript {
 allprojects {
 	group = "io.pivotal.spring.cloud"
 
-	ext.springBootVersion = "1.4.2.RELEASE"
+	ext.springBootVersion = "1.4.4.RELEASE"
 	ext.springCloudVersion = "Camden.SR4"
 	ext.lombokVersion = "1.16.8"
 
