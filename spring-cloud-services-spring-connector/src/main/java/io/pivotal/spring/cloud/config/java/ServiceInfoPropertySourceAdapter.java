@@ -8,7 +8,6 @@ import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.PropertySource;
-import org.springframework.core.env.StandardEnvironment;
 
 /**
  * Transforms a {@link ServiceInfo} into a {@link PropertySource} with highest precedence
