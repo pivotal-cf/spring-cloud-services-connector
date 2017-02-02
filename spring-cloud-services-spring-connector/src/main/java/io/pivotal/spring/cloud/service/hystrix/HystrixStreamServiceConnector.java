@@ -22,7 +22,9 @@ import java.util.Map;
 import io.pivotal.spring.cloud.config.java.ServiceInfoPropertySourceAdapter;
 import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
 
+import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 
@@ -53,6 +55,18 @@ public class HystrixStreamServiceConnector
 	public static final String SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ = SPRING_CLOUD_STREAM_BINDERS_HYSTRIX
 			+ "environment.spring.rabbitmq.";
 
+	public static final String SPRING_AUTOCONFIGURE_EXCLUDE = "spring.autoconfigure.exclude";
+
+	private static final String RABBIT_AUTOCONFIG_CLASS = "org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration";
+
+	private ConfigurableEnvironment environment;
+	
+	@Override
+	public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
+		environment = event.getEnvironment();
+		super.onApplicationEvent(event);
+	}
+	
 	@Override
 	protected PropertySource<?> toPropertySource(HystrixAmqpServiceInfo serviceInfo) {
 		Map<String, Object> properties = new LinkedHashMap<>();
@@ -79,8 +93,27 @@ public class HystrixStreamServiceConnector
 		properties.put(SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ
 				+ "ssl.enabled", serviceInfo.getSslEnabled());
 		properties.put(SPRING_CLOUD_STREAM_BINDERS_HYSTRIX + "default.prefix", "");
+		conditionallyExcludeRabbitAutoConfiguration(properties);
 
 		return new MapPropertySource(PROPERTY_SOURCE_NAME, properties);
+	}
+
+	private void conditionallyExcludeRabbitAutoConfiguration(Map<String, Object> properties) {
+		if (appIsBoundToRabbitMQ()) {
+			return;
+		}
+		
+		String existingExcludes = environment.getProperty(SPRING_AUTOCONFIGURE_EXCLUDE);
+		if (existingExcludes == null) {
+			properties.put(SPRING_AUTOCONFIGURE_EXCLUDE, RABBIT_AUTOCONFIG_CLASS);
+		} else {
+			properties.put(SPRING_AUTOCONFIGURE_EXCLUDE, RABBIT_AUTOCONFIG_CLASS + "," + existingExcludes);
+		}
+		
+	}
+
+	private boolean appIsBoundToRabbitMQ() {
+		return environment.containsProperty("spring.rabbitmq.host") && !environment.getProperty("spring.rabbitmq.host").equals("localhost");
 	}
 
 }
