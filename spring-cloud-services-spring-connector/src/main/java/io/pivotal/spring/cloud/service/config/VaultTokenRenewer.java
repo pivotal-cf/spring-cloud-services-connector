@@ -54,14 +54,10 @@ public class VaultTokenRenewer {
 	private static final Logger logger = LoggerFactory.getLogger(VaultTokenRenewer.class);
 	
 	private final RestTemplate rest;
-
 	private final String refreshUri;
-
-	private HttpEntity<Map<String, Long>> request;
-
-	private String obscuredToken;
-
-	private long renewTTL;
+	private final HttpEntity<Map<String, Long>> request;
+	private final String obscuredToken;
+	private final long renewTTL;
 
 	@Autowired
 	public VaultTokenRenewer(
