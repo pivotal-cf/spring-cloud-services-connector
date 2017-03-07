@@ -6,7 +6,7 @@ io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 io.pivotal.spring.cloud.service.eureka.EurekaOAuth2AutoConfiguration,\
 io.pivotal.spring.cloud.service.eureka.EurekaInstanceAutoConfiguration,\
-io.pivotal.spring.cloud.service.config.VaultTokenRenewer
+io.pivotal.spring.cloud.service.config.VaultTokenRenewalAutoConfiguration
 
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
 io.pivotal.spring.cloud.service.config.ConfigClientOAuth2BootstrapConfiguration,\

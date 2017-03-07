@@ -49,9 +49,9 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @ConditionalOnBean(ConfigClientProperties.class)
 @ConditionalOnProperty(name="spring.cloud.config.token")
-public class VaultTokenRenewer {
+public class VaultTokenRenewalAutoConfiguration {
 	
-	private static final Logger logger = LoggerFactory.getLogger(VaultTokenRenewer.class);
+	private static final Logger logger = LoggerFactory.getLogger(VaultTokenRenewalAutoConfiguration.class);
 	
 	private final RestTemplate rest;
 	private final String refreshUri;
@@ -60,7 +60,7 @@ public class VaultTokenRenewer {
 	private final long renewTTL;
 
 	@Autowired
-	public VaultTokenRenewer(
+	public VaultTokenRenewalAutoConfiguration(
 			ConfigClientOAuth2ResourceDetails configClientOAuth2ResourceDetails,
 			ConfigClientProperties configClientProps,
 			@Value("${spring.cloud.config.token}") String vaultToken,
