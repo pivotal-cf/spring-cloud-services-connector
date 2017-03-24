@@ -31,7 +31,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -42,7 +41,7 @@ import org.springframework.web.client.RestTemplate;
  * By default, the token is renewed every 60 seconds and is renewed with a 5 minute time-to-live.
  * The renew rate can be configured by setting `vault.token.renew.rate` to some value that is the 
  * renewal rate in milliseconds. The renewal time-to-live can be specified with by setting
- * `vault.token.ttl` to some value indicating the time-to-live in seconds.
+ * `vault.token.ttl` to some value indicating the time-to-live in milliseconds.
  * 
  * @author cwalls
  */
@@ -64,10 +63,11 @@ public class VaultTokenRenewalAutoConfiguration {
 			ConfigClientOAuth2ResourceDetails configClientOAuth2ResourceDetails,
 			ConfigClientProperties configClientProps,
 			@Value("${spring.cloud.config.token}") String vaultToken,
-			@Value("${vault.token.ttl:300}") long renewTTL) { // <-- Default to a 300 second (5 minute) TTL
+			@Value("${vault.token.ttl:300000}") long renewTTL) { // <-- Default to a 300 second (5 minute) TTL
 		this.rest = new OAuth2RestTemplate(configClientOAuth2ResourceDetails);
 		this.refreshUri = configClientProps.getRawUri() + "/vault/v1/auth/token/renew-self";
-		this.request = buildTokenRenewRequest(vaultToken, renewTTL);
+		long renewTTLInMS = renewTTL / 1000; // convert to seconds, since that's what Vault wants
+		this.request = buildTokenRenewRequest(vaultToken, renewTTLInMS);
 		this.obscuredToken = vaultToken.substring(0, 4) + "[*]" + vaultToken.substring(vaultToken.length() - 4);
 		this.renewTTL = renewTTL;
 	}
