@@ -16,30 +16,30 @@
 
 package io.pivotal.spring.cloud.service.hystrix;
 
-import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.*;
-
+import io.pivotal.spring.cloud.MockCloudConnector;
+import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
+import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
 import java.io.IOException;
 import java.util.Arrays;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import io.pivotal.spring.cloud.MockCloudConnector;
-import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
-import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
+import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_AUTOCONFIGURE_EXCLUDE;
+import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_CLOUD_HYSTRIX_STREAM;
+import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_CLOUD_STREAM_BINDERS_HYSTRIX;
+import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_CLOUD_STREAM_BINDERS_HYSTRIX_ENVIRONMENT_SPRING_RABBITMQ;
+import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_CLOUD_STREAM_BINDINGS_HYSTRIXSTREAMOUTPUT;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 public class HystrixStreamServiceConnectorIntegrationTest {
 	
@@ -85,10 +85,7 @@ public class HystrixStreamServiceConnectorIntegrationTest {
 	}
 
 	@RunWith(SpringJUnit4ClassRunner.class)
-	@SpringApplicationConfiguration(classes = {
-			AbstractHystrixStreamServiceConnectorIntegrationTest.TestConfig.class
-	})
-	@IntegrationTest
+	@SpringBootTest(classes = AbstractHystrixStreamServiceConnectorIntegrationTest.TestConfig.class)
 	public static abstract class AbstractHystrixStreamServiceConnectorIntegrationTest {
 
 		private static final String URI = "amqp://username:password@p-rabbitmq.mydomain.com/testvhost";
