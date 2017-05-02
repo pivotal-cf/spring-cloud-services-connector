@@ -16,25 +16,24 @@
 
 package io.pivotal.spring.cloud.service.config;
 
-import java.util.Collections;
-
 import io.pivotal.spring.cloud.MockCloudConnector;
 import io.pivotal.spring.cloud.service.common.ConfigServerServiceInfo;
+import java.util.Collections;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static io.pivotal.spring.cloud.config.java.ServiceInfoPropertySourceAdapter.SPRING_AUTOCONFIGURE_EXCLUDE;
 import static io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector.SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI;
 import static io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector.SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_ID;
 import static io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector.SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_SECRET;
@@ -42,11 +41,11 @@ import static io.pivotal.spring.cloud.service.config.ConfigServerServiceConnecto
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {
-		ConfigServerServiceConnectorIntegrationTest.TestConfig.class,
-		ConfigClientOAuth2BootstrapConfiguration.class
-})
-@IntegrationTest()
+@SpringBootTest(
+		classes = {
+				ConfigServerServiceConnectorIntegrationTest.TestConfig.class,
+				ConfigClientOAuth2BootstrapConfiguration.class
+		})
 public class ConfigServerServiceConnectorIntegrationTest {
 
 	private static final String CLIENT_ID = "client-id";
@@ -67,12 +66,46 @@ public class ConfigServerServiceConnectorIntegrationTest {
 	public static void beforeClass() {
 		Mockito.when(MockCloudConnector.instance.isInMatchingCloud()).thenReturn(true);
 		Mockito.when(MockCloudConnector.instance.getServiceInfos()).thenReturn(Collections.singletonList(
-				(ServiceInfo) new ConfigServerServiceInfo("config-server", URI, CLIENT_ID, CLIENT_SECRET, ACCESS_TOKEN_URI)));
+				(ServiceInfo) new ConfigServerServiceInfo("config-server",
+						URI,
+						CLIENT_ID,
+						CLIENT_SECRET,
+						ACCESS_TOKEN_URI)));
 	}
 
 	@AfterClass
 	public static void afterClass() {
 		MockCloudConnector.reset();
+	}
+
+	@TestPropertySource(properties = "spring.rabbitmq.host=some_rabbit_host")
+	public static class WithRabbitBinding extends ConfigServerServiceConnectorIntegrationTest {
+
+		@Test
+		public void springAutoConfigureExcludeIsNull() {
+			assertPropertyEquals(null, SPRING_AUTOCONFIGURE_EXCLUDE);
+		}
+
+	}
+
+	public static class WithoutRabbitBinding extends ConfigServerServiceConnectorIntegrationTest {
+
+		@Test
+		public void springAutoConfigureExcludeIsOnlyRabbitAutoConfig() {
+			assertPropertyEquals("org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration",
+					SPRING_AUTOCONFIGURE_EXCLUDE);
+		}
+
+	}
+
+	@TestPropertySource(properties = "spring.autoconfigure.exclude=com.foo.Bar")
+	public static class WithoutRabbitBindingButWithExistingAutoConfigExcludes extends ConfigServerServiceConnectorIntegrationTest {
+
+		@Test
+		public void springAutoConfigureExcludePreservesExistingExcludes() {
+			assertPropertyEquals("org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration,com.foo.Bar", SPRING_AUTOCONFIGURE_EXCLUDE);
+		}
+
 	}
 
 	@Test
@@ -91,7 +124,7 @@ public class ConfigServerServiceConnectorIntegrationTest {
 		Assert.assertEquals(ACCESS_TOKEN_URI, resourceDetails.getAccessTokenUri());
 	}
 
-	private void assertPropertyEquals(String expected, String key) {
+	protected void assertPropertyEquals(String expected, String key) {
 		assertEquals(expected, environment.getProperty(key));
 	}
 

@@ -16,21 +16,18 @@
 
 package io.pivotal.spring.cloud.service.hystrix;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
 import io.pivotal.spring.cloud.MockCloudConnector;
 import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
 import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.core.env.Environment;
@@ -44,10 +41,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {
-		HystrixStreamServiceConnectorIntegrationMultiUriTest.TestConfig.class
-})
-@IntegrationTest()
+@SpringBootTest(classes = HystrixStreamServiceConnectorIntegrationMultiUriTest.TestConfig.class)
 public class HystrixStreamServiceConnectorIntegrationMultiUriTest {
 
 	private static final String URI = "amqps://username:password@p-rabbitmq1.mydomain.com/testvhost";
