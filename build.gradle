@@ -60,8 +60,8 @@ allprojects {
 	}
 
 	compileJava {
-		sourceCompatibility=1.7
-		targetCompatibility=1.7
+		sourceCompatibility=1.8
+		targetCompatibility=1.8
 	}
 	compileTestJava {
 		sourceCompatibility=1.8
@@ -146,6 +146,7 @@ project(":spring-cloud-services-spring-connector") {
 		compile(project(":spring-cloud-services-connector-core"))
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector")
 		compile("org.projectlombok:lombok:${lombokVersion}")
+		compile("org.springframework.boot:spring-boot-actuator")
 		optional("org.springframework.cloud:spring-cloud-config-client")
 		optional("org.springframework.cloud:spring-cloud-netflix-eureka-client")
 		optional("com.netflix.eureka:eureka-client")
