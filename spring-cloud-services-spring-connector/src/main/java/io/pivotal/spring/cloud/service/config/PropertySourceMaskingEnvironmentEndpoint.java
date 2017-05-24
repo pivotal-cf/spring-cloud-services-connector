@@ -1,5 +1,7 @@
 package io.pivotal.spring.cloud.service.config;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.boot.actuate.endpoint.EnvironmentEndpoint;
@@ -19,7 +21,11 @@ import org.springframework.util.PatternMatchUtils;
 @ConfigurationProperties(prefix="endpoints.env.mask")
 public class PropertySourceMaskingEnvironmentEndpoint extends EnvironmentEndpoint {
 
+	public static final String DEFAULT_MESSAGE = "Properties from this source are redacted for security reasons";
+
 	private String[] sourceNamePatterns = {};
+	
+	private String message = DEFAULT_MESSAGE;
 	
 	/**
 	 * Set patterns to apply against property source names that should be masked.
@@ -39,10 +45,22 @@ public class PropertySourceMaskingEnvironmentEndpoint extends EnvironmentEndpoin
 		return sourceNamePatterns;
 	}
 	
+	/**
+	 * Set the message to include in the environment endpoint response for masked messages.
+	 * @param message The message to include in the environment endpoint response for masked messages.
+	 */
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
+	public String getMessage() {
+		return message;
+	}
+	
 	@Override
 	protected Map<String, Object> postProcessSourceProperties(String sourceName, Map<String, Object> properties) {
 		if(PatternMatchUtils.simpleMatch(sourceNamePatterns, sourceName)) {
-			properties.replaceAll((key, value) -> "******");
+			return Collections.singletonMap("******", message);
 		}
 		return super.postProcessSourceProperties(sourceName, properties);
 	}
