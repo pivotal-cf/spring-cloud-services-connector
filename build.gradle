@@ -162,6 +162,7 @@ project(":spring-cloud-services-spring-connector") {
 		testCompile("org.springframework.cloud:spring-cloud-netflix-hystrix-stream")
 		testCompile("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
 		testCompile("org.springframework.cloud:spring-cloud-starter-ribbon")
+		testCompile("org.springframework.cloud:spring-cloud-config-server")
 		testCompile("commons-logging:commons-logging")
 	}
 }

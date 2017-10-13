@@ -45,7 +45,8 @@ import static org.junit.Assert.assertEquals;
 		classes = {
 				ConfigServerServiceConnectorIntegrationTest.TestConfig.class,
 				ConfigClientOAuth2BootstrapConfiguration.class
-		})
+		},
+		properties = "spring.cloud.config.enabled=true")
 public class ConfigServerServiceConnectorIntegrationTest {
 
 	private static final String CLIENT_ID = "client-id";
