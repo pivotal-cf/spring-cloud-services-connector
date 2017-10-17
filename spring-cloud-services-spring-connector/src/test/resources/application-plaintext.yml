@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: test-app
+    
+  cloud:
+    config:
+      client:
+        oauth2:
+          client-id: acme
+          client-secret: acmesecret
+          scope: read,write
+          auto-approve-scopes: '.*'
+          grant-type: client_credentials
+
+security:
+  oauth2:
+    client:
+      client-id: acme
+      client-secret: acmesecret
+      scope: read,write
+      auto-approve-scopes: '.*'
+      grant-type: client_credentials
