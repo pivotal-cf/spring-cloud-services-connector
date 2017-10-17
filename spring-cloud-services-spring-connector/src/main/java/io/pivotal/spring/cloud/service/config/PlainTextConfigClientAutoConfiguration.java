@@ -32,7 +32,8 @@ import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResour
  * @author Daniel Lavoie
  */
 @Configuration
-@ConditionalOnClass(OAuth2ProtectedResourceDetails.class)
+@ConditionalOnClass({ OAuth2ProtectedResourceDetails.class,
+		ConfigClientProperties.class })
 public class PlainTextConfigClientAutoConfiguration {
 
 	@Bean
