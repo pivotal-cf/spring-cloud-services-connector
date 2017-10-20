@@ -14,8 +14,8 @@ buildscript {
 allprojects {
 	group = "io.pivotal.spring.cloud"
 
-	ext.springBootVersion = "1.5.2.RELEASE"
-	ext.springCloudVersion = "Dalston.SR1"
+	ext.springBootVersion = "1.5.6.RELEASE"
+	ext.springCloudVersion = "Edgware.M1"
 	ext.lombokVersion = "1.16.8"
 
 	apply plugin: "propdeps"
@@ -53,6 +53,7 @@ allprojects {
 	repositories {
 		mavenCentral()
 		maven { url "https://repo.spring.io/libs-release" }
+		maven { url "https://repo.spring.io/libs-milestone" }
 	}
 
 	dependencies {
