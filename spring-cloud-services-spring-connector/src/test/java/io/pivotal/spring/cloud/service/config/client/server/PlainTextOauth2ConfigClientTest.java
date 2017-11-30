@@ -54,13 +54,13 @@ public class PlainTextOauth2ConfigClientTest {
 
 	private static final String devNginxConfig = "server {\n"
 			+ "    listen              80;\n"
-			+ "    server_name         dev.example.com"
-			+ ";\n}";
+			+ "    server_name         dev.example.com;\n" 
+			+ "}";
 
-	private static final String testNginxConfig = "server {\n    listen              80;"
-			+ "\n"
-			+ "    server_name         test.example.com;"
-			+ "\n}";
+	private static final String testNginxConfig = "server {\n"
+			+ "    listen              80;\n"
+			+ "    server_name         test.example.com;\n"
+			+ "}";
 	// @formatter:on 
 
 	@LocalServerPort
@@ -78,6 +78,7 @@ public class PlainTextOauth2ConfigClientTest {
 	public void setup() {
 		resource.setAccessTokenUri("http://localhost:" + port + "/oauth/token");
 		configClientProperties.setName("app");
+		configClientProperties.setProfile(null);
 		configClientProperties.setUri("http://localhost:" + port);
 		configClient = new PlainTextConfigClientAutoConfiguration()
 				.plainTextConfigClient(resource, configClientProperties);

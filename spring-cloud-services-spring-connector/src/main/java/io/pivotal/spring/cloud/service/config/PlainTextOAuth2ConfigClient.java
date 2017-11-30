@@ -50,8 +50,8 @@ class PlainTextOAuth2ConfigClient implements PlainTextConfigClient {
 	/**
 	 * Retrieves a config file using the defaults application name, profiles and labels.
 	 * 
-	 * @throws IllegalArgumentException when application name or Config Server url
-	 * is undefined.
+	 * @throws IllegalArgumentException when application name or Config Server url is
+	 * undefined.
 	 * @throws HttpClientErrorException when a config file is not found.
 	 */
 	@Override
@@ -62,8 +62,8 @@ class PlainTextOAuth2ConfigClient implements PlainTextConfigClient {
 	/**
 	 * Retrieves a config file.
 	 * 
-	 * @throws IllegalArgumentException when application name or Config Server url
-	 * is undefined.
+	 * @throws IllegalArgumentException when application name or Config Server url is
+	 * undefined.
 	 * @throws HttpClientErrorException when a config file is not found.
 	 */
 	@Override
@@ -87,14 +87,11 @@ class PlainTextOAuth2ConfigClient implements PlainTextConfigClient {
 
 		if (label == null) {
 			label = configClientProperties.getLabel();
-			if (label == null || !label.isEmpty()) {
-				label = "master";
-			}
 		}
 
-		return restTemplate.getForEntity(
-				configClientProperties.getUri() + "/" + configClientProperties.getName()
-						+ "/" + profile + "/" + label + "/" + path,
+		return restTemplate.getForEntity(configClientProperties.getUri() + "/"
+				+ configClientProperties.getName() + "/" + profile + "/"
+				+ (label == null ? path + "?useDefaultLabel" : label + "/" + path),
 				Resource.class).getBody();
 	}
 }
