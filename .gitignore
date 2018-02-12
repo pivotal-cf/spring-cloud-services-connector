@@ -5,6 +5,7 @@ dependency-reduced-pom.xml
 .metadata
 target
 build
+out
 Servers
 .gradle
 _site
