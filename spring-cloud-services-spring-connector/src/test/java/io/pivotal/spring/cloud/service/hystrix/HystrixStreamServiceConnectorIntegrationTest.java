@@ -16,22 +16,27 @@
 
 package io.pivotal.spring.cloud.service.hystrix;
 
-import io.pivotal.spring.cloud.MockCloudConnector;
-import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
-import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.service.ServiceInfo;
+import org.springframework.cloud.service.common.AmqpServiceInfo;
 import org.springframework.core.env.Environment;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import io.pivotal.spring.cloud.MockCloudConnector;
+import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
+import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
 
 import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_AUTOCONFIGURE_EXCLUDE;
 import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_CLOUD_HYSTRIX_STREAM;
@@ -73,6 +78,23 @@ public class HystrixStreamServiceConnectorIntegrationTest {
 		}
 		
 	}
+
+	@DirtiesContext
+	public static class WithRabbitCloudBinding extends AbstractHystrixStreamServiceConnectorIntegrationTest {
+		@BeforeClass
+		public static void beforeClass() {
+			List<ServiceInfo> serviceInfosWithAddedRabbitCloudBinding = new ArrayList<>(MockCloudConnector.instance.getServiceInfos());
+			serviceInfosWithAddedRabbitCloudBinding.add(
+					new AmqpServiceInfo("rabbitmq", "example.com", 5672, "username", "password", "virtualHost")
+			);
+			when(MockCloudConnector.instance.getServiceInfos()).thenReturn(serviceInfosWithAddedRabbitCloudBinding);
+		}
+
+		@Test
+		public void springAutoConfigureExcludeIsNull() {
+			assertPropertyEquals(null, SPRING_AUTOCONFIGURE_EXCLUDE);
+		}
+	}
 	
 	@TestPropertySource(properties="spring.autoconfigure.exclude=com.foo.Bar")
 	public static class WithExistingAutoConfigExcludes extends AbstractHystrixStreamServiceConnectorIntegrationTest {
@@ -94,13 +116,12 @@ public class HystrixStreamServiceConnectorIntegrationTest {
 		private Environment environment;
 	 
 		@BeforeClass
-		@SuppressWarnings("unchecked")
-		public static void beforeClass() throws IOException {
+		public static void beforeClass() {
 			when(MockCloudConnector.instance.isInMatchingCloud()).thenReturn(true);
 			when(MockCloudConnector.instance.getServiceInfos()).thenReturn(
 					Arrays.asList(
-							(ServiceInfo) new HystrixAmqpServiceInfo("circuit-breaker", URI),
-							(ServiceInfo) new EurekaServiceInfo("service-registry", "http://example.com", "clientId", "clientSecret", "http://example.com/token")
+							new HystrixAmqpServiceInfo("circuit-breaker", URI),
+							new EurekaServiceInfo("service-registry", "http://example.com", "clientId", "clientSecret", "http://example.com/token")
 					)
 			);
 		}
@@ -110,7 +131,7 @@ public class HystrixStreamServiceConnectorIntegrationTest {
 			MockCloudConnector.reset();
 		}
 
-		protected void assertPropertyEquals(String expected, String key) {
+		void assertPropertyEquals(String expected, String key) {
 			assertEquals(expected, environment.getProperty(key));
 		}
 
