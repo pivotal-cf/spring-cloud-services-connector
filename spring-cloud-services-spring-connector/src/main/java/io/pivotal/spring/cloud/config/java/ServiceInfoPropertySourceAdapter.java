@@ -2,6 +2,8 @@ package io.pivotal.spring.cloud.config.java;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.cloud.Cloud;
 import org.springframework.cloud.CloudException;
@@ -84,8 +86,11 @@ public abstract class ServiceInfoPropertySourceAdapter<T extends ServiceInfo>
 	}
 
 	private boolean appIsBoundToRabbitMQ() {
-		return environment.containsProperty("spring.rabbitmq.host") &&
+		boolean hasEnvironmentBinding = environment.containsProperty("spring.rabbitmq.host") &&
 				!environment.getProperty("spring.rabbitmq.host").equals("localhost");
+		boolean hasCloudBinding = !cloud.getServiceInfos(ConnectionFactory.class).isEmpty();
+
+		return hasEnvironmentBinding || hasCloudBinding;
 	}
 
 	@Override
