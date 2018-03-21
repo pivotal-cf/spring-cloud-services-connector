@@ -17,10 +17,14 @@
 package io.pivotal.spring.cloud.service.eureka;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -134,12 +138,11 @@ public class SanitizingEurekaInstanceConfigBeanTest {
 	private SanitizingEurekaInstanceConfigBean createBeanWithProps(String... pairs) {
 		this.ctx = new AnnotationConfigApplicationContext();
 
-		ArrayList<String> pairs1 = new ArrayList();
-
-		for (String pair : pairs) {
-			pairs1.add(pair);
-		}
+		List<String> pairs1 = new ArrayList<>(Arrays.asList(pairs));
 		pairs1.add("sanitizingEurekaInstanceConfigBean.integration.test:true");
+//		pairs1.add("spring.application.name:testapp1");
+//		pairs1.add("spring.application.appname:testapp1");
+		pairs1.add("eureka.client.enabled:false");
 		EnvironmentTestUtils.addEnvironment(ctx, pairs1.toArray(new String[pairs1.size()]));
 		this.ctx.register(Context.class);
 		this.ctx.refresh();

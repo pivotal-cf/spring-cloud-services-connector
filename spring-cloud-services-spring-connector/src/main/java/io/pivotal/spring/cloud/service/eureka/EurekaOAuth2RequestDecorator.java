@@ -63,6 +63,11 @@ public class EurekaOAuth2RequestDecorator implements DiscoveryRequestDecorator {
 			}
 
 			@Override
+			public String getMethodValue() {
+				return null;
+			}
+
+			@Override
 			protected OutputStream getBodyInternal(HttpHeaders headers) throws IOException {
 				return null;
 			}

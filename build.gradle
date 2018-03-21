@@ -4,6 +4,11 @@ buildscript {
 		mavenCentral()
 	}
 
+	ext.springBootVersion = "2.0.0.RELEASE"
+	ext.springCloudVersion = "Finchley.M9"
+	ext.lombokVersion = "1.16.8"
+	ext.springCloudNetflixVersion = "2.0.0.M7"
+
 	dependencies {
 		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
 		classpath("io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE")
@@ -14,9 +19,6 @@ buildscript {
 allprojects {
 	group = "io.pivotal.spring.cloud"
 
-	ext.springBootVersion = "1.5.10.RELEASE"
-	ext.springCloudVersion = "Edgware.SR3"
-	ext.lombokVersion = "1.16.8"
 
 	apply plugin: "propdeps"
 	apply plugin: "propdeps-eclipse"
@@ -53,6 +55,7 @@ allprojects {
 	repositories {
 		mavenCentral()
 		maven { url "https://repo.spring.io/libs-release" }
+		maven { url "https://repo.spring.io/milestone" }
 	}
 
 	dependencies {
@@ -126,7 +129,7 @@ project(":spring-cloud-services-connector-core") {
 	description = "Spring Cloud Services Connector Core"
 	dependencies {
 		compile("org.springframework:spring-core")
-		compile("org.springframework.cloud:spring-cloud-core")
+		compile("org.springframework.cloud:spring-cloud-connectors-core")
 	}
 }
 
@@ -142,7 +145,7 @@ project(":spring-cloud-services-cloudfoundry-connector") {
 
 project(":spring-cloud-services-spring-connector") {
 	description = "Spring Cloud Services Spring Connector"
-	
+
 	configurations {
 		compile {
 			exclude module: "jersey-client"
@@ -160,18 +163,17 @@ project(":spring-cloud-services-spring-connector") {
 		optional("org.springframework.cloud:spring-cloud-netflix-eureka-client")
 		optional("com.netflix.eureka:eureka-client")
 		optional("org.springframework.amqp:spring-rabbit")
-		optional("org.springframework.security.oauth:spring-security-oauth2")
+		optional("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure")
 		testCompile("org.apache.tomcat.embed:tomcat-embed-el")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-commons")
-		testCompile(group: "org.springframework.cloud", name: "spring-cloud-core", classifier: "tests")
+		testCompile(group: "org.springframework.cloud", name: "spring-cloud-connectors-core", classifier: "tests")
 		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-cloudfoundry-connector", classifier: "tests")
-		testCompile("org.springframework.cloud:spring-cloud-starter-hystrix")
-		testCompile("org.springframework.cloud:spring-cloud-netflix-hystrix-stream")
 		testCompile("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
 		testCompile("org.springframework.cloud:spring-cloud-starter-netflix-ribbon")
+		testCompile("org.springframework.cloud:spring-cloud-starter-netflix-hystrix")
 		testCompile("org.springframework.cloud:spring-cloud-config-server")
-		testCompile("commons-logging:commons-logging")
+		testCompile("org.yaml:snakeyaml:1.19")
 	}
 }
 

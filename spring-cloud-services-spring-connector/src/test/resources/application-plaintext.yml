@@ -11,7 +11,12 @@ spring:
           scope: read,write
           auto-approve-scopes: '.*'
           grant-type: client_credentials
-
+      server:
+        default-label: default-label-test
+  mvc:
+    pathmatch:
+      use-suffix-pattern: true
+      use-registered-suffix-pattern: false
 security:
   oauth2:
     client:
@@ -19,4 +24,4 @@ security:
       client-secret: acmesecret
       scope: read,write
       auto-approve-scopes: '.*'
-      grant-type: client_credentials
+      grant-type: client_credential

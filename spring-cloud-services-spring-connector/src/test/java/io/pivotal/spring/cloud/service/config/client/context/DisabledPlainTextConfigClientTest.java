@@ -19,10 +19,12 @@ package io.pivotal.spring.cloud.service.config.client.context;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.pivotal.spring.cloud.service.config.PlainTextConfigClient;
@@ -34,7 +36,9 @@ import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfigura
 @RunWith(SpringRunner.class)
 @Import(PlainTextConfigClientAutoConfiguration.class)
 @SpringBootTest(classes = DisabledPlainTextConfigClientTest.class)
+@ActiveProfiles("integration-test")
 public class DisabledPlainTextConfigClientTest {
+
 	@Autowired(required = false)
 	private PlainTextConfigClient plainTextConfigClient;
 

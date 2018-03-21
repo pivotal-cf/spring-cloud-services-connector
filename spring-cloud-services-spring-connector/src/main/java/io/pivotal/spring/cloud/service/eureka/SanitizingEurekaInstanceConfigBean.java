@@ -16,14 +16,14 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.bind.RelaxedPropertyResolver;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
-
-import java.util.logging.Logger;
 
 final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean implements InitializingBean {
 
@@ -58,13 +58,12 @@ final class SanitizingEurekaInstanceConfigBean extends EurekaInstanceConfigBean 
 	}
 
 	private String getSpringApplicationName() {
-		RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(getEnvironment(), "spring.application.");
-		return propertyResolver.getProperty("name");
+
+		return Binder.get(getEnvironment()).bind("spring.application.name", String.class).orElse(null);
 	}
 
 	private String getEurekaInstanceAppnameProperty() {
-		RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(getEnvironment(), "eureka.instance.");
-		return propertyResolver.getProperty("appname");
+		return Binder.get(getEnvironment()).bind("eureka.instance.appname", String.class).orElse(null);
 	}
 
 	// RFC 952 defines the valid character set for hostnames.
