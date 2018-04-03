@@ -88,8 +88,13 @@ public abstract class ServiceInfoPropertySourceAdapter<T extends ServiceInfo>
 	private boolean appIsBoundToRabbitMQ() {
 		boolean hasEnvironmentBinding = environment.containsProperty("spring.rabbitmq.host") &&
 				!environment.getProperty("spring.rabbitmq.host").equals("localhost");
-		boolean hasCloudBinding = !cloud.getServiceInfos(ConnectionFactory.class).isEmpty();
-
+		
+		boolean hasCloudBinding = false;
+		try {
+			Class<?> rabbitCFClass = Class.forName("org.springframework.amqp.rabbit.connection.ConnectionFactory");
+			hasCloudBinding = !cloud.getServiceInfos(rabbitCFClass).isEmpty();
+		} catch (Exception e) {/* Nothing to do if ConnectionFactory can't be loaded.*/}
+		
 		return hasEnvironmentBinding || hasCloudBinding;
 	}
 
