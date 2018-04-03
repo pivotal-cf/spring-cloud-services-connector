@@ -3,7 +3,6 @@ package io.pivotal.spring.cloud.config.java;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.cloud.Cloud;
 import org.springframework.cloud.CloudException;
