@@ -79,7 +79,6 @@ public class HystrixStreamServiceConnectorIntegrationTest {
 		
 	}
 
-	@DirtiesContext
 	public static class WithRabbitCloudBinding extends AbstractHystrixStreamServiceConnectorIntegrationTest {
 		@BeforeClass
 		public static void beforeClass() {
@@ -106,6 +105,7 @@ public class HystrixStreamServiceConnectorIntegrationTest {
 		
 	}
 
+	@DirtiesContext
 	@RunWith(SpringJUnit4ClassRunner.class)
 	@SpringBootTest(classes = AbstractHystrixStreamServiceConnectorIntegrationTest.TestConfig.class)
 	public static abstract class AbstractHystrixStreamServiceConnectorIntegrationTest {
