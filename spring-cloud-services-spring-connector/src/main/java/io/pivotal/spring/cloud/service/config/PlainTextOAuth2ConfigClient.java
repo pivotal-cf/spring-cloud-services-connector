@@ -93,7 +93,6 @@ class PlainTextOAuth2ConfigClient implements PlainTextConfigClient {
 		String url = configClientProperties.getUri() + "/"
 				+ configClientProperties.getName() + "/" + profile + "/"
 				+ (label == null ? path + "?useDefaultLabel" : label + "/" + path);
-		System.out.println(url);
 		ResponseEntity<Resource> forEntity = restTemplate.getForEntity(url,
 				Resource.class);
 		return forEntity.getBody();

@@ -7,7 +7,6 @@ buildscript {
 	ext.springBootVersion = "2.0.0.RELEASE"
 	ext.springCloudVersion = "Finchley.M9"
 	ext.lombokVersion = "1.16.8"
-	ext.springCloudNetflixVersion = "2.0.0.M7"
 
 	dependencies {
 		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")

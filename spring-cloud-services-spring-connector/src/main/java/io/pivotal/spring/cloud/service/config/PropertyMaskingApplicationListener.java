@@ -30,7 +30,8 @@ import org.springframework.util.StringUtils;
 public class PropertyMaskingApplicationListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
 
 	private static final String SANITIZE_ENV_KEY = "management.endpoint.env.keys-to-sanitize";
-	private static final String VAULT_PROPERTY_MASKING_PATTERN = "configService:vault:.*";
+	private static final String SANITIZE_PROPS_KEY = "management.endpoint.configprops.keys-to-sanitize";
+	private static final String VAULT_PROPERTY_MASKING_PATTERN = "configService.vault.*";
 
 	@Override
 	public void onApplicationEvent(@NonNull ApplicationEnvironmentPreparedEvent event) {
@@ -45,7 +46,12 @@ public class PropertyMaskingApplicationListener implements ApplicationListener<A
 				new PropertiesPropertySource(
 						SANITIZE_ENV_KEY, mergeClientProperties(propertySources, propertiesToSanitize, SANITIZE_ENV_KEY));
 
+		PropertiesPropertySource configPropsToSanitize =
+				new PropertiesPropertySource(
+						SANITIZE_PROPS_KEY, mergeClientProperties(propertySources, propertiesToSanitize, SANITIZE_PROPS_KEY));
+
 		propertySources.addFirst(envKeysToSanitize);
+		propertySources.addFirst(configPropsToSanitize);
 	}
 
 	private Properties mergeClientProperties(MutablePropertySources propertySources, Set<String> propertiesToSanitize, String propertyKey) {

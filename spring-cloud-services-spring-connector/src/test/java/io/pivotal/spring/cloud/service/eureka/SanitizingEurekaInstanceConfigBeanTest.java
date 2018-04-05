@@ -140,8 +140,6 @@ public class SanitizingEurekaInstanceConfigBeanTest {
 
 		List<String> pairs1 = new ArrayList<>(Arrays.asList(pairs));
 		pairs1.add("sanitizingEurekaInstanceConfigBean.integration.test:true");
-//		pairs1.add("spring.application.name:testapp1");
-//		pairs1.add("spring.application.appname:testapp1");
 		pairs1.add("eureka.client.enabled:false");
 		EnvironmentTestUtils.addEnvironment(ctx, pairs1.toArray(new String[pairs1.size()]));
 		this.ctx.register(Context.class);

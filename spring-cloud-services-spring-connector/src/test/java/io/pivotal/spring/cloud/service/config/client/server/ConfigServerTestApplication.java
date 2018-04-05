@@ -49,9 +49,7 @@ import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfigura
  */
 @RestController
 @EnableConfigServer
-@SpringBootApplication(exclude = { RabbitAutoConfiguration.class,
-//		ServoMetricsAutoConfiguration.class
-})
+@SpringBootApplication(exclude = { RabbitAutoConfiguration.class})
 @EnableAuthorizationServer
 @Import({ ConfigClientOAuth2ResourceDetails.class,
 		PlainTextConfigClientAutoConfiguration.class })
