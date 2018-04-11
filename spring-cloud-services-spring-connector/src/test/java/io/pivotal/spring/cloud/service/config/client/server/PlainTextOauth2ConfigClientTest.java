@@ -25,10 +25,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException;
@@ -44,7 +45,7 @@ import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfigura
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ConfigServerTestApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
-		"spring.profiles.active=plaintext,native", "spring.cloud.config.enabled=true" })
+		"spring.profiles.active=plaintext,native", "spring.cloud.config.enabled=true", "eureka.client.enabled=false" })
 public class PlainTextOauth2ConfigClientTest {
 	// @formatter:off
 	private static final String nginxConfig = "server {\n"
@@ -138,4 +139,5 @@ public class PlainTextOauth2ConfigClientTest {
 			throw new RuntimeException(e);
 		}
 	}
+
 }

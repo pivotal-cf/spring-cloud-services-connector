@@ -18,9 +18,11 @@ package io.pivotal.spring.cloud.service.config;
 
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.util.Assert;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -43,7 +45,6 @@ class PlainTextOAuth2ConfigClient implements PlainTextConfigClient {
 	protected PlainTextOAuth2ConfigClient(final OAuth2ProtectedResourceDetails resource,
 			final ConfigClientProperties configClientProperties) {
 		this.restTemplate = new OAuth2RestTemplate(resource);
-
 		this.configClientProperties = configClientProperties;
 	}
 
@@ -89,9 +90,11 @@ class PlainTextOAuth2ConfigClient implements PlainTextConfigClient {
 			label = configClientProperties.getLabel();
 		}
 
-		return restTemplate.getForEntity(configClientProperties.getUri() + "/"
+		String url = configClientProperties.getUri() + "/"
 				+ configClientProperties.getName() + "/" + profile + "/"
-				+ (label == null ? path + "?useDefaultLabel" : label + "/" + path),
-				Resource.class).getBody();
+				+ (label == null ? path + "?useDefaultLabel" : label + "/" + path);
+		ResponseEntity<Resource> forEntity = restTemplate.getForEntity(url,
+				Resource.class);
+		return forEntity.getBody();
 	}
 }

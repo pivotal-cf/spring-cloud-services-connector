@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        default-label: default-label-test
+        git:
+          uri: http://github.com/ojhughes/spring-cloud-service-broker
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+        security: DEBUG

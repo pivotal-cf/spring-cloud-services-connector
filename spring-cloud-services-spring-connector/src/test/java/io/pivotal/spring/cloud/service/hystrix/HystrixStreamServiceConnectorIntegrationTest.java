@@ -34,10 +34,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import io.pivotal.spring.cloud.MockCloudConnector;
 import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
 import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
-
 import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_AUTOCONFIGURE_EXCLUDE;
 import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_CLOUD_HYSTRIX_STREAM;
 import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_CLOUD_STREAM_BINDERS_HYSTRIX;
@@ -107,7 +107,8 @@ public class HystrixStreamServiceConnectorIntegrationTest {
 
 	@DirtiesContext
 	@RunWith(SpringJUnit4ClassRunner.class)
-	@SpringBootTest(classes = AbstractHystrixStreamServiceConnectorIntegrationTest.TestConfig.class)
+	@SpringBootTest(classes = AbstractHystrixStreamServiceConnectorIntegrationTest.TestConfig.class,
+		properties = "eureka.client.enabled=false")
 	public static abstract class AbstractHystrixStreamServiceConnectorIntegrationTest {
 
 		private static final String URI = "amqp://username:password@p-rabbitmq.mydomain.com/testvhost";

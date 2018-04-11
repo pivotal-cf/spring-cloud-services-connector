@@ -27,6 +27,8 @@ import org.springframework.cloud.config.client.ConfigServicePropertySourceLocato
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * @author Mike Heath
@@ -44,19 +46,21 @@ public class ConfigClientOAuth2BootstrapConfiguration {
 		return new ConfigClientOAuth2ResourceDetails();
 	}
 	
-	@Bean
-	protected ConfigClientOAuth2Configurer configClientOAuth2Configurator() {
-		return new ConfigClientOAuth2Configurer();
-	}
-	
-	protected static class ConfigClientOAuth2Configurer {
-		
+	@Configuration
+	public class ConfigClientOAuth2Configurer {
+
+		private final ConfigServicePropertySourceLocator locator;
+
+		private final ConfigClientOAuth2ResourceDetails configClientOAuth2ResourceDetails;
+
 		@Autowired
-		private ConfigServicePropertySourceLocator locator; 
-		
-		@Autowired
-		private ConfigClientOAuth2ResourceDetails configClientOAuth2ResourceDetails;
-		
+		public ConfigClientOAuth2Configurer(ConfigServicePropertySourceLocator locator, ConfigClientOAuth2ResourceDetails configClientOAuth2ResourceDetails) {
+			Assert.notNull(locator, "Error injecting ConfigServicePropertySourceLocator, this can occur" +
+					"using self signed certificates in Cloud Foundry without setting the TRUST_CERTS environment variable");
+			this.locator = locator;
+			this.configClientOAuth2ResourceDetails = configClientOAuth2ResourceDetails;
+		}
+
 		@PostConstruct
 		public void init() {
 			 locator.setRestTemplate(new OAuth2RestTemplate(configClientOAuth2ResourceDetails));

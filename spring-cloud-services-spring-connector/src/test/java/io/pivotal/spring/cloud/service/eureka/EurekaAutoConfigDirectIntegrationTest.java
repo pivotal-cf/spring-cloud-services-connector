@@ -16,7 +16,6 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
-import io.pivotal.spring.cloud.TestApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import io.pivotal.spring.cloud.TestApplication;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 

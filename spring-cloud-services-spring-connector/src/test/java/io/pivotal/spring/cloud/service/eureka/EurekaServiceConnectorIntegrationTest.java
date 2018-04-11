@@ -16,20 +16,22 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
-import io.pivotal.spring.cloud.MockCloudConnector;
-import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
 import java.util.Collections;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import io.pivotal.spring.cloud.MockCloudConnector;
+import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
 import static io.pivotal.spring.cloud.config.java.ServiceInfoPropertySourceAdapter.SPRING_AUTOCONFIGURE_EXCLUDE;
 import static org.junit.Assert.assertEquals;
 

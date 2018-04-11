@@ -16,14 +16,15 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
-import io.pivotal.spring.cloud.TestApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import io.pivotal.spring.cloud.TestApplication;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -41,7 +42,8 @@ import static org.junit.Assert.assertTrue;
 				"eureka.client.serviceUrl.defaultZone=https://eureka-123.west.my-cf.com/eureka/",
 				"vcap.application.instance_id=instance-id",
 				"spring.application.name=app-name_",
-				"spring.cloud.services.registrationMethod=route"
+				"spring.cloud.services.registrationMethod=route",
+				"eureka.client.enabled=true"
 		})
 public class EurekaAutoConfigRouteIntegrationTest {
 

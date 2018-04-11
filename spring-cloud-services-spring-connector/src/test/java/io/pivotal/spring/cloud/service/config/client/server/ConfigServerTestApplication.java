@@ -20,11 +20,11 @@ import java.security.Principal;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.cloud.config.server.EnableConfigServer;
-import org.springframework.cloud.netflix.metrics.servo.ServoMetricsAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
@@ -49,30 +49,34 @@ import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfigura
  */
 @RestController
 @EnableConfigServer
-@SpringBootApplication(exclude = { RabbitAutoConfiguration.class,
-		ServoMetricsAutoConfiguration.class })
+@SpringBootApplication(exclude = { RabbitAutoConfiguration.class})
 @EnableAuthorizationServer
 @Import({ ConfigClientOAuth2ResourceDetails.class,
 		PlainTextConfigClientAutoConfiguration.class })
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+@Order(SecurityProperties.BASIC_AUTH_ORDER - 2)
 public class ConfigServerTestApplication extends WebSecurityConfigurerAdapter {
+
 	@Autowired
 	private TokenEndpoint tokenEndpoint;
 
 	@PostMapping("/oauth/token")
 	public ResponseEntity<OAuth2AccessToken> getAccessToken(Principal principal,
-			@RequestParam Map<String, String> parameters)
+															@RequestParam Map<String, String> parameters)
 			throws HttpRequestMethodNotSupportedException {
 		return tokenEndpoint.postAccessToken(principal, parameters);
 	}
 
-	@Configuration
 	@EnableResourceServer
+	@Configuration
 	protected static class ResourceServerConfiguration
 			extends ResourceServerConfigurerAdapter {
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
 			http.antMatcher("/**").authorizeRequests().anyRequest().authenticated();
 		}
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(ConfigServerTestApplication.class);
 	}
 }
