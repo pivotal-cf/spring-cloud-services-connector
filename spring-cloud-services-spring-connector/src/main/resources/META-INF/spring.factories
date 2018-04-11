@@ -1,8 +1,7 @@
 org.springframework.context.ApplicationListener=\
 io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector,\
 io.pivotal.spring.cloud.service.eureka.EurekaServiceConnector,\
-io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector,\
-io.pivotal.spring.cloud.service.config.PropertyMaskingApplicationListener
+io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector
 
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 io.pivotal.spring.cloud.service.eureka.EurekaOAuth2AutoConfiguration,\
@@ -11,5 +10,6 @@ io.pivotal.spring.cloud.service.config.VaultTokenRenewalAutoConfiguration,\
 io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfiguration
 
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+io.pivotal.spring.cloud.service.config.VaultPropertyMaskingContextInitializer,\
 io.pivotal.spring.cloud.service.config.ConfigClientOAuth2BootstrapConfiguration,\
 io.pivotal.spring.cloud.config.java.CloudEnvironmentBootstrapConfiguration
