@@ -29,6 +29,7 @@ import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.web.client.RestTemplate;
@@ -87,6 +88,7 @@ public class VaultTokenRenewalAutoConfiguration {
 		requestBody.put("increment", renewTTL);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("X-Vault-Token", vaultToken);
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<Map<String, Long>> request = new HttpEntity<Map<String,Long>>(requestBody, headers);
 		return request;
 	}
