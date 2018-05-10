@@ -16,15 +16,27 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@Data
 @ConfigurationProperties("eureka.instance")
 final class VirtualHostNamesBean {
 
 	private String virtualHostName;
-
 	private String secureVirtualHostName;
 
+	public String getVirtualHostName() {
+		return virtualHostName;
+	}
+
+	public void setVirtualHostName(String virtualHostName) {
+		this.virtualHostName = virtualHostName;
+	}
+
+	public String getSecureVirtualHostName() {
+		return secureVirtualHostName;
+	}
+
+	public void setSecureVirtualHostName(String secureVirtualHostName) {
+		this.secureVirtualHostName = secureVirtualHostName;
+	}
 }
