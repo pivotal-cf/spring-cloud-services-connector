@@ -4,9 +4,8 @@ buildscript {
 		mavenCentral()
 	}
 
-	ext.springBootVersion = "2.0.0.RELEASE"
-	ext.springCloudVersion = "Finchley.M9"
-	ext.lombokVersion = "1.16.8"
+	ext.springBootVersion = "2.0.1.RELEASE"
+	ext.springCloudVersion = "Finchley.RC1"
 
 	dependencies {
 		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
@@ -156,12 +155,9 @@ project(":spring-cloud-services-spring-connector") {
 	dependencies {
 		compile(project(":spring-cloud-services-connector-core"))
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector")
-		compile("org.projectlombok:lombok:${lombokVersion}")
-		compile("org.springframework.boot:spring-boot-actuator")
 		optional("org.springframework.cloud:spring-cloud-config-client")
 		optional("org.springframework.cloud:spring-cloud-netflix-eureka-client")
 		optional("com.netflix.eureka:eureka-client")
-		optional("org.springframework.amqp:spring-rabbit")
 		optional("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure")
 		testCompile("org.apache.tomcat.embed:tomcat-embed-el")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-commons")
@@ -172,7 +168,6 @@ project(":spring-cloud-services-spring-connector") {
 		testCompile("org.springframework.cloud:spring-cloud-starter-netflix-ribbon")
 		testCompile("org.springframework.cloud:spring-cloud-starter-netflix-hystrix")
 		testCompile("org.springframework.cloud:spring-cloud-config-server")
-		testCompile("org.yaml:snakeyaml:1.19")
 	}
 }
 
