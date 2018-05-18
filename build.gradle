@@ -6,7 +6,6 @@ buildscript {
 
 	ext.springBootVersion = "2.0.1.RELEASE"
 	ext.springCloudVersion = "Finchley.RC1"
-	ext.lombokVersion = "1.16.20"
 
 	dependencies {
 		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
@@ -148,7 +147,6 @@ project(":spring-cloud-services-spring-connector") {
 	dependencies {
 		compile(project(":spring-cloud-services-connector-core"))
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector")
-		compile("org.projectlombok:lombok:${lombokVersion}")
 		optional("org.springframework.cloud:spring-cloud-config-client")
 		optional("org.springframework.cloud:spring-cloud-netflix-eureka-client")
 		optional("com.netflix.eureka:eureka-client")

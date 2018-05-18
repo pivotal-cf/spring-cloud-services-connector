@@ -19,8 +19,6 @@ package io.pivotal.spring.cloud.service.eureka;
 import java.util.List;
 import java.util.Map.Entry;
 
-import lombok.RequiredArgsConstructor;
-
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientRequest;
 import com.sun.jersey.api.client.ClientResponse;
@@ -31,9 +29,12 @@ import com.sun.jersey.api.client.filter.ClientFilter;
  * @author Will Tran
  *
  */
-@RequiredArgsConstructor
 public class ClientFilterAdapter extends ClientFilter {
 	private final DiscoveryRequestDecorator decorator;
+
+	public ClientFilterAdapter(DiscoveryRequestDecorator decorator) {
+		this.decorator = decorator;
+	}
 
 	@Override
 	public ClientResponse handle(ClientRequest cr) throws ClientHandlerException {
