@@ -144,20 +144,13 @@ project(":spring-cloud-services-cloudfoundry-connector") {
 project(":spring-cloud-services-spring-connector") {
 	description = "Spring Cloud Services Spring Connector"
 
-	configurations {
-		compile {
-			exclude module: "jersey-client"
-			exclude module: "jersey-core"
-			exclude module: "jersey-apache-client4"
-	    	}
-	}
-
 	dependencies {
 		compile(project(":spring-cloud-services-connector-core"))
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector")
 		optional("org.springframework.cloud:spring-cloud-config-client")
 		optional("org.springframework.cloud:spring-cloud-netflix-eureka-client")
 		optional("com.netflix.eureka:eureka-client")
+		optional("com.sun.jersey:jersey-client")
 		optional("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure")
 		testCompile("org.apache.tomcat.embed:tomcat-embed-el")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-commons")

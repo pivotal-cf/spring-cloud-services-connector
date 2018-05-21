@@ -16,6 +16,13 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.netflix.discovery.DiscoveryClient.DiscoveryClientOptionalArgs;
+import com.netflix.discovery.EurekaClientConfig;
+import com.sun.jersey.api.client.filter.ClientFilter;
+
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -25,11 +32,6 @@ import org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-
-import com.netflix.discovery.AbstractDiscoveryClientOptionalArgs;
-import com.netflix.discovery.EurekaClientConfig;
-
-import io.pivotal.spring.cloud.service.eureka.oauth2.OAuth2RestTemplateDiscoveryClientOptionalArgs;
 
 /**
  * 
@@ -42,15 +44,29 @@ import io.pivotal.spring.cloud.service.eureka.oauth2.OAuth2RestTemplateDiscovery
 @ConditionalOnProperty(value = "eureka.client.oauth2.clientId")
 @AutoConfigureBefore(EurekaClientAutoConfiguration.class)
 public class EurekaOAuth2AutoConfiguration {
+
+	@Bean
+	@ConditionalOnMissingBean(EurekaOAuth2RequestDecorator.class)
+	public EurekaOAuth2RequestDecorator eurekaOauth2RequestDecorator() {
+		return new EurekaOAuth2RequestDecorator(eurekaOAuth2ResourceDetails());
+	}
+
 	@Bean
 	@ConditionalOnMissingBean(EurekaOAuth2ResourceDetails.class)
 	public EurekaOAuth2ResourceDetails eurekaOAuth2ResourceDetails() {
 		return new EurekaOAuth2ResourceDetails();
 	}
 
+
 	@Bean
-	public AbstractDiscoveryClientOptionalArgs<?> discoveryClientOptionalArgs() {
-		return new OAuth2RestTemplateDiscoveryClientOptionalArgs(
-				eurekaOAuth2ResourceDetails());
+	@ConditionalOnMissingBean(DiscoveryClientOptionalArgs.class)
+	public DiscoveryClientOptionalArgs discoveryClientOptionalArgs() {
+		List<ClientFilter> filters = new ArrayList<>();
+		filters.add(new ClientFilterAdapter(eurekaOauth2RequestDecorator()));
+
+		DiscoveryClientOptionalArgs args = new DiscoveryClientOptionalArgs();
+		args.setAdditionalFilters(filters);
+
+		return args;
 	}
 }
