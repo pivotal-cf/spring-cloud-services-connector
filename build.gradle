@@ -1,16 +1,16 @@
 buildscript {
 	repositories {
-		maven { url "https://repo.spring.io/plugins-release" }
 		mavenCentral()
+		maven { url 'https://repo.spring.io/plugins-release' }
 	}
 
 	ext.springBootVersion = "2.0.1.RELEASE"
 	ext.springCloudVersion = "Finchley.RC1"
 
 	dependencies {
-		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
-		classpath("io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE")
-		classpath("io.spring.gradle:spring-io-plugin:0.0.4.RELEASE")
+		classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
+		classpath("io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE")
+		classpath("io.spring.gradle:spring-io-plugin:0.0.8.RELEASE")
 	}
 }
 
@@ -52,8 +52,7 @@ allprojects {
 
 	repositories {
 		mavenCentral()
-		maven { url "https://repo.spring.io/libs-release" }
-		maven { url "https://repo.spring.io/milestone" }
+		maven { url "https://repo.spring.io/libs-milestone" }
 	}
 
 	dependencies {
@@ -247,6 +246,6 @@ configure(rootProject) {
 	}
 
 	task wrapper(type: Wrapper) {
-		gradleVersion = '4.4.1'
+		gradleVersion = '4.7'
 	}
 }
