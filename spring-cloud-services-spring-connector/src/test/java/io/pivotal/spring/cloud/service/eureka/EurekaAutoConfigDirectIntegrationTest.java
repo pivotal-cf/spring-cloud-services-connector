@@ -48,7 +48,7 @@ public class EurekaAutoConfigDirectIntegrationTest {
 	private EurekaInstanceConfigBean config;
 
 	@Test
-	public void eurekaConfigBean() throws Exception {
+	public void eurekaConfigBean() {
 		assertEquals("1.2.3.4:instance-id", config.getInstanceId());
 		assertEquals("app-name-", config.getAppname());
 		assertEquals("app-name-", config.getVirtualHostName());

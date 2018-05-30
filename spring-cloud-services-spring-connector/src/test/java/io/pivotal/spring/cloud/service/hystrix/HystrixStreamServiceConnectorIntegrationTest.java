@@ -25,6 +25,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import io.pivotal.spring.cloud.MockCloudConnector;
+import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
+import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
@@ -35,9 +39,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import io.pivotal.spring.cloud.MockCloudConnector;
-import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
-import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
 import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_AUTOCONFIGURE_EXCLUDE;
 import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_CLOUD_HYSTRIX_STREAM;
 import static io.pivotal.spring.cloud.service.hystrix.HystrixStreamServiceConnector.SPRING_CLOUD_STREAM_BINDERS_HYSTRIX;
@@ -137,7 +138,7 @@ public class HystrixStreamServiceConnectorIntegrationTest {
 		}
 
 		@EnableCircuitBreaker
-		public static class TestConfig {
+		static class TestConfig {
 		}
 	}
 

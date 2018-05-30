@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.util.EnvironmentTestUtils;
+import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.commons.util.InetUtilsProperties;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.when;
  */
 public class SanitizingEurekaInstanceConfigBeanTest {
 
-	AnnotationConfigApplicationContext ctx;
+	private AnnotationConfigApplicationContext ctx;
 
 	@After
 	public void tearDown() {
@@ -141,7 +141,7 @@ public class SanitizingEurekaInstanceConfigBeanTest {
 		List<String> pairs1 = new ArrayList<>(Arrays.asList(pairs));
 		pairs1.add("sanitizingEurekaInstanceConfigBean.integration.test:true");
 		pairs1.add("eureka.client.enabled:false");
-		EnvironmentTestUtils.addEnvironment(ctx, pairs1.toArray(new String[pairs1.size()]));
+		TestPropertyValues.of(pairs1).applyTo(ctx);
 		this.ctx.register(Context.class);
 		this.ctx.refresh();
 

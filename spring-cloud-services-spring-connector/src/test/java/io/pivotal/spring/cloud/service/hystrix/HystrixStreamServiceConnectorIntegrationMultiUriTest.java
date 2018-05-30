@@ -16,16 +16,19 @@
 
 package io.pivotal.spring.cloud.service.hystrix;
 
-import io.pivotal.spring.cloud.MockCloudConnector;
-import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
-import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import io.pivotal.spring.cloud.MockCloudConnector;
+import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
+import io.pivotal.spring.cloud.service.common.HystrixAmqpServiceInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
@@ -91,6 +94,6 @@ public class HystrixStreamServiceConnectorIntegrationMultiUriTest {
 	}
 
 	@EnableCircuitBreaker
-	public static class TestConfig {
+	static class TestConfig {
 	}
 }

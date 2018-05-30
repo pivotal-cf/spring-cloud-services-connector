@@ -25,16 +25,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
+import io.pivotal.spring.cloud.MockCloudConnector;
+import io.pivotal.spring.cloud.service.common.ConfigServerServiceInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import io.pivotal.spring.cloud.MockCloudConnector;
-import io.pivotal.spring.cloud.service.common.ConfigServerServiceInfo;
 import static io.pivotal.spring.cloud.config.java.ServiceInfoPropertySourceAdapter.SPRING_AUTOCONFIGURE_EXCLUDE;
 import static io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector.SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI;
 import static io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector.SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_CLIENT_ID;
@@ -69,7 +69,7 @@ public class ConfigServerServiceConnectorIntegrationTest {
 	public static void beforeClass() {
 		Mockito.when(MockCloudConnector.instance.isInMatchingCloud()).thenReturn(true);
 		Mockito.when(MockCloudConnector.instance.getServiceInfos()).thenReturn(Collections.singletonList(
-				(ServiceInfo) new ConfigServerServiceInfo("config-server",
+				new ConfigServerServiceInfo("config-server",
 						URI,
 						CLIENT_ID,
 						CLIENT_SECRET,
@@ -127,10 +127,10 @@ public class ConfigServerServiceConnectorIntegrationTest {
 		Assert.assertEquals(ACCESS_TOKEN_URI, resourceDetails.getAccessTokenUri());
 	}
 
-	protected void assertPropertyEquals(String expected, String key) {
+	void assertPropertyEquals(String expected, String key) {
 		assertEquals(expected, environment.getProperty(key));
 	}
 
-	public static class TestConfig {
+	static class TestConfig {
 	}
 }
