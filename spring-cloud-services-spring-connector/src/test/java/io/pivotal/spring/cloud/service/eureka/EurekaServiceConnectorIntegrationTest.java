@@ -24,14 +24,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
+import io.pivotal.spring.cloud.MockCloudConnector;
+import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import io.pivotal.spring.cloud.MockCloudConnector;
-import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
 import static io.pivotal.spring.cloud.config.java.ServiceInfoPropertySourceAdapter.SPRING_AUTOCONFIGURE_EXCLUDE;
 import static org.junit.Assert.assertEquals;
 
@@ -106,10 +107,10 @@ public class EurekaServiceConnectorIntegrationTest {
 		assertPropertyEquals(ACCESS_TOKEN_URI, "eureka.client.oauth2.accessTokenUri");
 	}
 
-	protected void assertPropertyEquals(String expected, String key) {
+	void assertPropertyEquals(String expected, String key) {
 		assertEquals(expected, environment.getProperty(key));
 	}
 
-	public static class TestConfig {
+	static class TestConfig {
 	}
 }

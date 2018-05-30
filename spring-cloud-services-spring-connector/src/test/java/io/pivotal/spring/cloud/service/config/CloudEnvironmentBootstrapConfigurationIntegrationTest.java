@@ -16,9 +16,11 @@
 
 package io.pivotal.spring.cloud.service.config;
 
-import io.pivotal.spring.cloud.TestApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import io.pivotal.spring.cloud.TestApplication;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
@@ -39,7 +41,7 @@ public class CloudEnvironmentBootstrapConfigurationIntegrationTest {
 	private ApplicationContext context;
 
 	@Test
-	public void environment() throws Exception {
+	public void environment() {
 		Environment env = context.getEnvironment();
 		assertEquals("app-name", env.getProperty("spring.application.name"));
 	}
