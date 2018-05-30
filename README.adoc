@@ -1,4 +1,4 @@
-= Spring Cloud Services Connector image:https://build.spring.io/plugins/servlet/buildStatusImage/CLOUD-SCPC["Build Status", link="https://build.spring.io/browse/CLOUD-SCPC"]
+= Spring Cloud Services Connector image:https://build.spring.io/plugins/servlet/wittified/build-status/CLOUD-SCPC["Build Status", link="https://build.spring.io/browse/CLOUD-SCPC"]
 
 link:http://cloud.spring.io/spring-cloud-connectors/[Spring Cloud Connectors] for link:http://docs.pivotal.io/spring-cloud-services/index.html[Spring Cloud Services] in a link:http://pivotal.io/platform[Pivotal Cloud Foundry] environment
 
