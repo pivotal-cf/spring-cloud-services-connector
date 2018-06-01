@@ -66,7 +66,7 @@ public class VaultTokenRenewalAutoConfiguration {
 			@Value("${spring.cloud.config.token}") String vaultToken,
 			@Value("${vault.token.ttl:300000}") long renewTTL) { // <-- Default to a 300 second (5 minute) TTL
 		this.rest = new OAuth2RestTemplate(configClientOAuth2ResourceDetails);
-		this.refreshUri = configClientProps.getRawUri() + "/vault/v1/auth/token/renew-self";
+		this.refreshUri = configClientProps.getUri()[0] + "/vault/v1/auth/token/renew-self";
 		long renewTTLInMS = renewTTL / 1000; // convert to seconds, since that's what Vault wants
 		this.request = buildTokenRenewRequest(vaultToken, renewTTLInMS);
 		this.obscuredToken = vaultToken.substring(0, 4) + "[*]" + vaultToken.substring(vaultToken.length() - 4);
