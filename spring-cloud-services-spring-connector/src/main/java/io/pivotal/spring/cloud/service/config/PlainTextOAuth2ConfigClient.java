@@ -74,10 +74,9 @@ class PlainTextOAuth2ConfigClient implements PlainTextConfigClient {
 						&& !configClientProperties.getName().isEmpty(),
 				"Spring application name is undefined.");
 
-		Assert.notEmpty(configClientProperties.getUri(),
-				"Config server URI is undefined");
-
-		Assert.hasText(configClientProperties.getUri()[0],
+		Assert.isTrue(
+				configClientProperties.getUri() != null
+						&& !configClientProperties.getUri().isEmpty(),
 				"Config server URI is undefined.");
 
 		if (profile == null) {
@@ -91,7 +90,7 @@ class PlainTextOAuth2ConfigClient implements PlainTextConfigClient {
 			label = configClientProperties.getLabel();
 		}
 
-		String url = configClientProperties.getUri()[0] + "/"
+		String url = configClientProperties.getUri() + "/"
 				+ configClientProperties.getName() + "/" + profile + "/"
 				+ (label == null ? path + "?useDefaultLabel" : label + "/" + path);
 		ResponseEntity<Resource> forEntity = restTemplate.getForEntity(url,
