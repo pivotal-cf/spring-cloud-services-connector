@@ -60,7 +60,7 @@ public class PlainTextDefaultLabelTest {
 		resource.setAccessTokenUri("http://localhost:" + port + "/oauth/token");
 		configClientProperties.setName("app");
 		configClientProperties.setProfile(null);
-		configClientProperties.setUri("http://localhost:" + port);
+		configClientProperties.setUri(new String[] {"http://localhost:" + port});
 		configClient = new PlainTextConfigClientAutoConfiguration()
 				.plainTextConfigClient(resource, configClientProperties);
 	}
