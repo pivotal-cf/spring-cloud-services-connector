@@ -74,11 +74,8 @@ class PlainTextOAuth2ConfigClient implements PlainTextConfigClient {
 						&& !configClientProperties.getName().isEmpty(),
 				"Spring application name is undefined.");
 
-		Assert.isTrue(
-				configClientProperties.getUri().length > 0 &&
-				configClientProperties.getUri()[0] != null && 
-				!configClientProperties.getUri()[0].isEmpty(),
-				"Config server URI is undefined.");
+		Assert.notEmpty(configClientProperties.getUri(), "Config server URI is undefined");
+		Assert.hasText(configClientProperties.getUri()[0], "Config server URI is undefined.");
 
 		if (profile == null) {
 			profile = configClientProperties.getProfile();
