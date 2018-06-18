@@ -80,7 +80,7 @@ public class PlainTextOauth2ConfigClientTest {
 		resource.setAccessTokenUri("http://localhost:" + port + "/oauth/token");
 		configClientProperties.setName("app");
 		configClientProperties.setProfile(null);
-		configClientProperties.setUri("http://localhost:" + port);
+		configClientProperties.setUri(new String[] {"http://localhost:" + port});
 		configClient = new PlainTextConfigClientAutoConfiguration()
 				.plainTextConfigClient(resource, configClientProperties);
 	}
@@ -111,7 +111,7 @@ public class PlainTextOauth2ConfigClientTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void missingConfigServerUrlShouldCrash() {
-		configClientProperties.setUri("");
+		configClientProperties.setUri(new String[]{""});
 		configClient.getConfigFile("nginx.conf");
 	}
 
