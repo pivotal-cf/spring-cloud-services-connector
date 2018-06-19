@@ -4,8 +4,8 @@ buildscript {
 		maven { url 'https://repo.spring.io/plugins-release' }
 	}
 
-	ext.springBootVersion = "2.0.2.RELEASE"
-	ext.springCloudVersion = "Finchley.BUILD-SNAPSHOT"
+	ext.springBootVersion = "2.0.3.RELEASE"
+	ext.springCloudVersion = "Finchley.RELEASE"
 
 	dependencies {
 		classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
@@ -52,8 +52,7 @@ allprojects {
 
 	repositories {
 		mavenCentral()
-		maven { url "https://repo.spring.io/libs-snapshot" }
-		maven { url "https://repo.spring.io/libs-milestone" }
+		maven { url "https://repo.spring.io/libs-release" }
 	}
 
 	dependencies {
