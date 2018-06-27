@@ -16,33 +16,47 @@
 
 package io.pivotal.spring.cloud.service.config.client.context;
 
-import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2ResourceDetails;
 import io.pivotal.spring.cloud.service.config.PlainTextConfigClient;
 import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfiguration;
 
-/**
- * @author Daniel Lavoie
- */
-@SpringBootApplication
-@RunWith(SpringRunner.class)
-@Import({ ConfigClientOAuth2ResourceDetails.class,
-		PlainTextConfigClientAutoConfiguration.class })
-@SpringBootTest(classes = PlainTextConfigClientAutoConfigTest.class)
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
+import org.springframework.cloud.config.client.ConfigClientProperties;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class PlainTextConfigClientAutoConfigTest {
-	@Autowired
-	private PlainTextConfigClient plainTextConfigClient;
+
+	private final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
+			.withConfiguration(AutoConfigurations.of(PlainTextConfigClientAutoConfiguration.class));
 
 	@Test
-	public void contextLoads() {
-		Assert.assertNotNull(plainTextConfigClient);
+	public void plainTextConfigClientIsNotCreated() throws Exception {
+		this.contextRunner
+				.run(context -> {
+					assertThat(context).hasSingleBean(ConfigClientOAuth2ResourceDetails.class);
+					assertThat(context).hasSingleBean(ConfigClientProperties.class);
+					assertThat(context).doesNotHaveBean(PlainTextConfigClient.class);
+				});
 	}
+
+	@Test
+	public void plainTextConfigClientIsCreated() throws Exception {
+		this.contextRunner
+				.withPropertyValues(
+						"spring.cloud.config.client.oauth2.client-id=acme",
+						"spring.cloud.config.client.oauth2.client-secret=acmesecret")
+				.run(context -> {
+					assertThat(context).hasSingleBean(ConfigClientOAuth2ResourceDetails.class);
+					ConfigClientOAuth2ResourceDetails details = context.getBean(ConfigClientOAuth2ResourceDetails.class);
+					assertThat(details.getClientId()).isNotEmpty().isEqualTo("acme");
+					assertThat(details.getClientSecret()).isNotEmpty().isEqualTo("acmesecret");
+					assertThat(context).hasSingleBean(ConfigClientProperties.class);
+					assertThat(context).hasSingleBean(PlainTextConfigClient.class);
+				});
+	}
+
 }

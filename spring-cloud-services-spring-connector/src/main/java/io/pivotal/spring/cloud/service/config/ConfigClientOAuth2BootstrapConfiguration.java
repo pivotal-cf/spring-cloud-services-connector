@@ -35,17 +35,11 @@ import org.springframework.util.Assert;
  * @author Will Tran
  */
 @Configuration
-@EnableConfigurationProperties
+@EnableConfigurationProperties(ConfigClientOAuth2ResourceDetails.class)
 @ConditionalOnClass({ConfigServicePropertySourceLocator.class, OAuth2RestTemplate.class})
 @ConditionalOnProperty(value = "spring.cloud.config.client.oauth2.clientId")
 public class ConfigClientOAuth2BootstrapConfiguration {
 
-	@Bean
-	@ConditionalOnMissingBean(ConfigClientOAuth2ResourceDetails.class)
-	public ConfigClientOAuth2ResourceDetails configClientOAuth2ResourceDetails() {
-		return new ConfigClientOAuth2ResourceDetails();
-	}
-	
 	@Configuration
 	public class ConfigClientOAuth2Configurer {
 
@@ -67,6 +61,5 @@ public class ConfigClientOAuth2BootstrapConfiguration {
 		}
 
 	}
-	
 
 }
