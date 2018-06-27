@@ -26,7 +26,6 @@ import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.cloud.config.server.EnableConfigServer;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -41,9 +40,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2ResourceDetails;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfiguration;
-
 /**
  * @author Daniel Lavoie
  */
@@ -51,8 +47,6 @@ import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfigura
 @EnableConfigServer
 @SpringBootApplication(exclude = { RabbitAutoConfiguration.class})
 @EnableAuthorizationServer
-@Import({ ConfigClientOAuth2ResourceDetails.class,
-		PlainTextConfigClientAutoConfiguration.class })
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 2)
 public class ConfigServerTestApplication extends WebSecurityConfigurerAdapter {
 
