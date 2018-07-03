@@ -18,26 +18,31 @@ package io.pivotal.spring.cloud.service.config.client.context;
 
 import org.junit.Test;
 
+import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2BootstrapConfiguration;
 import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2ResourceDetails;
 import io.pivotal.spring.cloud.service.config.PlainTextConfigClient;
 import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfiguration;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
+import org.springframework.cloud.config.client.ConfigClientAutoConfiguration;
 import org.springframework.cloud.config.client.ConfigClientProperties;
+import org.springframework.cloud.config.client.ConfigServiceBootstrapConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PlainTextConfigClientAutoConfigTest {
 
 	private final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(PlainTextConfigClientAutoConfiguration.class));
+			.withConfiguration(AutoConfigurations.of(PlainTextConfigClientAutoConfiguration.class,
+					ConfigClientAutoConfiguration.class, ConfigClientOAuth2BootstrapConfiguration.class,
+					ConfigServiceBootstrapConfiguration.class));
 
 	@Test
 	public void plainTextConfigClientIsNotCreated() throws Exception {
 		this.contextRunner
 				.run(context -> {
-					assertThat(context).hasSingleBean(ConfigClientOAuth2ResourceDetails.class);
+					assertThat(context).doesNotHaveBean(ConfigClientOAuth2ResourceDetails.class);
 					assertThat(context).hasSingleBean(ConfigClientProperties.class);
 					assertThat(context).doesNotHaveBean(PlainTextConfigClient.class);
 				});

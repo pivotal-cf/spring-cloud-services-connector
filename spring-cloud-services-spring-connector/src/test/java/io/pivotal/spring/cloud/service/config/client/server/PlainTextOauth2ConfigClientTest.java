@@ -45,7 +45,8 @@ import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfigura
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ConfigServerTestApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
-		"spring.profiles.active=plaintext,native", "spring.cloud.config.enabled=true", "eureka.client.enabled=false" })
+		"spring.profiles.active=plaintext,native", "spring.cloud.config.enabled=true", "eureka.client.enabled=false",
+		"spring.cloud.config.client.oauth2.client-id=acme"})
 public class PlainTextOauth2ConfigClientTest {
 	// @formatter:off
 	private static final String nginxConfig = "server {\n"

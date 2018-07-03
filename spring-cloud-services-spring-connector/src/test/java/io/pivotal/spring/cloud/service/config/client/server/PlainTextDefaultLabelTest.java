@@ -27,6 +27,7 @@ import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfigura
 		"spring.profiles.active=plaintext,native,integration-test",
 		"spring.cloud.config.enabled=true",
 		"eureka.client.enabled=false",
+		"spring.cloud.config.client.oauth2.client-id=acme"
 })
 public class PlainTextDefaultLabelTest {
 
