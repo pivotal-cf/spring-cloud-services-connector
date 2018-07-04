@@ -16,10 +16,11 @@
 
 package io.pivotal.spring.cloud.service.config;
 
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.config.client.ConfigClientAutoConfiguration;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,8 +37,9 @@ import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResour
 @Configuration
 @ConditionalOnClass({ OAuth2ProtectedResourceDetails.class,
 		ConfigClientProperties.class })
-@EnableConfigurationProperties({ ConfigClientOAuth2ResourceDetails.class,
-		ConfigClientProperties.class })
+// @EnableConfigurationProperties(ConfigClientOAuth2ResourceDetails.class)
+@AutoConfigureAfter({ ConfigClientAutoConfiguration.class,
+		ConfigClientOAuth2BootstrapConfiguration.class })
 public class PlainTextConfigClientAutoConfiguration {
 
 	@Bean

@@ -37,7 +37,7 @@ import org.springframework.util.Assert;
 @Configuration
 @EnableConfigurationProperties(ConfigClientOAuth2ResourceDetails.class)
 @ConditionalOnClass({ConfigServicePropertySourceLocator.class, OAuth2RestTemplate.class})
-@ConditionalOnProperty(value = "spring.cloud.config.client.oauth2.clientId")
+@ConditionalOnProperty(value = "spring.cloud.config.client.oauth2.client-id")
 public class ConfigClientOAuth2BootstrapConfiguration {
 
 	@Configuration
