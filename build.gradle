@@ -146,6 +146,7 @@ project(":spring-cloud-services-spring-connector") {
 	dependencies {
 		compile(project(":spring-cloud-services-connector-core"))
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector")
+		annotationProcessor("org.springframework.boot:spring-boot-autoconfigure-processor")
 		optional("org.springframework.cloud:spring-cloud-config-client")
 		optional("org.springframework.cloud:spring-cloud-netflix-eureka-client")
 		optional("com.netflix.eureka:eureka-client")
