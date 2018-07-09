@@ -1,0 +1,40 @@
+{
+  "properties": [
+    {
+      "name": "spring.cloud.config.client.oauth2.client-id",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "spring.cloud.config.client.oauth2.client-secret",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "spring.cloud.config.client.oauth2.scope",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "spring.cloud.config.client.oauth2.auto-approve-scopes",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "spring.cloud.config.client.oauth2.grant-type",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "eureka.client.oauth2.clientId",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "eureka.client.oauth2.clientSecret",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "eureka.client.oauth2.accessTokenUri",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "eureka.client.serviceUrl.defaultZone",
+      "type": "java.lang.String"
+    }
+  ]
+}

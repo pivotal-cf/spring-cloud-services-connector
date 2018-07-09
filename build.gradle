@@ -143,9 +143,13 @@ project(":spring-cloud-services-cloudfoundry-connector") {
 project(":spring-cloud-services-spring-connector") {
 	description = "Spring Cloud Services Spring Connector"
 
+	// see https://docs.spring.io/spring-boot/docs/2.0.3.RELEASE/reference/html/configuration-metadata.html#configuration-metadata-annotation-processor
+	compileJava.dependsOn(processResources)
+
 	dependencies {
 		compile(project(":spring-cloud-services-connector-core"))
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector")
+		annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 		annotationProcessor("org.springframework.boot:spring-boot-autoconfigure-processor")
 		optional("org.springframework.cloud:spring-cloud-config-client")
 		optional("org.springframework.cloud:spring-cloud-netflix-eureka-client")
