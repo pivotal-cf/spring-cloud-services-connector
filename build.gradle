@@ -15,7 +15,7 @@ allprojects {
 	group = "io.pivotal.spring.cloud"
 
 	ext.springBootVersion = "1.5.10.RELEASE"
-	ext.springCloudVersion = "Edgware.SR3"
+	ext.springCloudVersion = "Edgware.SR4"
 	ext.lombokVersion = "1.16.8"
 
 	apply plugin: "propdeps"
@@ -143,19 +143,12 @@ project(":spring-cloud-services-cloudfoundry-connector") {
 project(":spring-cloud-services-spring-connector") {
 	description = "Spring Cloud Services Spring Connector"
 	
-	configurations {
-		compile {
-			exclude module: "jersey-client"
-			exclude module: "jersey-core"
-			exclude module: "jersey-apache-client4"
-	    	}
-	}
-
 	dependencies {
 		compile(project(":spring-cloud-services-connector-core"))
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector")
 		compile("org.projectlombok:lombok:${lombokVersion}")
 		compile("org.springframework.boot:spring-boot-actuator")
+		optional("com.sun.jersey:jersey-client")
 		optional("org.springframework.cloud:spring-cloud-config-client")
 		optional("org.springframework.cloud:spring-cloud-netflix-eureka-client")
 		optional("com.netflix.eureka:eureka-client")
