@@ -5,7 +5,7 @@ buildscript {
 	}
 
 	dependencies {
-		classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
+		classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
 		classpath("io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE")
 		classpath("io.spring.gradle:spring-io-plugin:0.0.4.RELEASE")
 	}
@@ -19,6 +19,7 @@ allprojects {
 	ext.lombokVersion = "1.16.8"
 
 	apply plugin: "propdeps"
+	apply plugin: "propdeps-maven"
 	apply plugin: "propdeps-eclipse"
 	apply plugin: "propdeps-idea"
 	apply plugin: "java"
