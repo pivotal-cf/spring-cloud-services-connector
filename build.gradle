@@ -19,7 +19,6 @@ allprojects {
 	ext.lombokVersion = "1.16.8"
 
 	apply plugin: "propdeps"
-	apply plugin: "propdeps-maven"
 	apply plugin: "propdeps-eclipse"
 	apply plugin: "propdeps-idea"
 	apply plugin: "java"
