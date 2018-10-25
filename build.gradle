@@ -5,7 +5,7 @@ buildscript {
 	}
 
 	ext.springBootVersion = "2.0.3.RELEASE"
-	ext.springCloudVersion = "Finchley.RELEASE"
+	ext.springCloudVersion = "Finchley.SR2"
 
 	dependencies {
 		classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
