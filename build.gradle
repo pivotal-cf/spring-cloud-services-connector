@@ -11,7 +11,6 @@ buildscript {
 		classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
 		classpath("io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE")
 		classpath("io.spring.gradle:spring-io-plugin:0.0.8.RELEASE")
-		classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.7.5")
 	}
 }
 
@@ -26,7 +25,6 @@ allprojects {
 	apply plugin: "eclipse"
 	apply plugin: "idea"
 	apply plugin: "io.spring.dependency-management"
-	apply plugin: 'maven-publish'
 
 	dependencyManagement {
 		imports {
@@ -121,17 +119,6 @@ subprojects {
 	artifacts {
 		archives sourcesJar
 		archives javadocJar
-	}
-
-	publishing {
-		publications {
-			mavenJava(MavenPublication) {
-				from components.java
-
-				artifact sourcesJar
-				artifact javadocJar
-			}
-		}
 	}
 }
 
