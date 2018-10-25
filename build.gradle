@@ -27,7 +27,6 @@ allprojects {
 	apply plugin: "idea"
 	apply plugin: "io.spring.dependency-management"
 	apply plugin: 'maven-publish'
-	apply plugin: "com.jfrog.artifactory"
 
 	dependencyManagement {
 		imports {
@@ -76,20 +75,6 @@ allprojects {
 			'http://docs.oracle.com/javaee/7/api/',
 			'http://docs.spring.io/spring/docs/current/javadoc-api/',
 	] as String[]
-
-	artifactory {
-		contextUrl = 'https://repo.spring.io'
-		publish {
-			repository {
-				repoKey = 'libs-snapshot-local'
-				username = System.getenv()['USERNAME']
-				password = System.getenv()['PASSWORD']
-			}
-			defaults {
-				publications ('mavenJava')
-			}
-		}
-	}
 }
 
 subprojects {
