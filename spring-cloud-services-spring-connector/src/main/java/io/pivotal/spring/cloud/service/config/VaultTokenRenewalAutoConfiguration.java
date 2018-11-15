@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -30,6 +31,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.web.client.RestTemplate;
@@ -49,6 +51,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @ConditionalOnBean(ConfigClientProperties.class)
 @ConditionalOnProperty(name="spring.cloud.config.token")
+@EnableScheduling
 public class VaultTokenRenewalAutoConfiguration {
 	
 	private static final Logger logger = LoggerFactory.getLogger(VaultTokenRenewalAutoConfiguration.class);
