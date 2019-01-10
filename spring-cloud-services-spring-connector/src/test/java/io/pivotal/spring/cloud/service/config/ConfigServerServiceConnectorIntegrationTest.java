@@ -45,8 +45,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(
 		classes = {
-				ConfigServerServiceConnectorIntegrationTest.TestConfig.class,
-				ConfigClientOAuth2BootstrapConfiguration.class
+				ConfigServerServiceConnectorIntegrationTest.TestConfig.class
 		},
 		properties = "spring.cloud.config.enabled=true")
 public class ConfigServerServiceConnectorIntegrationTest {
