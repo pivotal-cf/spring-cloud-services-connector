@@ -71,7 +71,7 @@ public class PlainTextOauth2ConfigClientTokenForwardingTest {
     }
 
     @Test(expected = HttpClientErrorException.BadRequest.class)
-    public void badRequestWhenConfigServerTokenSet() {
+    public void badRequestWhenConfigServerTokenNotSet() {
         configClientProperties.setToken(null);
         PlainTextConfigClient configClient = new PlainTextConfigClientAutoConfiguration()
                 .plainTextConfigClient(resource, configClientProperties);
