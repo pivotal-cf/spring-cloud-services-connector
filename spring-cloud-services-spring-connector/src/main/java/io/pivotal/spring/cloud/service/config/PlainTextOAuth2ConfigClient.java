@@ -18,12 +18,17 @@ package io.pivotal.spring.cloud.service.config;
 
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.core.io.Resource;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import static org.springframework.cloud.config.client.ConfigClientProperties.TOKEN_HEADER;
 
 /**
  * {@link OAuth2RestTemplate} based implementation of {@link PlainTextConfigClient}.
@@ -88,11 +93,20 @@ class PlainTextOAuth2ConfigClient implements PlainTextConfigClient {
 			label = configClientProperties.getLabel();
 		}
 
-		String url = configClientProperties.getUri()[0] + "/"
-				+ configClientProperties.getName() + "/" + profile + "/"
-				+ (label == null ? path + "?useDefaultLabel" : label + "/" + path);
-		ResponseEntity<Resource> forEntity = restTemplate.getForEntity(url,
-				Resource.class);
+		UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromHttpUrl(configClientProperties.getUri()[0])
+				.pathSegment(configClientProperties.getName())
+				.pathSegment(profile)
+				.pathSegment(label)
+				.pathSegment(path);
+		if (label == null) {
+			urlBuilder.queryParam("useDefaultLabel");
+		}
+		RequestEntity.HeadersBuilder<?> requestBuilder = RequestEntity.get(urlBuilder.build().toUri());
+		if (StringUtils.hasText(configClientProperties.getToken())) {
+			requestBuilder.header(TOKEN_HEADER, configClientProperties.getToken());
+		}
+
+		ResponseEntity<Resource> forEntity = restTemplate.exchange(requestBuilder.build(), Resource.class);
 		return forEntity.getBody();
 	}
 }
