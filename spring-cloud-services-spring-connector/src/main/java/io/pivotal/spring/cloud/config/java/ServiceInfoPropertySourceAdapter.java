@@ -21,8 +21,8 @@ import org.springframework.core.env.PropertySource;
  * @author Scott Frederick
  * @author Will Tran
  * @see <a href=
- * "http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config">
- * http://docs.spring.io/spring-boot/docs/current/reference/html/boot-
+ * "https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config">
+ * https://docs.spring.io/spring-boot/docs/current/reference/html/boot-
  * features-external-config.html#boot-features-external-config</a>
  */
 public abstract class ServiceInfoPropertySourceAdapter<T extends ServiceInfo>

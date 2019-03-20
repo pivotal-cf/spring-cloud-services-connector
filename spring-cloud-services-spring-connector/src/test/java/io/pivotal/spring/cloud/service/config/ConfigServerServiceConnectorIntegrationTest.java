@@ -56,7 +56,7 @@ public class ConfigServerServiceConnectorIntegrationTest {
 
 	private static final String ACCESS_TOKEN_URI = "https://your-identity-zone.uaa.my-cf.com/oauth/token";
 
-	private static final String URI = "http://username:password@config-server.mydomain.com";
+	private static final String URI = "https://username:password@config-server.mydomain.com";
 
 	@Autowired
 	private Environment environment;
