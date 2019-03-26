@@ -14,10 +14,10 @@
       "vhost": "$virtualHost"
     },
     "dashboard": {
-      "uri": "http://username:password@hystrix-69a9789a-5df8-49d4-b6d4-81973f076f4e.apps.example.com"
+      "uri": "https://username:password@hystrix-69a9789a-5df8-49d4-b6d4-81973f076f4e.apps.example.com"
     },
     "stream": {
-      "uri": "http://turbine-69a9789a-5df8-49d4-b6d4-81973f076f4e.apps.example.com"
+      "uri": "https://turbine-69a9789a-5df8-49d4-b6d4-81973f076f4e.apps.example.com"
     }
   }
 }
