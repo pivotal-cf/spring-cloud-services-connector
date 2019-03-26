@@ -121,7 +121,7 @@ public class HystrixStreamServiceConnectorIntegrationTest {
 			when(MockCloudConnector.instance.getServiceInfos()).thenReturn(
 					Arrays.asList(
 							new HystrixAmqpServiceInfo("circuit-breaker", URI),
-							new EurekaServiceInfo("service-registry", "http://example.com", "clientId", "clientSecret", "http://example.com/token")
+							new EurekaServiceInfo("service-registry", "https://example.com", "clientId", "clientSecret", "https://example.com/token")
 					)
 			);
 		}
