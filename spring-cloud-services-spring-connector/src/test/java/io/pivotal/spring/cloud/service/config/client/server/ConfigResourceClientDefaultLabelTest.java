@@ -45,7 +45,7 @@ import io.pivotal.spring.cloud.service.config.ConfigResourceClientAutoConfigurat
 		"eureka.client.enabled=false",
 		"spring.cloud.config.client.oauth2.client-id=acme"
 })
-public class PlainTextDefaultLabelTest {
+public class ConfigResourceClientDefaultLabelTest {
 
 	// @formatter:off
 	private static final String nginxConfig = "server {\n"

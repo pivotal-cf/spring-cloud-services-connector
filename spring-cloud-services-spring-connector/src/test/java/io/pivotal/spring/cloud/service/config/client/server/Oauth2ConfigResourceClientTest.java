@@ -48,7 +48,7 @@ import io.pivotal.spring.cloud.service.config.ConfigResourceClientAutoConfigurat
 @SpringBootTest(classes = ConfigServerTestApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
 		"spring.profiles.active=plaintext,native", "spring.cloud.config.enabled=true", "eureka.client.enabled=false",
 		"spring.cloud.config.client.oauth2.client-id=acme"})
-public class PlainTextOauth2ConfigClientTest {
+public class Oauth2ConfigResourceClientTest {
 	// @formatter:off
 	private static final String nginxConfig = "server {\n"
 			+ "    listen              80;\n"
