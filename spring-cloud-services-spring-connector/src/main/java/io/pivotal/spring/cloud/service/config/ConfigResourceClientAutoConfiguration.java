@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 the original author or authors.
+ * Copyright 2017-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,27 +27,28 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 
 /**
- * Auto configures a {@link PlainTextOAuth2ConfigClient} when a
- * {@link ConfigClientOAuth2ResourceDetails} and a {@link PlainTextConfigClient} are
+ * Auto configures a {@link OAuth2ConfigResourceClient} when a
+ * {@link ConfigClientOAuth2ResourceDetails} and a {@link ConfigResourceClient} are
  * available in the container.
  *
  * @author Daniel Lavoie
  * @author Roy Clarkson
+ * @author Anshul Mehra
  */
 @Configuration
 @ConditionalOnClass({ OAuth2ProtectedResourceDetails.class,
 		ConfigClientProperties.class })
 @AutoConfigureAfter({ ConfigClientAutoConfiguration.class,
 		ConfigClientOAuth2BootstrapConfiguration.class })
-public class PlainTextConfigClientAutoConfiguration {
+public class ConfigResourceClientAutoConfiguration {
 
 	@Bean
-	@ConditionalOnMissingBean(PlainTextConfigClient.class)
+	@ConditionalOnMissingBean(ConfigResourceClient.class)
 	@ConditionalOnProperty(prefix = "spring.cloud.config.client.oauth2", name = {
 			"client-id", "client-secret" })
-	public PlainTextConfigClient plainTextConfigClient(
+	public ConfigResourceClient configResourceClient(
 			ConfigClientOAuth2ResourceDetails resource,
 			ConfigClientProperties configClientProperties) {
-		return new PlainTextOAuth2ConfigClient(resource, configClientProperties);
+		return new OAuth2ConfigResourceClient(resource, configClientProperties);
 	}
 }

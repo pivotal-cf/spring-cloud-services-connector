@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017-2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.pivotal.spring.cloud.service.config.client.server;
 
 import java.io.BufferedReader;
@@ -19,8 +35,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2ResourceDetails;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClient;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfiguration;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClient;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClientAutoConfiguration;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ConfigServerTestApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
@@ -37,7 +53,7 @@ public class PlainTextDefaultLabelTest {
 			+ "    server_name         default-label.example.com;\n"
 			+ "}";
 	// @formatter:on
-	private PlainTextConfigClient configClient;
+	private ConfigResourceClient configClient;
 
 	@Autowired
 	private ConfigClientProperties configClientProperties;
@@ -62,13 +78,13 @@ public class PlainTextDefaultLabelTest {
 		configClientProperties.setName("app");
 		configClientProperties.setProfile(null);
 		configClientProperties.setUri(new String[] {"http://localhost:" + port});
-		configClient = new PlainTextConfigClientAutoConfiguration()
-				.plainTextConfigClient(resource, configClientProperties);
+		configClient = new ConfigResourceClientAutoConfiguration()
+				.configResourceClient(resource, configClientProperties);
 	}
 
 	@Test
 	public void shouldFindFileWithDefaultLabel() {
 		Assert.assertEquals(nginxConfig,
-				read(configClient.getConfigFile("default-label-nginx.conf")));
+				read(configClient.getPlainTextResource("default-label-nginx.conf")));
 	}
 }

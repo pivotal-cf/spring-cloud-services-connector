@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 the original author or authors.
+ * Copyright 2017-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,56 +24,46 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.springframework.cloud.config.client.ConfigClientProperties.TOKEN_HEADER;
 
 /**
- * {@link OAuth2RestTemplate} based implementation of {@link PlainTextConfigClient}.
+ * {@link OAuth2RestTemplate} based implementation of {@link ConfigResourceClient}.
  * Config Server URI, default application name, profiles and labels are provided by
  * {@link ConfigClientProperties}.
- * 
  * <p>
  * This client requires an {@link OAuth2ProtectedResourceDetails} holding the Config
  * Server credentials configurations.
  * </p>
- * 
  * @author Daniel Lavoie
+ * @author Anshul Mehra
  */
-class PlainTextOAuth2ConfigClient implements PlainTextConfigClient {
+class OAuth2ConfigResourceClient implements ConfigResourceClient {
 	private final ConfigClientProperties configClientProperties;
 
 	private RestTemplate restTemplate;
 
-	protected PlainTextOAuth2ConfigClient(final OAuth2ProtectedResourceDetails resource,
+	protected OAuth2ConfigResourceClient(final OAuth2ProtectedResourceDetails resource,
 			final ConfigClientProperties configClientProperties) {
 		this.restTemplate = new OAuth2RestTemplate(resource);
 		this.configClientProperties = configClientProperties;
 	}
 
 	/**
-	 * Retrieves a config file using the defaults application name, profiles and labels.
-	 * 
-	 * @throws IllegalArgumentException when application name or Config Server url is
-	 * undefined.
-	 * @throws HttpClientErrorException when a config file is not found.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public Resource getConfigFile(String path) {
-		return getConfigFile(null, null, path);
+	public Resource getPlainTextResource(String path) {
+		return getPlainTextResource(null, null, path);
 	}
 
 	/**
-	 * Retrieves a config file.
-	 * 
-	 * @throws IllegalArgumentException when application name or Config Server url is
-	 * undefined.
-	 * @throws HttpClientErrorException when a config file is not found.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public Resource getConfigFile(String profile, String label, String path) {
+	public Resource getPlainTextResource(String profile, String label, String path) {
 		Assert.isTrue(
 				configClientProperties.getName() != null
 						&& !configClientProperties.getName().isEmpty(),
@@ -93,7 +83,8 @@ class PlainTextOAuth2ConfigClient implements PlainTextConfigClient {
 			label = configClientProperties.getLabel();
 		}
 
-		UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromHttpUrl(configClientProperties.getUri()[0])
+		UriComponentsBuilder urlBuilder = UriComponentsBuilder
+				.fromHttpUrl(configClientProperties.getUri()[0])
 				.pathSegment(configClientProperties.getName())
 				.pathSegment(profile)
 				.pathSegment(label)

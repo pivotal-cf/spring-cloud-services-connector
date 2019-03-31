@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 the original author or authors.
+ * Copyright 2017-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,11 +37,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2ResourceDetails;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClient;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfiguration;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClient;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClientAutoConfiguration;
 
 /**
  * @author Daniel Lavoie
+ * @author Anshul Mehra
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ConfigServerTestApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
@@ -56,14 +57,14 @@ public class PlainTextOauth2ConfigClientTest {
 
 	private static final String devNginxConfig = "server {\n"
 			+ "    listen              80;\n"
-			+ "    server_name         dev.example.com;\n" 
+			+ "    server_name         dev.example.com;\n"
 			+ "}";
 
 	private static final String testNginxConfig = "server {\n"
 			+ "    listen              80;\n"
 			+ "    server_name         test.example.com;\n"
 			+ "}";
-	// @formatter:on 
+	// @formatter:on
 
 	@LocalServerPort
 	private int port;
@@ -74,7 +75,7 @@ public class PlainTextOauth2ConfigClientTest {
 	@Autowired
 	private ConfigClientProperties configClientProperties;
 
-	private PlainTextConfigClient configClient;
+	private ConfigResourceClient configClient;
 
 	@Before
 	public void setup() {
@@ -82,38 +83,38 @@ public class PlainTextOauth2ConfigClientTest {
 		configClientProperties.setName("app");
 		configClientProperties.setProfile(null);
 		configClientProperties.setUri(new String[] {"http://localhost:" + port});
-		configClient = new PlainTextConfigClientAutoConfiguration()
-				.plainTextConfigClient(resource, configClientProperties);
+		configClient = new ConfigResourceClientAutoConfiguration()
+				.configResourceClient(resource, configClientProperties);
 	}
 
 	@Test
 	public void shouldFindSimplePlainFile() {
 		Assert.assertEquals(nginxConfig,
-				read(configClient.getConfigFile(null, null, "nginx.conf")));
+				read(configClient.getPlainTextResource(null, null, "nginx.conf")));
 
 		Assert.assertEquals(devNginxConfig,
-				read(configClient.getConfigFile("dev", "master", "nginx.conf")));
+				read(configClient.getPlainTextResource("dev", "master", "nginx.conf")));
 
 		configClientProperties.setProfile("test");
 		Assert.assertEquals(testNginxConfig,
-				read(configClient.getConfigFile("nginx.conf")));
+				read(configClient.getPlainTextResource("nginx.conf")));
 	}
 
 	@Test(expected = HttpClientErrorException.class)
 	public void missingConfigFileShouldReturnHttpError() {
-		configClient.getConfigFile("missing-config.xml");
+		configClient.getPlainTextResource("missing-config.xml");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void missingApplicationNameShouldCrash() {
 		configClientProperties.setName("");
-		configClient.getConfigFile("nginx.conf");
+		configClient.getPlainTextResource("nginx.conf");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void missingConfigServerUrlShouldCrash() {
 		configClientProperties.setUri(new String[]{""});
-		configClient.getConfigFile("nginx.conf");
+		configClient.getPlainTextResource("nginx.conf");
 	}
 
 	@Test(expected = OAuth2AccessDeniedException.class)
@@ -125,10 +126,10 @@ public class PlainTextOauth2ConfigClientTest {
 		invalidCrendentialsResource.setScope(resource.getScope());
 		invalidCrendentialsResource.setGrantType(resource.getGrantType());
 
-		new PlainTextConfigClientAutoConfiguration()
-				.plainTextConfigClient(invalidCrendentialsResource,
+		new ConfigResourceClientAutoConfiguration()
+				.configResourceClient(invalidCrendentialsResource,
 						configClientProperties)
-				.getConfigFile("nginx.conf");
+				.getPlainTextResource("nginx.conf");
 	}
 
 	public String read(Resource resource) {

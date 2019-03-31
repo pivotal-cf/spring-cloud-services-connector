@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017-2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.pivotal.spring.cloud.service.config.client.server;
 
 import org.junit.After;
@@ -27,9 +43,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2ResourceDetails;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClient;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfiguration;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClient;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClientAutoConfiguration;
 
+/**
+ * @author Anshul Mehra
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ConfigServerTestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
         "spring.profiles.active=vault,plaintext,native", "spring.cloud.config.enabled=true", "eureka.client.enabled=false",
@@ -65,17 +84,17 @@ public class PlainTextOauth2ConfigClientTokenForwardingTest {
     @Test
     public void requestGoesThroughWhenConfigServerTokenSet() {
         configClientProperties.setToken("vaultToken");
-        PlainTextConfigClient configClient = new PlainTextConfigClientAutoConfiguration()
-                .plainTextConfigClient(resource, configClientProperties);
-        configClient.getConfigFile(null, null, "nginx.conf");
+        ConfigResourceClient configClient = new ConfigResourceClientAutoConfiguration()
+                .configResourceClient(resource, configClientProperties);
+        configClient.getPlainTextResource(null, null, "nginx.conf");
     }
 
     @Test(expected = HttpClientErrorException.BadRequest.class)
     public void badRequestWhenConfigServerTokenNotSet() {
         configClientProperties.setToken(null);
-        PlainTextConfigClient configClient = new PlainTextConfigClientAutoConfiguration()
-                .plainTextConfigClient(resource, configClientProperties);
-        configClient.getConfigFile(null, null, "nginx.conf");
+        ConfigResourceClient configClient = new ConfigResourceClientAutoConfiguration()
+                .configResourceClient(resource, configClientProperties);
+        configClient.getPlainTextResource(null, null, "nginx.conf");
     }
 
     @Configuration

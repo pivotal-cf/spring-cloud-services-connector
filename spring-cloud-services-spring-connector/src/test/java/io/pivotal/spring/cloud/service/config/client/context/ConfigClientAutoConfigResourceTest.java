@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 the original author or authors.
+ * Copyright 2017-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,23 @@ package io.pivotal.spring.cloud.service.config.client.context;
 
 import org.junit.Test;
 
-import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2BootstrapConfiguration;
-import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2ResourceDetails;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClient;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfiguration;
-
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import org.springframework.cloud.config.client.ConfigClientAutoConfiguration;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.cloud.config.client.ConfigServiceBootstrapConfiguration;
 
+import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2BootstrapConfiguration;
+import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2ResourceDetails;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClient;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClientAutoConfiguration;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PlainTextConfigClientAutoConfigTest {
+public class ConfigClientAutoConfigResourceTest {
 
 	private final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(PlainTextConfigClientAutoConfiguration.class,
+			.withConfiguration(AutoConfigurations.of(ConfigResourceClientAutoConfiguration.class,
 					ConfigClientAutoConfiguration.class, ConfigClientOAuth2BootstrapConfiguration.class,
 					ConfigServiceBootstrapConfiguration.class));
 
@@ -44,7 +44,7 @@ public class PlainTextConfigClientAutoConfigTest {
 				.run(context -> {
 					assertThat(context).doesNotHaveBean(ConfigClientOAuth2ResourceDetails.class);
 					assertThat(context).hasSingleBean(ConfigClientProperties.class);
-					assertThat(context).doesNotHaveBean(PlainTextConfigClient.class);
+					assertThat(context).doesNotHaveBean(ConfigResourceClient.class);
 				});
 	}
 
@@ -60,7 +60,7 @@ public class PlainTextConfigClientAutoConfigTest {
 					assertThat(details.getClientId()).isNotEmpty().isEqualTo("acme");
 					assertThat(details.getClientSecret()).isNotEmpty().isEqualTo("acmesecret");
 					assertThat(context).hasSingleBean(ConfigClientProperties.class);
-					assertThat(context).hasSingleBean(PlainTextConfigClient.class);
+					assertThat(context).hasSingleBean(ConfigResourceClient.class);
 				});
 	}
 
