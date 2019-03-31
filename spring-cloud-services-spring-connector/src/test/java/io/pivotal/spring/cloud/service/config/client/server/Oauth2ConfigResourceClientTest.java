@@ -34,6 +34,7 @@ import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2ResourceDetails;
@@ -98,6 +99,16 @@ public class Oauth2ConfigResourceClientTest {
 		configClientProperties.setProfile("test");
 		Assert.assertEquals(testNginxConfig,
 				read(configClient.getPlainTextResource("nginx.conf")));
+	}
+
+	@Test
+	public void shouldFindBinaryFile() throws IOException {
+		byte[] sourceImageBytes = StreamUtils.copyToByteArray(this.getClass().getClassLoader()
+				.getResourceAsStream("config/image.png"));
+		byte[] imageFromConfigServer = StreamUtils
+				.copyToByteArray(configClient.getBinaryResource("dev", "master", "image.png")
+						.getInputStream());
+		Assert.assertArrayEquals(sourceImageBytes, imageFromConfigServer);
 	}
 
 	@Test(expected = HttpClientErrorException.class)
