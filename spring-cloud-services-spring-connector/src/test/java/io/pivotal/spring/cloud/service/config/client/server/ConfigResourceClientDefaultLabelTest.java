@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2ResourceDetails;
 import io.pivotal.spring.cloud.service.config.PlainTextConfigClient;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfiguration;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClientAutoConfiguration;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ConfigServerTestApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
@@ -29,7 +29,7 @@ import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfigura
 		"eureka.client.enabled=false",
 		"spring.cloud.config.client.oauth2.client-id=acme"
 })
-public class PlainTextDefaultLabelTest {
+public class ConfigResourceClientDefaultLabelTest {
 
 	// @formatter:off
 	private static final String nginxConfig = "server {\n"
@@ -62,8 +62,8 @@ public class PlainTextDefaultLabelTest {
 		configClientProperties.setName("app");
 		configClientProperties.setProfile(null);
 		configClientProperties.setUri(new String[] {"http://localhost:" + port});
-		configClient = new PlainTextConfigClientAutoConfiguration()
-				.plainTextConfigClient(resource, configClientProperties);
+		configClient = new ConfigResourceClientAutoConfiguration()
+				.configResourceClient(resource, configClientProperties);
 	}
 
 	@Test

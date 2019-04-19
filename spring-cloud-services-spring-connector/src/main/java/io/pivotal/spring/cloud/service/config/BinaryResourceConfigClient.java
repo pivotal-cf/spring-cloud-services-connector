@@ -20,50 +20,34 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.client.HttpClientErrorException;
 
 /**
- * Provides access to plain text configuration files served by a Spring Cloud Config
+ * Provides access to binary resource files served by a Spring Cloud Config
  * Server.
  *
- * @author Daniel Lavoie
+ * @author Craig Walls
+ * @author Anshul Mehra
  */
-public interface PlainTextConfigClient {
+public interface BinaryResourceConfigClient {
+	
 	/**
-	 * Retrieves a config file using the defaults profiles and labels.
-	 * @param path config file name
+	 * Retrieves a binary config file using the defaults profiles and labels.
+	 * @param path config file path relative to spring application folder
+	 * @return plain text file retrieved from config server
 	 * @throws IllegalArgumentException when application name or Config Server url is
 	 * undefined.
 	 * @throws HttpClientErrorException when a config file is not found.
 	 */
-	Resource getPlainTextResource(String path);
+	Resource getBinaryResource(String path);
 
 	/**
-	 * Retrieves a config file.
-	 * 
+	 * Retrieves a binary config file.
+	 * @param profile profile name (can be a comma-separated list of profiles)
+	 * @param label git label
+	 * @param path config file path relative to spring application folder
+	 * @return plain text file retrieved from config server
 	 * @throws IllegalArgumentException when application name or Config Server url is
 	 * undefined.
 	 * @throws HttpClientErrorException when a config file is not found.
 	 */
-	Resource getPlainTextResource(String profile, String label, String path);
-	
-	/**
-	 * Retrieves a config file using the defaults profiles and labels.
-	 * @param path config file name
-	 * @throws IllegalArgumentException when application name or Config Server url is
-	 * undefined.
-	 * @throws HttpClientErrorException when a config file is not found.
-	 */
-	default Resource getConfigFile(String path) {
-		return this.getPlainTextResource(path);
-	}
-	
-	/**
-	 * Retrieves a config file.
-	 * 
-	 * @throws IllegalArgumentException when application name or Config Server url is
-	 * undefined.
-	 * @throws HttpClientErrorException when a config file is not found.
-	 */
-	default Resource getConfigFile(String profile, String label, String path) {
-		return this.getPlainTextResource(profile, label, path);
-	}
+	Resource getBinaryResource(String profile, String label, String path);
 	
 }

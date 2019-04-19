@@ -21,7 +21,7 @@ import org.junit.Test;
 import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2BootstrapConfiguration;
 import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2ResourceDetails;
 import io.pivotal.spring.cloud.service.config.PlainTextConfigClient;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfiguration;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClientAutoConfiguration;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
@@ -31,10 +31,10 @@ import org.springframework.cloud.config.client.ConfigServiceBootstrapConfigurati
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PlainTextConfigClientAutoConfigTest {
+public class ConfigClientAutoConfigResourceTest {
 
 	private final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
-			.withConfiguration(AutoConfigurations.of(PlainTextConfigClientAutoConfiguration.class,
+			.withConfiguration(AutoConfigurations.of(ConfigResourceClientAutoConfiguration.class,
 					ConfigClientAutoConfiguration.class, ConfigClientOAuth2BootstrapConfiguration.class,
 					ConfigServiceBootstrapConfiguration.class));
 
