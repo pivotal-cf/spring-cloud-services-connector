@@ -28,16 +28,16 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.pivotal.spring.cloud.service.config.PlainTextConfigClient;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfiguration;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClientAutoConfiguration;
 
 /**
  * @author Daniel Lavoie
  */
 @RunWith(SpringRunner.class)
-@Import(PlainTextConfigClientAutoConfiguration.class)
-@SpringBootTest(classes = DisabledPlainTextConfigClientTest.class)
+@Import(ConfigResourceClientAutoConfiguration.class)
+@SpringBootTest(classes = DisabledConfigResourceClientTest.class)
 @ActiveProfiles("integration-test")
-public class DisabledPlainTextConfigClientTest {
+public class DisabledConfigResourceClientTest {
 
 	@Autowired(required = false)
 	private PlainTextConfigClient plainTextConfigClient;

@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 
 /**
- * Auto configures a {@link PlainTextOAuth2ConfigClient} when a
+ * Auto configures a {@link OAuth2ConfigResourceClient} when a
  * {@link ConfigClientOAuth2ResourceDetails} and a {@link PlainTextConfigClient} are
  * available in the container.
  *
@@ -39,15 +39,15 @@ import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResour
 		ConfigClientProperties.class })
 @AutoConfigureAfter({ ConfigClientAutoConfiguration.class,
 		ConfigClientOAuth2BootstrapConfiguration.class })
-public class PlainTextConfigClientAutoConfiguration {
+public class ConfigResourceClientAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(PlainTextConfigClient.class)
 	@ConditionalOnProperty(prefix = "spring.cloud.config.client.oauth2", name = {
 			"client-id", "client-secret" })
-	public PlainTextConfigClient plainTextConfigClient(
+	public ConfigResourceClient configResourceClient(
 			ConfigClientOAuth2ResourceDetails resource,
 			ConfigClientProperties configClientProperties) {
-		return new PlainTextOAuth2ConfigClient(resource, configClientProperties);
+		return new OAuth2ConfigResourceClient(resource, configClientProperties);
 	}
 }

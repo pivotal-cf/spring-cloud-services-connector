@@ -34,11 +34,12 @@ import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.pivotal.spring.cloud.service.config.ConfigClientOAuth2ResourceDetails;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClient;
-import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfiguration;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClient;
+import io.pivotal.spring.cloud.service.config.ConfigResourceClientAutoConfiguration;
 
 /**
  * @author Daniel Lavoie
@@ -47,7 +48,7 @@ import io.pivotal.spring.cloud.service.config.PlainTextConfigClientAutoConfigura
 @SpringBootTest(classes = ConfigServerTestApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
 		"spring.profiles.active=plaintext,native", "spring.cloud.config.enabled=true", "eureka.client.enabled=false",
 		"spring.cloud.config.client.oauth2.client-id=acme"})
-public class PlainTextOauth2ConfigClientTest {
+public class OAuth2ConfigResourceClientTest {
 	// @formatter:off
 	private static final String nginxConfig = "server {\n"
 			+ "    listen              80;\n"
@@ -74,7 +75,7 @@ public class PlainTextOauth2ConfigClientTest {
 	@Autowired
 	private ConfigClientProperties configClientProperties;
 
-	private PlainTextConfigClient configClient;
+	private ConfigResourceClient configClient;
 
 	@Before
 	public void setup() {
@@ -82,8 +83,8 @@ public class PlainTextOauth2ConfigClientTest {
 		configClientProperties.setName("app");
 		configClientProperties.setProfile(null);
 		configClientProperties.setUri(new String[] {"http://localhost:" + port});
-		configClient = new PlainTextConfigClientAutoConfiguration()
-				.plainTextConfigClient(resource, configClientProperties);
+		configClient = new ConfigResourceClientAutoConfiguration()
+				.configResourceClient(resource, configClientProperties);
 	}
 
 	@Test
@@ -99,6 +100,16 @@ public class PlainTextOauth2ConfigClientTest {
 				read(configClient.getConfigFile("nginx.conf")));
 	}
 
+	@Test
+	public void shouldFindBinaryFile() throws IOException {
+		byte[] sourceImageBytes = StreamUtils.copyToByteArray(this.getClass().getClassLoader()
+				.getResourceAsStream("config/image.png"));
+		byte[] imageFromConfigServer = StreamUtils
+				.copyToByteArray(configClient.getBinaryResource("dev", "master", "image.png")
+						.getInputStream());
+		Assert.assertArrayEquals(sourceImageBytes, imageFromConfigServer);
+	}
+	
 	@Test(expected = HttpClientErrorException.class)
 	public void missingConfigFileShouldReturnHttpError() {
 		configClient.getConfigFile("missing-config.xml");
@@ -125,8 +136,8 @@ public class PlainTextOauth2ConfigClientTest {
 		invalidCrendentialsResource.setScope(resource.getScope());
 		invalidCrendentialsResource.setGrantType(resource.getGrantType());
 
-		new PlainTextConfigClientAutoConfiguration()
-				.plainTextConfigClient(invalidCrendentialsResource,
+		new ConfigResourceClientAutoConfiguration()
+				.configResourceClient(invalidCrendentialsResource,
 						configClientProperties)
 				.getConfigFile("nginx.conf");
 	}
