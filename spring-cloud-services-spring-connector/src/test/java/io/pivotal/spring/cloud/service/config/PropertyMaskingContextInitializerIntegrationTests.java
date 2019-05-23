@@ -22,26 +22,31 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CredHubPropertyMaskingContextInitializerIntegrationTests {
+public class PropertyMaskingContextInitializerIntegrationTests {
 
-	private static final String CREDHUB_TEST_SANITIZE_PROPERTY = "MyHiddenData";
+	private static final String VAULT_TEST_SANITIZE_PROPERTY = "MyHiddenVaultData";
+	private static final String CREDHUB_TEST_SANITIZE_PROPERTY = "MyHiddenCredhubData";
 	private static final String GIT_TEST_NON_SANITIZE_PROPERTY = "ReadableProperty";
 
 	@SpringBootApplication
-	public static class TestCredhubApplication {}
+	public static class TestVaultApplication {}
 
-	public static class CredHubPropertySourceContextLoader extends SpringBootContextLoader {
+	public static class VaultPropertySourceContextLoader extends SpringBootContextLoader {
 
 		@Override
 		protected ConfigurableEnvironment getEnvironment() {
 			//Bootstrap properties contain all the Config Server properties
 			CompositePropertySource bootstrapPropSource = new CompositePropertySource("bootstrapProperties");
 
+			String vaultPropertySourceName = "configService";
+			CompositePropertySource compositeProps = new CompositePropertySource(vaultPropertySourceName);
+			//Add vault properties that will be masked
+			Map<String, Object> fakeVaultProperties = new HashMap<>();
+			fakeVaultProperties.put(PropertyMaskingContextInitializerIntegrationTests.VAULT_TEST_SANITIZE_PROPERTY, "SecretVaultValue");
+			compositeProps.addPropertySource(new MapPropertySource("vault:test-data", fakeVaultProperties));
 			//Add credhub properties that will be masked
-			String credhubPropertySourceName = "configService";
-			CompositePropertySource compositeProps = new CompositePropertySource(credhubPropertySourceName);
 			Map<String, Object> fakeCredhubProperties = new HashMap<>();
-			fakeCredhubProperties.put(CredHubPropertyMaskingContextInitializerIntegrationTests.CREDHUB_TEST_SANITIZE_PROPERTY, "SecretValue");
+			fakeCredhubProperties.put(PropertyMaskingContextInitializerIntegrationTests.CREDHUB_TEST_SANITIZE_PROPERTY, "SecretCredhubValue");
 			compositeProps.addPropertySource(new MapPropertySource("credhub-test-data", fakeCredhubProperties));
 
 			//Add Git properties that will not be masked (except the my-password which is part of the default sainitze keys)
@@ -58,16 +63,30 @@ public class CredHubPropertyMaskingContextInitializerIntegrationTests {
 	}
 
 	@RunWith(SpringRunner.class)
-	@SpringBootTest(classes = {CredHubPropertyMaskingContextInitializerIntegrationTests.TestCredhubApplication.class},
+	@SpringBootTest(classes = {PropertyMaskingContextInitializerIntegrationTests.TestVaultApplication.class},
 			webEnvironment = WebEnvironment.RANDOM_PORT)
 	@ActiveProfiles("integration-test,native")
-	@ContextConfiguration(classes = CredHubPropertyMaskingContextInitializerIntegrationTests.TestCredhubApplication.class,
-			loader = CredHubPropertyMaskingContextInitializerIntegrationTests.CredHubPropertySourceContextLoader.class)
-	public static class TestCredhubConfigClientProperties {
+	@ContextConfiguration(classes = PropertyMaskingContextInitializerIntegrationTests.TestVaultApplication.class,
+			loader = PropertyMaskingContextInitializerIntegrationTests.VaultPropertySourceContextLoader.class)
+	public static class TestVaultConfigClientProperties {
 
 		@Autowired
 		EnvironmentEndpoint environmentEndpoint;
 
+		@Test
+		public void vaultPropertyIsIncludedInSantizeEndpoints() {
+			EnvironmentEndpoint.PropertySummaryDescriptor sanitizeEndpointsProp = environmentEndpoint
+					.environmentEntry(PropertyMaskingContextInitializer.SANITIZE_ENV_KEY).getProperty();
+
+			assertThat(sanitizeEndpointsProp)
+					.withFailMessage("Sanitize endpoints property not found in environment")
+					.isNotNull();
+
+			assertThat(sanitizeEndpointsProp.getValue().toString())
+					.withFailMessage("Sanitize endpoints property not equal to " + sanitizeEndpointsProp.getValue())
+					.contains(VAULT_TEST_SANITIZE_PROPERTY);
+		}
+		
 		@Test
 		public void credhubPropertyIsIncludedInSantizeEndpoints() {
 			EnvironmentEndpoint.PropertySummaryDescriptor sanitizeEndpointsProp = environmentEndpoint
