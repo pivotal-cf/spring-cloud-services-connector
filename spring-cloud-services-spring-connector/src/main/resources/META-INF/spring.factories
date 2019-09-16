@@ -7,7 +7,8 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 io.pivotal.spring.cloud.service.eureka.EurekaOAuth2AutoConfiguration,\
 io.pivotal.spring.cloud.service.eureka.EurekaInstanceAutoConfiguration,\
 io.pivotal.spring.cloud.service.config.VaultTokenRenewalAutoConfiguration,\
-io.pivotal.spring.cloud.service.config.ConfigResourceClientAutoConfiguration
+io.pivotal.spring.cloud.service.config.ConfigResourceClientAutoConfiguration,\
+io.pivotal.spring.cloud.service.config.refresh.ClientRefreshAutoConfiguration
 
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
 io.pivotal.spring.cloud.service.config.PropertyMaskingContextInitializer,\

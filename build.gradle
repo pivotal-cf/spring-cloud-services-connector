@@ -155,6 +155,11 @@ project(":spring-cloud-services-spring-connector") {
 		optional("org.springframework.cloud:spring-cloud-netflix-eureka-client")
 		optional("com.netflix.eureka:eureka-client")
 		optional("com.sun.jersey:jersey-client")
+
+		compile('io.rsocket:rsocket-core:1.0.0-RC1')
+		compile('io.rsocket:rsocket-transport-netty:1.0.0-RC1')
+		compile('io.rsocket:rsocket-load-balancer:1.0.0-RC1')
+
 		//
 		// TODO: Remove the explicit version in the following dependency when Greenwich.SR1 is released
 		//
