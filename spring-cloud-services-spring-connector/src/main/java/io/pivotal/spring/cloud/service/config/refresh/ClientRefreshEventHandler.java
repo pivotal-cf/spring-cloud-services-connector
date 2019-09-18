@@ -33,7 +33,7 @@ public class ClientRefreshEventHandler implements InitializingBean {
 			})
 			.doOnError(ClosedChannelException.class, e -> {
 				log.warn("Lost connection with server");
-				// TODO: Figure out how to reestablish connection
+				client.connectToServer();
 			})
 			.repeat()
 			.subscribe();
@@ -41,8 +41,13 @@ public class ClientRefreshEventHandler implements InitializingBean {
 	}
 	
 	private void handleClientRefreshEvent(ClientRefreshEvent clientRefreshEvent) {
-		if (clientRefreshEvent.getClientName().equals("*") || clientRefreshEvent.getClientName().equals(applicationName)) {
-			log.info("Received a ClientRefreshEvent: " + clientRefreshEvent);
+		String clientName = clientRefreshEvent.getClientName();
+		if (clientName.equals("*") || clientName.equals(applicationName)) {
+			if (clientName.equals("*")) {
+				clientName = "all clients";
+			}
+			log.info("Received a ClientRefreshEvent for " + clientName 
+					+ " requested by user " + clientRefreshEvent.getRequester());
 			Set<String> keys = contextRefresher.refresh();
 			log.info("   ---- Refreshed keys:  " + keys);
 		}

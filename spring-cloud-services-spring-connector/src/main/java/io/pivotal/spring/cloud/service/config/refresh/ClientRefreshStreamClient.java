@@ -1,6 +1,7 @@
 package io.pivotal.spring.cloud.service.config.refresh;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashMap;
 
 import org.slf4j.Logger;
@@ -23,16 +24,26 @@ public class ClientRefreshStreamClient {
 	
 	private final String DATA_STREAM_NAME = "clientRefresh";
 
-	private final RSocket socket;
+	private RSocket socket;
 
 	private final ObjectMapper om = new ObjectMapper();
 	private Flux<ClientRefreshEvent> responseFlux;
 
-	public ClientRefreshStreamClient(ConfigClientProperties configClientProps, OAuth2ClientContext oauth2Context) {
-		String configServerUri = configClientProps.getUri()[0];
-		log.info("Creating RSocket connection (using Websocket Transport) with config server at " + configServerUri);
+	private String configServerUri;
 
-		HttpClient httpClient = HttpClient.create().baseUrl(configServerUri).keepAlive(true);
+	private OAuth2ClientContext oauth2Context;
+
+	public ClientRefreshStreamClient(ConfigClientProperties configClientProps, OAuth2ClientContext oauth2Context) {
+		this.oauth2Context = oauth2Context;
+		this.configServerUri = configClientProps.getUri()[0];
+		connectToServer();
+
+	}
+
+	public void connectToServer() {
+		log.info("Creating RSocket connection (using Websocket Transport) with config server at " + configServerUri);
+		HttpClient httpClient = HttpClient.create()
+				.baseUrl(configServerUri);
 
 		WebsocketClientTransport websocketTransport = WebsocketClientTransport.create(httpClient, "/_refreshproxy");
 		websocketTransport.setTransportHeaders(() -> {
@@ -41,7 +52,11 @@ public class ClientRefreshStreamClient {
 			headers.put("Authorization", "Bearer " + accessToken);
 			return headers;
 		});
-		this.socket = RSocketFactory.connect().transport(websocketTransport).start().block();
+		this.socket = RSocketFactory
+				.connect()
+				.transport(websocketTransport)
+				.start()
+				.block();
 
 		try {
 			this.responseFlux = this.socket.requestStream(DefaultPayload.create(DATA_STREAM_NAME)).map(it -> {
@@ -55,7 +70,6 @@ public class ClientRefreshStreamClient {
 		} catch (Exception e) {
 			log.error("Error connecting with refresh server: ", e);
 		}
-
 	}
 
 	public Flux<ClientRefreshEvent> getDataStream() {
