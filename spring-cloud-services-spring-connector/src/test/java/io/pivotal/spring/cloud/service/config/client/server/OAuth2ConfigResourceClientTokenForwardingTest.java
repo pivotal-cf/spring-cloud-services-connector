@@ -18,6 +18,7 @@ package io.pivotal.spring.cloud.service.config.client.server;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -90,6 +91,7 @@ public class OAuth2ConfigResourceClientTokenForwardingTest {
 		configClient.getPlainTextResource(null, null, "nginx.conf");
 	}
 
+	@Ignore("config-server has a bug when handling requests that are missing the vault token: https://github.com/spring-cloud/spring-cloud-config/issues/1512")
 	@Test(expected = HttpClientErrorException.BadRequest.class)
 	public void badRequestWhenConfigServerTokenNotSet() {
 		configClientProperties.setToken(null);
