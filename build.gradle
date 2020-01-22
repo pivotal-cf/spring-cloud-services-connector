@@ -154,7 +154,7 @@ project(":spring-cloud-services-spring-connector") {
 		optional("org.springframework.cloud:spring-cloud-config-client")
 		optional("org.springframework.cloud:spring-cloud-netflix-eureka-client")
 		optional("com.netflix.eureka:eureka-client")
-		optional("com.sun.jersey:jersey-client")
+		optional("com.sun.jersey:jersey-client:1.19.4")
 		//
 		// TODO: Remove the explicit version in the following dependency when Greenwich.SR1 is released
 		//
