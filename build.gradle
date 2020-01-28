@@ -5,7 +5,7 @@ buildscript {
 	}
 
 	ext.springBootVersion = "2.2.4.RELEASE"
-	ext.springCloudVersion = "Hoxton.SR1"
+	ext.springCloudVersion = "Hoxton.RELEASE"
 
 	dependencies {
 		classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
@@ -16,7 +16,6 @@ buildscript {
 
 allprojects {
 	group = "io.pivotal.spring.cloud"
-
 
 	apply plugin: "propdeps"
 	apply plugin: "propdeps-eclipse"
