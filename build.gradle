@@ -106,19 +106,12 @@ subprojects {
 		}
 	}
 
-	task sourcesJar(type: Jar, dependsOn: classes) {
-		classifier = 'sources'
-		from sourceSets.main.allSource
-	}
-
-	task javadocJar(type: Jar) {
-		classifier = "javadoc"
-		from javadoc
-	}
-
-	artifacts {
-		archives sourcesJar
-		archives javadocJar
+	java {
+		withJavadocJar()
+		withSourcesJar()
+		registerFeature('optional') {
+			usingSourceSet(sourceSets.main)
+		}
 	}
 }
 
@@ -151,14 +144,11 @@ project(":spring-cloud-services-spring-connector") {
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector")
 		annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 		annotationProcessor("org.springframework.boot:spring-boot-autoconfigure-processor")
-		optional("org.springframework.cloud:spring-cloud-config-client")
-		optional("org.springframework.cloud:spring-cloud-netflix-eureka-client")
-		optional("com.netflix.eureka:eureka-client")
-		optional("com.sun.jersey:jersey-client:1.19.4")
-		//
-		// TODO: Remove the explicit version in the following dependency when Greenwich.SR1 is released
-		//
-		optional("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.0.RELEASE")
+		optionalApi("org.springframework.cloud:spring-cloud-config-client")
+		optionalApi("org.springframework.cloud:spring-cloud-netflix-eureka-client")
+		optionalApi("com.netflix.eureka:eureka-client")
+		optionalApi("com.sun.jersey:jersey-client:1.19.4")
+		optionalApi("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure")
 		testCompile("org.apache.tomcat.embed:tomcat-embed-el")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-commons")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-connectors-core", classifier: "tests")
