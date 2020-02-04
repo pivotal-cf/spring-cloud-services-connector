@@ -1,80 +1,78 @@
-apply plugin: "propdeps-maven"
+apply plugin: 'maven-publish'
 
-install {
-	repositories.mavenInstaller {
-		customizePom(pom, project)
-	}
-}
-
-def customizePom(pom, gradleProject) {
-	pom.whenConfigured { generatedPom ->
-		// eliminate test-scoped dependencies (no need in maven central poms)
-		generatedPom.dependencies.removeAll { dep ->
-			dep.scope == "test"
-		}
-
-		// sort to make pom dependencies order consistent to ease comparison of older poms
-		generatedPom.dependencies = generatedPom.dependencies.sort { dep ->
-			"$dep.scope:$dep.groupId:$dep.artifactId"
-		}
-
-		// Remove jackson dependencies, since we shade them in
-		generatedPom.dependencies.removeAll { dep ->
-			dep.groupId == "com.fasterxml.jackson.core"
-		}
-
-		// add all items necessary for maven central publication
-		generatedPom.project {
-			name = gradleProject.description
-			description = gradleProject.description
-			url = "https://github.com/pivotal-cf/spring-cloud-services-connector"
-			organization {
-				name = "Spring IO"
-				url = "https://projects.spring.io/spring-cloud"
-			}
-			licenses {
-				license {
-					name "The Apache Software License, Version 2.0"
-					url "https://www.apache.org/licenses/LICENSE-2.0.txt"
-					distribution "repo"
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			suppressAllPomMetadataWarnings()
+			from components.java
+			pom {
+				afterEvaluate {
+					name = project.description
+					description = project.description
 				}
-			}
-			scm {
 				url = "https://github.com/pivotal-cf/spring-cloud-services-connector"
-				connection = "scm:git:git://github.com/pivotal-cf/spring-cloud-services-connector"
-				developerConnection = "scm:git:git://github.com/pivotal-cf/spring-cloud-services-connector"
+				organization {
+					name = "Spring IO"
+					url = "https://projects.spring.io/spring-cloud"
+				}
+				licenses {
+					license {
+						name = "The Apache Software License, Version 2.0"
+						url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+						distribution = "repo"
+					}
+				}
+				scm {
+					url = "https://github.com/pivotal-cf/spring-cloud-services-connector"
+					connection = "scm:git:git://github.com/pivotal-cf/spring-cloud-services-connector"
+					developerConnection = "scm:git:git://github.com/pivotal-cf/spring-cloud-services-connector"
+				}
+				developers {
+					developer {
+						id = "ramnivas"
+						name = "Ramnivas Laddad"
+						email = ""
+					}
+					developer {
+						id = "cschaefer"
+						name = "Chris Schaefer"
+						email = "cschaefer@pivotal.io"
+					}
+					developer {
+						id = "sfrederick"
+						name = "Scott Frederick"
+						email = "sfrederick@pivotal.io"
+					}
+					developer {
+						id = "royclarkson"
+						name = "Roy Clarkson"
+						email = "rclarkson@pivotal.io"
+					}
+					developer {
+						id = "wtran"
+						name = "Will Tran"
+						email = "wtran@pivotal.io"
+					}
+					developer {
+						id = "dyroberts"
+						name = "Dylan Roberts"
+						email = "dyroberts@pivotal.io"
+					}
+				}
 			}
-			developers {
-				developer {
-					id = "ramnivas"
-					name = "Ramnivas Laddad"
-					email = ""
+
+			// Published pom will use fully-qualified dependency versions and no boms
+			versionMapping {
+				usage('java-api') {
+					fromResolutionOf('runtimeClasspath')
 				}
-				developer {
-					id = "cschaefer"
-					name = "Chris Schaefer"
-					email = "cschaefer@pivotal.io"
+				usage('java-runtime') {
+					fromResolutionResult()
 				}
-				developer {
-					id = "sfrederick"
-					name = "Scott Frederick"
-					email = "sfrederick@pivotal.io"
-				}
-				developer {
-					id = "royclarkson"
-					name = "Roy Clarkson"
-					email = "rclarkson@pivotal.io"
-				}
-				developer {
-					id = "wtran"
-					name = "Will Tran"
-					email = "wtran@pivotal.io"
-				}
-				developer {
-					id = "dyroberts"
-					name = "Dylan Roberts"
-					email = "dyroberts@pivotal.io"
-				}
+			}
+			pom.withXml {
+				def dependencyManagementNode = asNode().get("dependencyManagement")
+				asNode().remove(dependencyManagementNode)
 			}
 		}
 	}
