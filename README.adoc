@@ -2,8 +2,6 @@ image:https://build.spring.io/plugins/servlet/wittified/build-status/CLOUD-SCPC[
 
 = Spring Cloud Services Connector
 
-**This library is deprecated. See official docs for writing client applications https://docs.pivotal.io/spring-cloud-services/3-1/common/client-dependencies.html**
-
 link:https://cloud.spring.io/spring-cloud-connectors/[Spring Cloud Connectors] for link:https://docs.pivotal.io/spring-cloud-services/index.html[Spring Cloud Services] in a link:https://pivotal.io/platform[Pivotal Cloud Foundry] environment
 
 - Config Server
