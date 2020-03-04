@@ -4,8 +4,8 @@ buildscript {
 		maven { url 'https://repo.spring.io/plugins-release' }
 	}
 
-	ext.springBootVersion = "2.2.4.RELEASE"
-	ext.springCloudVersion = "Hoxton.RELEASE"
+	ext.springBootVersion = "2.2.5.RELEASE"
+	ext.springCloudVersion = "Hoxton.SR2"
 
 	dependencies {
 		classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
