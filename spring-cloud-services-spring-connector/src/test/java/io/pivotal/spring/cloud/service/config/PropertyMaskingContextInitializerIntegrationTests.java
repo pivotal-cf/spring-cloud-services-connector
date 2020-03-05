@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.test.context.ActiveProfiles;
@@ -71,48 +72,30 @@ public class PropertyMaskingContextInitializerIntegrationTests {
 	public static class TestVaultConfigClientProperties {
 
 		@Autowired
-		EnvironmentEndpoint environmentEndpoint;
+		Environment environment;
 
 		@Test
 		public void vaultPropertyIsIncludedInSantizeEndpoints() {
-			EnvironmentEndpoint.PropertySummaryDescriptor sanitizeEndpointsProp = environmentEndpoint
-					.environmentEntry(PropertyMaskingContextInitializer.SANITIZE_ENV_KEY).getProperty();
+			String sanitizeEndpointsProp = environment.getProperty(PropertyMaskingContextInitializer.SANITIZE_ENV_KEY);
 
-			assertThat(sanitizeEndpointsProp)
-					.withFailMessage("Sanitize endpoints property not found in environment")
-					.isNotNull();
-
-			assertThat(sanitizeEndpointsProp.getValue().toString())
-					.withFailMessage("Sanitize endpoints property not equal to " + sanitizeEndpointsProp.getValue())
-					.contains(VAULT_TEST_SANITIZE_PROPERTY);
+			assertThat(sanitizeEndpointsProp).isNotNull();
+			assertThat(sanitizeEndpointsProp).contains(VAULT_TEST_SANITIZE_PROPERTY);
 		}
 		
 		@Test
 		public void credhubPropertyIsIncludedInSantizeEndpoints() {
-			EnvironmentEndpoint.PropertySummaryDescriptor sanitizeEndpointsProp = environmentEndpoint
-					.environmentEntry(PropertyMaskingContextInitializer.SANITIZE_ENV_KEY).getProperty();
+			String sanitizeEndpointsProp = environment.getProperty(PropertyMaskingContextInitializer.SANITIZE_ENV_KEY);
 
-			assertThat(sanitizeEndpointsProp)
-					.withFailMessage("Sanitize endpoints property not found in environment")
-					.isNotNull();
-
-			assertThat(sanitizeEndpointsProp.getValue().toString())
-					.withFailMessage("Sanitize endpoints property not equal to " + sanitizeEndpointsProp.getValue())
-					.contains(CREDHUB_TEST_SANITIZE_PROPERTY);
+			assertThat(sanitizeEndpointsProp).isNotNull();
+			assertThat(sanitizeEndpointsProp).contains(CREDHUB_TEST_SANITIZE_PROPERTY);
 		}
 
 		@Test
 		public void gitPropertyIsNotIncludedInSantizeEndpoints() {
-			EnvironmentEndpoint.PropertySummaryDescriptor sanitizeEndpointsProp = environmentEndpoint
-					.environmentEntry(PropertyMaskingContextInitializer.SANITIZE_ENV_KEY).getProperty();
+			String sanitizeEndpointsProp = environment.getProperty(PropertyMaskingContextInitializer.SANITIZE_ENV_KEY);
 
-			assertThat(sanitizeEndpointsProp)
-					.withFailMessage("Sanitize endpoints property not found in environment")
-					.isNotNull();
-
-			assertThat(sanitizeEndpointsProp.getValue().toString())
-					.withFailMessage("Sanitize endpoints property not equal to " + sanitizeEndpointsProp.getValue())
-					.doesNotContain(GIT_TEST_NON_SANITIZE_PROPERTY);
+			assertThat(sanitizeEndpointsProp).isNotNull();
+			assertThat(sanitizeEndpointsProp).doesNotContain(GIT_TEST_NON_SANITIZE_PROPERTY);
 		}
 
 	}
