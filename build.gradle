@@ -4,12 +4,13 @@ buildscript {
 		maven { url 'https://repo.spring.io/plugins-release' }
 	}
 
-	ext.springBootVersion = "2.1.13.RELEASE"
-	ext.springCloudVersion = "Greenwich.SR5"
+	ext.springBootVersion = "2.1.17.RELEASE"
+	ext.springCloudVersion = "Greenwich.SR6"
+	ext.springCloudConnectorsVersion = "2.0.7.RELEASE"
 
 	dependencies {
 		classpath("io.spring.gradle:propdeps-plugin:0.0.9.RELEASE")
-		classpath("io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE")
+		classpath("io.spring.gradle:dependency-management-plugin:1.0.10.RELEASE")
 		classpath("io.spring.gradle:spring-io-plugin:0.0.8.RELEASE")
 	}
 }
@@ -119,7 +120,7 @@ project(":spring-cloud-services-connector-core") {
 	description = "Spring Cloud Services Connector Core"
 	dependencies {
 		compile("org.springframework:spring-core")
-		compile("org.springframework.cloud:spring-cloud-connectors-core")
+		compile("org.springframework.cloud:spring-cloud-connectors-core:${springCloudConnectorsVersion}")
 	}
 }
 
@@ -127,7 +128,7 @@ project(":spring-cloud-services-cloudfoundry-connector") {
 	description = "Spring Cloud Services Cloud Foundry Connector"
 	dependencies {
 		compile(project(":spring-cloud-services-connector-core"))
-		compile("org.springframework.cloud:spring-cloud-cloudfoundry-connector")
+		compile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:${springCloudConnectorsVersion}")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-cloudfoundry-connector", classifier: "tests")
 		testCompile("com.fasterxml.jackson.core:jackson-databind")
 	}
@@ -141,7 +142,7 @@ project(":spring-cloud-services-spring-connector") {
 
 	dependencies {
 		compile(project(":spring-cloud-services-connector-core"))
-		compile("org.springframework.cloud:spring-cloud-spring-service-connector")
+		compile("org.springframework.cloud:spring-cloud-spring-service-connector:${springCloudConnectorsVersion}")
 		annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 		annotationProcessor("org.springframework.boot:spring-boot-autoconfigure-processor")
 		optionalApi("org.springframework.cloud:spring-cloud-config-client")
@@ -151,9 +152,9 @@ project(":spring-cloud-services-spring-connector") {
 		optionalApi("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure")
 		testCompile("org.apache.tomcat.embed:tomcat-embed-el")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-commons")
-		testCompile(group: "org.springframework.cloud", name: "spring-cloud-connectors-core", classifier: "tests")
-		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector")
-		testCompile(group: "org.springframework.cloud", name: "spring-cloud-cloudfoundry-connector", classifier: "tests")
+		testCompile(group: "org.springframework.cloud", name: "spring-cloud-connectors-core", classifier: "tests", version: "${springCloudConnectorsVersion}")
+		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:${springCloudConnectorsVersion}")
+		testCompile(group: "org.springframework.cloud", name: "spring-cloud-cloudfoundry-connector", classifier: "tests", version: "${springCloudConnectorsVersion}")
 		testCompile("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
 		testCompile("org.springframework.cloud:spring-cloud-starter-netflix-ribbon")
 		testCompile("org.springframework.cloud:spring-cloud-starter-netflix-hystrix")

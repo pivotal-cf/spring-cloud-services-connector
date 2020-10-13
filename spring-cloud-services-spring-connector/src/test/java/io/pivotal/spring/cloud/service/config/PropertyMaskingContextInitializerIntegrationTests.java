@@ -8,10 +8,12 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.env.EnvironmentEndpoint;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootContextLoader;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.cloud.config.server.config.ConfigServerAutoConfiguration;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
@@ -29,6 +31,7 @@ public class PropertyMaskingContextInitializerIntegrationTests {
 	private static final String GIT_TEST_NON_SANITIZE_PROPERTY = "ReadableProperty";
 
 	@SpringBootApplication
+	@ImportAutoConfiguration(exclude = ConfigServerAutoConfiguration.class)
 	public static class TestVaultApplication {}
 
 	public static class VaultPropertySourceContextLoader extends SpringBootContextLoader {

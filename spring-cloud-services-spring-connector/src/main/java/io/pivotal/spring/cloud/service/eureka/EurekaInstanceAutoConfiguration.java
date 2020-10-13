@@ -17,10 +17,12 @@
 package io.pivotal.spring.cloud.service.eureka;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.commons.util.InetUtilsProperties;
+import org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,6 +47,7 @@ import java.util.logging.Logger;
 @Configuration
 @ConditionalOnClass(EurekaInstanceConfigBean.class)
 @ConditionalOnExpression("'${vcap.application.uris[0]:}'!='' || '${cf.instance.ip:}'!=''")
+@AutoConfigureBefore(EurekaClientAutoConfiguration.class)
 public class EurekaInstanceAutoConfiguration {
 
 	private static Logger LOGGER = Logger.getLogger(EurekaInstanceAutoConfiguration.class.getName());
