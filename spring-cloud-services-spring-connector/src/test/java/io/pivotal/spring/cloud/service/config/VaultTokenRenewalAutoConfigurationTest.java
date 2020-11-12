@@ -16,12 +16,11 @@
 
 package io.pivotal.spring.cloud.service.config;
 
-import org.awaitility.Duration;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-
-import io.pivotal.spring.cloud.TestApplication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +32,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
+
+import io.pivotal.spring.cloud.TestApplication;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -76,7 +77,7 @@ public class VaultTokenRenewalAutoConfigurationTest {
 		given(rest.postForObject(anyString(), any(HttpEntity.class), any())).willReturn("foo");
 		ReflectionTestUtils.setField(config, "rest", this.rest);
 
-		await().atMost(Duration.FIVE_SECONDS).untilAsserted(() -> {
+		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
 			verify(config, atLeast(4)).refreshVaultToken();
 			verify(rest, atLeast(4)).postForObject(anyString(), any(HttpEntity.class), any());
 		});
