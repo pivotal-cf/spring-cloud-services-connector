@@ -16,6 +16,10 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
+import java.net.URI;
+import java.util.Map;
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -26,11 +30,7 @@ import org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
-
-import java.net.URI;
-import java.util.Map;
-import java.util.logging.Logger;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Configuration class to configure a Eureka instance's settings based on the
@@ -50,7 +50,7 @@ import java.util.logging.Logger;
 @AutoConfigureBefore(EurekaClientAutoConfiguration.class)
 public class EurekaInstanceAutoConfiguration {
 
-	private static Logger LOGGER = Logger.getLogger(EurekaInstanceAutoConfiguration.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(EurekaInstanceAutoConfiguration.class.getName());
 
 	private static final String UNKNOWN_ZONE = "unknown";
 	private static final String INDETERMINATE_EUREKA_ZONE_MESSAGE = "Eureka zone could not be determined from %s=\"%s\". Using \"%s\".";
@@ -94,7 +94,7 @@ public class EurekaInstanceAutoConfiguration {
 
 	@Bean
 	public EurekaInstanceConfigBean eurekaInstanceConfigBean() {
-		if (!StringUtils.isEmpty(registrationMethod)) {
+		if (!ObjectUtils.isEmpty(registrationMethod)) {
 			LOGGER.info("Eureka registration method: " + registrationMethod);
 
 			if (ROUTE_REGISTRATION_METHOD.equals(registrationMethod)) {
@@ -147,7 +147,7 @@ public class EurekaInstanceAutoConfiguration {
 	}
 
 	private static String zoneFromUri(String defaultZoneUri) {
-		String hostname = null;
+		String hostname;
 		try {
 			hostname = new URI(defaultZoneUri).getHost();
 		} catch (Exception e) {

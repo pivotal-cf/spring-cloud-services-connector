@@ -18,6 +18,7 @@ package io.pivotal.spring.cloud.service.config;
 
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -65,11 +66,6 @@ public class VaultTokenRenewalAutoConfigurationTest {
 
 	@Mock
 	private RestTemplate rest;
-
-	@Test
-	public void contextLoads() {
-		assertThat(context.getBeansOfType(ConfigClientProperties.class)).hasSize(1);
-	}
 
 	@Test
 	public void scheduledVaultTokenRefresh() {

@@ -32,7 +32,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.core.io.Resource;
-import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.client.HttpClientErrorException;
@@ -89,15 +88,12 @@ public class OAuth2ConfigResourceClientTest {
 
 	@Test
 	public void shouldFindSimplePlainFile() {
-		Assert.assertEquals(nginxConfig,
-				read(configClient.getConfigFile(null, null, "nginx.conf")));
+		Assert.assertEquals(nginxConfig, read(configClient.getPlainTextResource(null, "master", "nginx.conf")));
 
-		Assert.assertEquals(devNginxConfig,
-				read(configClient.getConfigFile("dev", "master", "nginx.conf")));
+		Assert.assertEquals(devNginxConfig, read(configClient.getPlainTextResource("dev", "master", "nginx.conf")));
 
 		configClientProperties.setProfile("test");
-		Assert.assertEquals(testNginxConfig,
-				read(configClient.getConfigFile("nginx.conf")));
+		Assert.assertEquals(testNginxConfig, read(configClient.getPlainTextResource(null, "master", "nginx.conf")));
 	}
 
 	@Test
@@ -109,37 +105,22 @@ public class OAuth2ConfigResourceClientTest {
 						.getInputStream());
 		Assert.assertArrayEquals(sourceImageBytes, imageFromConfigServer);
 	}
-	
+
 	@Test(expected = HttpClientErrorException.class)
 	public void missingConfigFileShouldReturnHttpError() {
-		configClient.getConfigFile("missing-config.xml");
+		configClient.getPlainTextResource(null, "master", "missing-config.xml");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void missingApplicationNameShouldCrash() {
 		configClientProperties.setName("");
-		configClient.getConfigFile("nginx.conf");
+		configClient.getPlainTextResource(null, "master", "nginx.conf");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void missingConfigServerUrlShouldCrash() {
-		configClientProperties.setUri(new String[]{""});
-		configClient.getConfigFile("nginx.conf");
-	}
-
-	@Test(expected = OAuth2AccessDeniedException.class)
-	public void shouldBeDenied() {
-		ConfigClientOAuth2ResourceDetails invalidCrendentialsResource = new ConfigClientOAuth2ResourceDetails();
-		invalidCrendentialsResource.setClientId("wrongClient");
-		invalidCrendentialsResource.setAccessTokenUri(resource.getAccessTokenUri());
-		invalidCrendentialsResource.setClientSecret("wrongsecret");
-		invalidCrendentialsResource.setScope(resource.getScope());
-		invalidCrendentialsResource.setGrantType(resource.getGrantType());
-
-		new ConfigResourceClientAutoConfiguration()
-				.configResourceClient(invalidCrendentialsResource,
-						configClientProperties)
-				.getConfigFile("nginx.conf");
+		configClientProperties.setUri(new String[] { "" });
+		configClient.getPlainTextResource(null, "master", "nginx.conf");
 	}
 
 	public String read(Resource resource) {

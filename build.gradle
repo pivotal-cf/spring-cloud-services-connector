@@ -5,8 +5,9 @@ buildscript {
 	}
 
 	ext.springBootVersion = "2.4.2"
-	ext.springCloudVersion = "Hoxton.SR9"
+	ext.springCloudVersion = "2020.0.0"
 	ext.springCloudConnectorsVersion = "2.0.7.RELEASE"
+	ext.springCloudStarterNetflixVersion = "2.2.6.RELEASE"
 
 	dependencies {
 		classpath("io.spring.gradle:propdeps-plugin:0.0.10.RELEASE")
@@ -120,6 +121,9 @@ project(":spring-cloud-services-connector-core") {
 	dependencies {
 		compile("org.springframework:spring-core")
 		compile("org.springframework.cloud:spring-cloud-connectors-core:${springCloudConnectorsVersion}")
+		testImplementation("org.junit.vintage:junit-vintage-engine") {
+			exclude group: "org.hamcrest", module: "hamcrest-core"
+		}
 	}
 }
 
@@ -130,6 +134,9 @@ project(":spring-cloud-services-cloudfoundry-connector") {
 		compile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:${springCloudConnectorsVersion}")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-cloudfoundry-connector", classifier: "tests")
 		testCompile("com.fasterxml.jackson.core:jackson-databind")
+		testImplementation("org.junit.vintage:junit-vintage-engine") {
+			exclude group: "org.hamcrest", module: "hamcrest-core"
+		}
 	}
 }
 
@@ -140,6 +147,7 @@ project(":spring-cloud-services-spring-connector") {
 	compileJava.dependsOn(processResources)
 
 	dependencies {
+		compile "org.springframework.cloud:spring-cloud-starter-bootstrap"
 		compile(project(":spring-cloud-services-connector-core"))
 		compile("org.springframework.cloud:spring-cloud-spring-service-connector:${springCloudConnectorsVersion}")
 		annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -155,10 +163,13 @@ project(":spring-cloud-services-spring-connector") {
 		testCompile("org.springframework.cloud:spring-cloud-cloudfoundry-connector:${springCloudConnectorsVersion}")
 		testCompile(group: "org.springframework.cloud", name: "spring-cloud-cloudfoundry-connector", classifier: "tests", version: "${springCloudConnectorsVersion}")
 		testCompile("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
-		testCompile("org.springframework.cloud:spring-cloud-starter-netflix-ribbon")
-		testCompile("org.springframework.cloud:spring-cloud-starter-netflix-hystrix")
+		testCompile("org.springframework.cloud:spring-cloud-starter-netflix-ribbon:${springCloudStarterNetflixVersion}")
+		testCompile("org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springCloudStarterNetflixVersion}")
 		testCompile("org.springframework.cloud:spring-cloud-config-server")
 		testCompile("org.awaitility:awaitility:4.0.3")
+		testImplementation("org.junit.vintage:junit-vintage-engine") {
+			exclude group: "org.hamcrest", module: "hamcrest-core"
+		}
 	}
 }
 
