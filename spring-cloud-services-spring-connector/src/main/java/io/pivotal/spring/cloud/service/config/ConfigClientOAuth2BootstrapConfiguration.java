@@ -18,48 +18,50 @@ package io.pivotal.spring.cloud.service.config;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.config.client.ConfigServicePropertySourceLocator;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.util.Assert;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @author Mike Heath
  * @author Will Tran
+ * @author Dylan Roberts
  */
 @Configuration
-@EnableConfigurationProperties(ConfigClientOAuth2ResourceDetails.class)
-@ConditionalOnClass({ConfigServicePropertySourceLocator.class, OAuth2RestTemplate.class})
-@ConditionalOnProperty(value = "spring.cloud.config.client.oauth2.client-id")
+@ConditionalOnClass({ ConfigServicePropertySourceLocator.class })
+@ConditionalOnProperty(prefix = "spring.cloud.config.client.oauth2",
+		name = { "client-id", "client-secret", "access-token-uri" })
+@EnableConfigurationProperties(ConfigClientOAuth2Properties.class)
 public class ConfigClientOAuth2BootstrapConfiguration {
 
-	@Configuration
-	public class ConfigClientOAuth2Configurer {
+	private final ConfigServicePropertySourceLocator locator;
 
-		private final ConfigServicePropertySourceLocator locator;
+	private final ConfigClientOAuth2Properties configClientOAuth2Properties;
 
-		private final ConfigClientOAuth2ResourceDetails configClientOAuth2ResourceDetails;
+	public ConfigClientOAuth2BootstrapConfiguration(ConfigServicePropertySourceLocator locator,
+			ConfigClientOAuth2Properties configClientOAuth2Properties) {
+		Assert.notNull(locator, "Error injecting ConfigServicePropertySourceLocator, this can occur"
+				+ "using self signed certificates in Cloud Foundry without setting the TRUST_CERTS environment variable");
+		this.locator = locator;
+		this.configClientOAuth2Properties = configClientOAuth2Properties;
+	}
 
-		@Autowired
-		public ConfigClientOAuth2Configurer(ConfigServicePropertySourceLocator locator, ConfigClientOAuth2ResourceDetails configClientOAuth2ResourceDetails) {
-			Assert.notNull(locator, "Error injecting ConfigServicePropertySourceLocator, this can occur" +
-					"using self signed certificates in Cloud Foundry without setting the TRUST_CERTS environment variable");
-			this.locator = locator;
-			this.configClientOAuth2ResourceDetails = configClientOAuth2ResourceDetails;
-		}
-
-		@PostConstruct
-		public void init() {
-			 locator.setRestTemplate(new OAuth2RestTemplate(configClientOAuth2ResourceDetails));
-		}
-
+	@PostConstruct
+	public void init() {
+		RestTemplate restTemplate = new RestTemplate();
+		ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("config-client")
+				.clientId(configClientOAuth2Properties.getClientId())
+				.clientSecret(configClientOAuth2Properties.getClientSecret())
+				.tokenUri(configClientOAuth2Properties.getAccessTokenUri())
+				.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS).build();
+		restTemplate.getInterceptors().add(new OAuth2AuthorizedClientHttpRequestInterceptor(clientRegistration));
+		locator.setRestTemplate(restTemplate);
 	}
 
 }

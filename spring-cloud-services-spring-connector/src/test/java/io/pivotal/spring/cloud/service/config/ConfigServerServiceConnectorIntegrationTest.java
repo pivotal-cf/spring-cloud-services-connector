@@ -25,15 +25,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
-import io.pivotal.spring.cloud.MockCloudConnector;
-import io.pivotal.spring.cloud.service.common.ConfigServerServiceInfo;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import io.pivotal.spring.cloud.MockCloudConnector;
+import io.pivotal.spring.cloud.service.common.ConfigServerServiceInfo;
 
 import static io.pivotal.spring.cloud.config.java.ServiceInfoPropertySourceAdapter.SPRING_AUTOCONFIGURE_EXCLUDE;
 import static io.pivotal.spring.cloud.service.config.ConfigServerServiceConnector.SPRING_CLOUD_CONFIG_OAUTH2_CLIENT_ACCESS_TOKEN_URI;
@@ -119,8 +119,8 @@ public class ConfigServerServiceConnectorIntegrationTest {
 	}
 
 	@Test
-	public void hasConfigClientOAuth2ResourceDetailsBean() {
-		final ConfigClientOAuth2ResourceDetails resourceDetails = context.getBean(ConfigClientOAuth2ResourceDetails.class);
+	public void hasConfigClientOAuth2PropertiesBean() {
+		final ConfigClientOAuth2Properties resourceDetails = context.getBean(ConfigClientOAuth2Properties.class);
 		Assert.assertEquals(CLIENT_ID, resourceDetails.getClientId());
 		Assert.assertEquals(CLIENT_SECRET, resourceDetails.getClientSecret());
 		Assert.assertEquals(ACCESS_TOKEN_URI, resourceDetails.getAccessTokenUri());

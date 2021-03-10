@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 the original author or authors.
+ * Copyright 2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.pivotal.spring.cloud.service.eureka;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
+import com.netflix.discovery.AbstractDiscoveryClientOptionalArgs;
+
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 
 /**
- * 
- * @author Will Tran
- *
+ * @author Dylan Roberts
  */
-@ConfigurationProperties("eureka.client.oauth2")
-public class EurekaOAuth2ResourceDetails extends ClientCredentialsResourceDetails {
+public class OAuth2DiscoveryClientOptionalArgs extends AbstractDiscoveryClientOptionalArgs<Void> {
+
+	public OAuth2DiscoveryClientOptionalArgs(ClientRegistration clientRegistration) {
+		setTransportClientFactories(new OAuth2TransportClientFactories(clientRegistration));
+	}
 
 }

@@ -16,67 +16,84 @@
 
 package io.pivotal.spring.cloud.service.config;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.cloud.config.client.ConfigClientProperties;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
+import org.springframework.cloud.config.client.ConfigClientAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpEntity;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.web.client.RestTemplate;
-
-import io.pivotal.spring.cloud.TestApplication;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Roy Clarkson
+ * @author Dylan Roberts
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestApplication.class, properties = {
-		"spring.cloud.config.token=footoken", "vault.token.renew.rate=1000" })
 public class VaultTokenRenewalAutoConfigurationTest {
 
-	@MockBean
-	private ConfigClientOAuth2ResourceDetails configClientOAuth2ResourceDetails;
+	private static final String CLIENT_ID = "clientId";
 
-	@Autowired
-	private ConfigClientProperties configClientProperties;
+	private static final String CLIENT_SECRET = "clientSecret";
 
-	@Autowired
-	private ApplicationContext context;
+	private static final String TOKEN_URI = "tokenUri";
 
-	@SpyBean
-	private VaultTokenRenewalAutoConfiguration config;
-
-	@Mock
-	private RestTemplate rest;
+	private final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
+			.withConfiguration(AutoConfigurations.of(TestConfiguration.class, ConfigClientAutoConfiguration.class,
+					VaultTokenRenewalAutoConfiguration.class));
 
 	@Test
 	public void scheduledVaultTokenRefresh() {
-		this.configClientProperties.setUri(new String[] { "https://foobar" });
-		given(rest.postForObject(anyString(), any(HttpEntity.class), any())).willReturn("foo");
-		ReflectionTestUtils.setField(config, "rest", this.rest);
-
-		await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
-			verify(config, atLeast(4)).refreshVaultToken();
-			verify(rest, atLeast(4)).postForObject(anyString(), any(HttpEntity.class), any());
+		contextRunner.withPropertyValues("spring.cloud.config.token=footoken", "vault.token.renew.rate=1000",
+				"spring.cloud.config.client.oauth2.clientId=" + CLIENT_ID,
+				"spring.cloud.config.client.oauth2.clientSecret=" + CLIENT_SECRET,
+				"spring.cloud.config.client.oauth2.accessTokenUri=" + TOKEN_URI).run(context -> {
+			RestTemplate restTemplate = context.getBean("mockRestTemplate", RestTemplate.class);
+			await().atMost(5l, TimeUnit.SECONDS).untilAsserted(() -> {
+				verify(restTemplate, atLeast(4)).postForObject(anyString(), any(HttpEntity.class), any());
+				assertThat(restTemplate.getInterceptors()).hasSize(1);
+				assertThat(restTemplate.getInterceptors().get(0))
+						.isInstanceOf(OAuth2AuthorizedClientHttpRequestInterceptor.class);
+				OAuth2AuthorizedClientHttpRequestInterceptor interceptor = (OAuth2AuthorizedClientHttpRequestInterceptor) restTemplate
+						.getInterceptors().get(0);
+				ClientRegistration clientRegistration = interceptor.clientRegistration;
+				assertThat(clientRegistration.getClientId()).isEqualTo(CLIENT_ID);
+				assertThat(clientRegistration.getClientSecret()).isEqualTo(CLIENT_SECRET);
+				assertThat(clientRegistration.getProviderDetails().getTokenUri()).isEqualTo(TOKEN_URI);
+				assertThat(clientRegistration.getAuthorizationGrantType())
+						.isEqualTo(AuthorizationGrantType.CLIENT_CREDENTIALS);
+			});
 		});
+	}
+
+	@Configuration
+	public static class TestConfiguration {
+
+		@Qualifier("vaultTokenRenewal")
+		@Primary
+		@Bean
+		public RestTemplate mockRestTemplate() {
+			RestTemplate mock = Mockito.mock(RestTemplate.class);
+			when(mock.getInterceptors()).thenReturn(new ArrayList<>());
+			return mock;
+		}
+
 	}
 
 }

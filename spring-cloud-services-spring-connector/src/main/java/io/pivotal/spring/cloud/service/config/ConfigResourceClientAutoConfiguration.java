@@ -24,30 +24,34 @@ import org.springframework.cloud.config.client.ConfigClientAutoConfiguration;
 import org.springframework.cloud.config.client.ConfigClientProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.web.client.RestTemplate;
 
 /**
- * Auto configures a {@link OAuth2ConfigResourceClient} when a
- * {@link ConfigClientOAuth2ResourceDetails} and a {@link PlainTextConfigClient} are
- * available in the container.
- *
  * @author Daniel Lavoie
  * @author Roy Clarkson
+ * @author Dylan Roberts
  */
 @Configuration
-@ConditionalOnClass({ OAuth2ProtectedResourceDetails.class,
-		ConfigClientProperties.class })
-@AutoConfigureAfter({ ConfigClientAutoConfiguration.class,
-		ConfigClientOAuth2BootstrapConfiguration.class })
+@ConditionalOnClass({ ConfigClientProperties.class })
+@AutoConfigureAfter({ ConfigClientAutoConfiguration.class, ConfigClientOAuth2BootstrapConfiguration.class })
 public class ConfigResourceClientAutoConfiguration {
 
 	@Bean
-	@ConditionalOnMissingBean(PlainTextConfigClient.class)
-	@ConditionalOnProperty(prefix = "spring.cloud.config.client.oauth2", name = {
-			"client-id", "client-secret" })
-	public ConfigResourceClient configResourceClient(
-			ConfigClientOAuth2ResourceDetails resource,
-			ConfigClientProperties configClientProperties) {
-		return new OAuth2ConfigResourceClient(resource, configClientProperties);
+	@ConditionalOnMissingBean(ConfigResourceClient.class)
+	@ConditionalOnProperty(prefix = "spring.cloud.config.client.oauth2",
+			name = { "client-id", "client-secret", "access-token-uri" })
+	public ConfigResourceClient configResourceClient(ConfigClientProperties configClientProperties,
+			ConfigClientOAuth2Properties configClientOAuth2Properties) {
+		ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("config-client")
+				.clientId(configClientOAuth2Properties.getClientId())
+				.clientSecret(configClientOAuth2Properties.getClientSecret())
+				.tokenUri(configClientOAuth2Properties.getAccessTokenUri())
+				.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS).build();
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.getInterceptors().add(new OAuth2AuthorizedClientHttpRequestInterceptor(clientRegistration));
+		return new OAuth2ConfigResourceClient(restTemplate, configClientProperties);
 	}
+
 }

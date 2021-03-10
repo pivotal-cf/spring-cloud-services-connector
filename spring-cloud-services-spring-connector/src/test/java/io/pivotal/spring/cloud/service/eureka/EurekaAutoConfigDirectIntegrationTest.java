@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 the original author or authors.
+ * Copyright 2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.pivotal.spring.cloud.service.eureka;
 
 import org.junit.Test;
@@ -24,7 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.netflix.eureka.EurekaInstanceConfigBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import io.pivotal.spring.cloud.TestApplication;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -33,15 +31,11 @@ import static org.junit.Assert.assertFalse;
  * @author Will Tran
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = {TestApplication.class},
-		properties = {
-				"port=54321",
-				"cf.instance.internal.ip=1.2.3.4",
-				"vcap.application.uris[0]=www.route.local",
-				"vcap.application.instance_id=instance-id",
-				"spring.application.name=app-name_",
-				"spring.cloud.services.registrationMethod=direct"
-		})
+@SpringBootTest(classes = { TestApplication.class },
+		properties = { "port=54321", "cf.instance.internal.ip=1.2.3.4", "vcap.application.uris[0]=www.route.local",
+				"vcap.application.instance_id=instance-id", "spring.application.name=app-name_",
+				"spring.cloud.services.registrationMethod=direct",
+				"eureka.client.serviceUrl.defaultZone=https://eureka-server" })
 public class EurekaAutoConfigDirectIntegrationTest {
 
 	@Autowired

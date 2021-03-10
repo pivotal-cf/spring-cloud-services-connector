@@ -21,8 +21,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -31,29 +29,37 @@ import org.springframework.web.util.UriComponentsBuilder;
 import static org.springframework.cloud.config.client.ConfigClientProperties.TOKEN_HEADER;
 
 /**
- * {@link OAuth2RestTemplate} based implementation of {@link ConfigResourceClient}.
- * Config Server URI, default application name, profiles and labels are provided by
+ * {@link RestTemplate} based implementation of {@link ConfigResourceClient}. Config
+ * Server URI, default application name, profiles and labels are provided by
  * {@link ConfigClientProperties}.
- * <p>
- * This client requires an {@link OAuth2ProtectedResourceDetails} holding the Config
- * Server credentials configurations.
- * </p>
+ *
  * @author Daniel Lavoie
  * @author Anshul Mehra
  */
 class OAuth2ConfigResourceClient implements ConfigResourceClient {
+
 	private enum ResourceType {
-		BINARY,
-		PLAINTEXT
+
+		BINARY, PLAINTEXT
+
 	}
+
 	private final ConfigClientProperties configClientProperties;
 
-	private RestTemplate restTemplate;
+	private final RestTemplate restTemplate;
 
-	protected OAuth2ConfigResourceClient(final OAuth2ProtectedResourceDetails resource,
+	protected OAuth2ConfigResourceClient(RestTemplate restTemplate,
 			final ConfigClientProperties configClientProperties) {
-		this.restTemplate = new OAuth2RestTemplate(resource);
+		this.restTemplate = restTemplate;
 		this.configClientProperties = configClientProperties;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Resource getPlainTextResource(String path) {
+		return getPlainTextResource(null, null, path);
 	}
 
 	/**
@@ -80,11 +86,8 @@ class OAuth2ConfigResourceClient implements ConfigResourceClient {
 		return getResource(profile, label, path, ResourceType.BINARY);
 	}
 
-	private Resource getResource(String profile, String label,
-			String path, ResourceType resourceType) {
-		Assert.isTrue(
-				configClientProperties.getName() != null
-						&& !configClientProperties.getName().isEmpty(),
+	private Resource getResource(String profile, String label, String path, ResourceType resourceType) {
+		Assert.isTrue(configClientProperties.getName() != null && !configClientProperties.getName().isEmpty(),
 				"Spring application name is undefined.");
 
 		Assert.notEmpty(configClientProperties.getUri(), "Config server URI is undefined");
@@ -101,11 +104,8 @@ class OAuth2ConfigResourceClient implements ConfigResourceClient {
 			label = configClientProperties.getLabel();
 		}
 
-		UriComponentsBuilder urlBuilder = UriComponentsBuilder
-				.fromHttpUrl(configClientProperties.getUri()[0])
-				.pathSegment(configClientProperties.getName())
-				.pathSegment(profile)
-				.pathSegment(label)
+		UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromHttpUrl(configClientProperties.getUri()[0])
+				.pathSegment(configClientProperties.getName()).pathSegment(profile).pathSegment(label)
 				.pathSegment(path);
 		if (label == null) {
 			urlBuilder.queryParam("useDefaultLabel");
@@ -121,4 +121,5 @@ class OAuth2ConfigResourceClient implements ConfigResourceClient {
 		ResponseEntity<Resource> forEntity = restTemplate.exchange(requestBuilder.build(), Resource.class);
 		return forEntity.getBody();
 	}
+
 }

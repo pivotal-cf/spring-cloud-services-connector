@@ -26,7 +26,7 @@ import io.pivotal.spring.cloud.config.java.ServiceInfoPropertySourceAdapter;
 import io.pivotal.spring.cloud.service.common.EurekaServiceInfo;
 
 /**
- * Provides eureka.client.* properties and enables {@link EurekaOAuth2AutoConfiguration}
+ * Provides eureka.client.* properties and enables {@link EurekaClientOAuth2AutoConfiguration}
  *
  * @author Will Tran
  */

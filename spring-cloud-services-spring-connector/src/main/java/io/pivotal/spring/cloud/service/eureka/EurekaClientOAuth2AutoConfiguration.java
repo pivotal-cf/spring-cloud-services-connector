@@ -16,12 +16,8 @@
 
 package io.pivotal.spring.cloud.service.eureka;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.netflix.discovery.DiscoveryClient.DiscoveryClientOptionalArgs;
 import com.netflix.discovery.EurekaClientConfig;
-import com.sun.jersey.api.client.filter.ClientFilter;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -31,42 +27,31 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 
 /**
- * 
  * @author Will Tran
+ * @author Dylan Roberts
  *
  */
 @Configuration
-@EnableConfigurationProperties
-@ConditionalOnClass({ EurekaClientConfig.class, OAuth2RestTemplate.class })
-@ConditionalOnProperty(value = "eureka.client.oauth2.clientId")
+@EnableConfigurationProperties(EurekaClientOAuth2Properties.class)
+@ConditionalOnClass({ EurekaClientConfig.class })
+@ConditionalOnProperty(prefix = "eureka.client.oauth2", name = { "client-id", "client-secret", "access-token-uri" })
 @AutoConfigureBefore(EurekaClientAutoConfiguration.class)
-public class EurekaOAuth2AutoConfiguration {
-
-	@Bean
-	@ConditionalOnMissingBean(EurekaOAuth2RequestDecorator.class)
-	public EurekaOAuth2RequestDecorator eurekaOauth2RequestDecorator() {
-		return new EurekaOAuth2RequestDecorator(eurekaOAuth2ResourceDetails());
-	}
-
-	@Bean
-	@ConditionalOnMissingBean(EurekaOAuth2ResourceDetails.class)
-	public EurekaOAuth2ResourceDetails eurekaOAuth2ResourceDetails() {
-		return new EurekaOAuth2ResourceDetails();
-	}
-
+public class EurekaClientOAuth2AutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(DiscoveryClientOptionalArgs.class)
-	public DiscoveryClientOptionalArgs discoveryClientOptionalArgs() {
-		List<ClientFilter> filters = new ArrayList<>();
-		filters.add(new ClientFilterAdapter(eurekaOauth2RequestDecorator()));
-
-		DiscoveryClientOptionalArgs args = new DiscoveryClientOptionalArgs();
-		args.setAdditionalFilters(filters);
-
-		return args;
+	public OAuth2DiscoveryClientOptionalArgs discoveryClientOptionalArgs(
+			EurekaClientOAuth2Properties eurekaClientOAuth2Properties) {
+		ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("eureka-client")
+				.clientId(eurekaClientOAuth2Properties.getClientId())
+				.clientSecret(eurekaClientOAuth2Properties.getClientSecret())
+				.tokenUri(eurekaClientOAuth2Properties.getAccessTokenUri())
+				.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS).build();
+		return new OAuth2DiscoveryClientOptionalArgs(clientRegistration);
 	}
+
 }
