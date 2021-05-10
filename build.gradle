@@ -165,7 +165,7 @@ project(":spring-cloud-services-spring-connector") {
 		testCompile("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${springCloudStarterNetflixVersion}")
 		testCompile("org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springCloudStarterNetflixHystrixVersion}")
 		testCompile("org.springframework.cloud:spring-cloud-config-server")
-		testCompile("org.awaitility:awaitility:4.0.3")
+		testCompile("org.awaitility:awaitility:4.1.0")
 		testImplementation("org.junit.vintage:junit-vintage-engine") {
 			exclude group: "org.hamcrest", module: "hamcrest-core"
 		}
