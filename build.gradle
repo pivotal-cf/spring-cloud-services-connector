@@ -4,7 +4,7 @@ buildscript {
 		maven { url 'https://repo.spring.io/plugins-release' }
 	}
 
-	ext.springBootVersion = "2.4.3"
+	ext.springBootVersion = "3.0.2"
 	ext.springCloudVersion = "2020.0.1"
 	ext.springCloudConnectorsVersion = "2.0.7.RELEASE"
 	ext.springCloudStarterNetflixVersion = "3.0.1"
